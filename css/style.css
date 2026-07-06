@@ -19,7 +19,7 @@
   --muted: rgba(242, 239, 233, 0.65);
   --faint: rgba(242, 239, 233, 0.5);
   --line: rgba(242, 239, 233, 0.14);
-  --accent: #ff4d24;
+  --accent: #0057FF;
   --font-sans: "Inter", "Segoe UI", Helvetica, Arial, sans-serif;
   --font-mono: "Departure Mono", Consolas, "Courier New", monospace;
   --pad: clamp(16px, 2.6vw, 44px);
