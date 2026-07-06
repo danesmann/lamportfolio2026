@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project - Thanh Lam - Creative Designer</title>
+  <meta name="description" content="Project case study by Thanh Lam." />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Project - Thanh Lam" />
+  <meta property="og:description" content="Project case study by Thanh Lam." />
+  <meta property="og:image" content="assets/img/17.jpg" />
+
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <noscript>
+    <style>
+      body.is-loading { overflow: auto !important; }
+    </style>
+  </noscript>
+</head>
+<body class="is-loading">
+
+  <div class="noise" aria-hidden="true"></div>
+
+  <div class="cursor" aria-hidden="true">
+    <div class="cursor__dot"></div>
+    <div class="cursor__ring"></div>
+  </div>
+
+  <header class="nav" id="nav">
+    <a class="nav__logo" href="index.html" aria-label="Thanh Lam - home" data-cursor>
+      <img class="nav__logo-img" src="assets/logo.svg" alt="" />
+    </a>
+    <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="menuPanel" data-cursor>
+      <span class="menu-btn__label">menu</span>
+      <span class="menu-btn__dot" aria-hidden="true"></span>
+    </button>
+  </header>
+
+  <div class="menu-panel" id="menuPanel" aria-hidden="true">
+    <p class="menu-panel__tag mono">NAVIGATION</p>
+    <nav class="menu-panel__links" aria-label="Site">
+      <a class="menu-panel__link" href="index.html"><sup class="mono">01</sup>WORK</a>
+      <a class="menu-panel__link" href="archive.html"><sup class="mono">02</sup>ARCHIVE</a>
+      <a class="menu-panel__link" href="about.html"><sup class="mono">03</sup>ABOUT</a>
+    </nav>
+    <div class="menu-panel__foot mono">
+      <a href="mailto:mkt.lubylab@gmail.com">MKT.LUBYLAB@GMAIL.COM</a>
+      <span>&copy; 2026 THANH LAM</span>
+    </div>
+  </div>
+
+  <main id="top">
+    <article class="project-detail" id="projectPage" aria-live="polite"></article>
+  </main>
+
+  <script>
+    (function () {
+      var fallbackProjects = [
+        ["lubylab-1", "K-Derma Skin Care", "Lubylab", "2026", "Branding, Social, UI UX", "assets/img/1.jpg"],
+        ["campari-competition", "Born In Red", "Campari Competition", "2025", "Story-telling, Photography", "assets/img/2.jpg"],
+        ["fae-beauty", "Wellness & Care", "Fae Beauty", "2025", "Branding, Social", "assets/img/3.jpg"],
+        ["new-year-2025", "Lucky Money", "New Year 2025", "2025", "Packaging, Merchandise", "assets/img/4.jpg"],
+        ["celavie", "Pharmacies With Thought", "Celavie", "2024", "Branding, Packaging", "assets/img/5.jpg"],
+        ["merit-christmas", "Merchandise and Mascot", "Merit Christmas", "2024", "Illustration, Merch", "assets/img/6.jpg"],
+        ["mandala-hotel", "Tradition Blends With Culture", "Mandala Hotel", "2023", "Prints, Illustration", "assets/img/7.jpg"],
+        ["lubylab-2", "Booth Design", "Lubylab", "2026", "3D, B2B Communicate", "assets/img/8.jpg"],
+        ["chromatic", "Color Changing Wear", "Chromatic", "2024", "Logo, Mockup", "assets/img/9.jpg"],
+        ["leger-boo", "Eco-Friendly To Trendy Clothing", "Leger-Boo", "2024", "Social, Logo", "assets/img/10.jpg"],
+        ["biolotus", "Bio-Tech Pioneer", "Biolotus", "2025", "Branding", "assets/img/11.jpg"],
+        ["dionysus", "Drawing", "Dionysus", "2023", "Stage Design, Social", "assets/img/12.jpg"],
+        ["poster-design", "Fine Prints", "Poster Design", "2024", "Art, Photograph", "assets/img/13.jpg"],
+        ["lubylab-3", "Packaging", "Lubylab", "2026", "Product Design", "assets/img/14.jpg"],
+        ["tedxbuv", "Biopic Website", "TEDxBUV", "2023", "Website, UI, Social", "assets/img/15.jpg"],
+        ["photograph-1", "Concept", "Photograph", "2025", "Photography", "assets/img/16.jpg"],
+        ["thanh-lam", "Personal Branding", "Thanh Lam", "2024", "Identity", "assets/img/17.jpg"],
+        ["photograph-2", "Couple Photobook", "Photograph", "2026", "Photography", "assets/img/18.jpg"]
+      ];
+      var params = new URLSearchParams(location.search);
+      var slug = params.get("p") || location.pathname.split("/").pop().replace(/\.html$/i, "") || "lubylab-1";
+      if (["project", "index", "archive", "about"].indexOf(slug) >= 0) slug = "lubylab-1";
+      var project = fallbackProjects.filter(function (item) { return item[0] === slug; })[0] || fallbackProjects[0];
+      var page = document.getElementById("projectPage");
+      if (!page) return;
+      document.body.classList.add("project-page");
+      document.body.classList.remove("is-loading");
+      document.title = project[1] + " - " + project[2] + " - Thanh Lam";
+      page.setAttribute("data-project-slug", project[0]);
+      page.innerHTML =
+        '<section class="project-intro">' +
+          '<div class="project-eyebrow mono"><a class="project-back" href="index.html" data-cursor>BACK TO PORTFOLIO</a></div>' +
+          '<div class="project-meta">' +
+            '<div class="project-meta__item"><span class="project-meta__label mono">PROJECT NAME</span><span class="project-meta__value">' + project[1] + '</span></div>' +
+            '<div class="project-meta__item"><span class="project-meta__label mono">ORIGIN</span><span class="project-meta__value">' + project[2] + '</span></div>' +
+            '<div class="project-meta__item"><span class="project-meta__label mono">DATE</span><span class="project-meta__value">' + project[3] + '</span></div>' +
+            '<div class="project-meta__item"><span class="project-meta__label mono">SUB CATEGORY</span><span class="project-meta__value">' + project[4] + '</span></div>' +
+          '</div>' +
+          '<div class="project-title-row"><span class="project-number mono">BN</span><h1 class="project-title">' + project[1] + '</h1></div>' +
+        '</section>' +
+        '<figure class="project-hero"><img class="project-hero__img" src="' + project[5] + '" alt=""></figure>' +
+        '<section class="project-copy project-copy--center"><h2 class="project-copy__title">Overview</h2><p class="project-copy__body">Placeholder case-study copy for ' + project[1] + '. This section visualizes the rhythm, spacing, and editorial text treatment while final project writing is prepared.</p></section>' +
+        '<figure class="project-media"><img class="project-media__img" src="' + project[5] + '" alt=""></figure>' +
+        '<section class="project-split"><figure class="project-split__media"><img class="project-split__img" src="' + project[5] + '" alt=""></figure><section class="project-panel"><h2 class="project-copy__title">Context</h2><p class="project-copy__body">Placeholder explanation block for the case-study layout. Replace this with process notes, strategy, constraints, and design decisions later.</p></section></section>' +
+        '<section class="project-duo"><figure class="project-duo__item"><img class="project-duo__img" src="' + project[5] + '" alt=""></figure><figure class="project-duo__item"><img class="project-duo__img" src="' + project[5] + '" alt=""></figure></section>';
+    }());
+  </script>
+
+  <!-- libs -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.min.js"></script>
+
+  <!-- site -->
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

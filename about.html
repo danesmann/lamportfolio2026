@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>About — Thanh Lam — Creative Designer</title>
-  <meta name="description" content="About Thanh Lam — a multidisciplinary designer from Vietnam working across product, experience and communication. Open for projects — get in touch." />
+  <meta name="description" content="About Thanh Lam — services across branding, packaging, illustration, UI/UX, social, photography and 3D & merchandise. Open for projects — get in touch." />
   <meta name="theme-color" content="#0a0a0a" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="About — Thanh Lam — Creative Designer" />
-  <meta property="og:description" content="Multidisciplinary designer from Vietnam. Product, experience and communication design. Open for projects." />
+  <meta property="og:description" content="Multidisciplinary designer from Vietnam. Branding, packaging, illustration, UI/UX, social, photography, 3D & merchandise. Open for projects." />
   <meta property="og:image" content="assets/img/17.jpg" />
 
   <link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
@@ -60,65 +60,221 @@
 
   <main id="top">
 
-    <!-- ============ ABOUT ============ -->
-    <section class="about about--page" id="about">
-      <div class="section-head">
-        <span class="section-head__label mono">01 — ABOUT</span>
-        <span class="section-head__rule" aria-hidden="true"></span>
-        <span class="section-head__label mono">THE DESIGNER</span>
+    <!-- ============ SERVICES HERO ============ -->
+    <section class="svc-hero" id="about">
+
+      <!-- floating project images (parallax with mouse, scale out on scroll) -->
+      <div class="svc-hero__floats" aria-hidden="true">
+        <div class="svc-float" data-factor="0.9"  style="top:4%;  left:4%;  width:12vw; aspect-ratio:4/5;"><img src="assets/img/2.jpg"  alt="" /></div>
+        <div class="svc-float" data-factor="0.5"  style="top:8%;  left:26%; width:9vw;  aspect-ratio:5/4;"><img src="assets/img/7.jpg"  alt="" /></div>
+        <div class="svc-float" data-factor="-0.4" style="top:3%;  left:48%; width:10vw; aspect-ratio:1/1;"><img src="assets/img/12.jpg" alt="" /></div>
+        <div class="svc-float" data-factor="-0.7" style="top:8%;  left:68%; width:8vw;  aspect-ratio:3/4;"><img src="assets/img/16.jpg" alt="" /></div>
+        <div class="svc-float" data-factor="-0.5" style="top:5%;  left:85%; width:11vw; aspect-ratio:4/5;"><img src="assets/img/4.jpg"  alt="" /></div>
+        <div class="svc-float" data-factor="0.8"  style="top:74%; left:4%;  width:11vw; aspect-ratio:5/4;"><img src="assets/img/9.jpg"  alt="" /></div>
+        <div class="svc-float" data-factor="0.4"  style="top:88%; left:24%; width:7vw;  aspect-ratio:1/1;"><img src="assets/img/18.jpg" alt="" /></div>
+        <div class="svc-float" data-factor="-0.5" style="top:76%; left:78%; width:12vw; aspect-ratio:4/5;"><img src="assets/img/13.jpg" alt="" /></div>
       </div>
 
-      <h1 class="page-title" data-split>ABOUT</h1>
+      <!-- big masked title -->
+      <div class="svc-hero__center">
+        <h1 class="svc-title" aria-label="Work people see, touch and remember">
+          <span class="svc-word" aria-hidden="true"><span class="svc-word__hidden">WORK</span><span class="svc-word__scroll"><span class="svc-word__visible">WORK</span></span></span>
+          <span class="svc-word" aria-hidden="true"><span class="svc-word__hidden">PEOPLE</span><span class="svc-word__scroll"><span class="svc-word__visible">PEOPLE</span></span></span>
+          <br />
+          <span class="svc-word" aria-hidden="true"><span class="svc-word__hidden">SEE,</span><span class="svc-word__scroll"><span class="svc-word__visible">SEE,</span></span></span>
+          <span class="svc-word" aria-hidden="true"><span class="svc-word__hidden">TOUCH</span><span class="svc-word__scroll"><span class="svc-word__visible">TOUCH</span></span></span>
+          <br />
+          <span class="svc-word" aria-hidden="true"><span class="svc-word__hidden">&amp;</span><span class="svc-word__scroll"><span class="svc-word__visible">&amp;</span></span></span>
+          <span class="svc-word" aria-hidden="true"><span class="svc-word__hidden">REMEMBER</span><span class="svc-word__scroll"><span class="svc-word__visible">REMEMBER</span></span></span>
+        </h1>
+      </div>
 
-      <p class="about__statement" id="aboutStatement">
+      <!-- masked description, split into lines by JS -->
+      <p class="svc-desc mono" id="svcDesc">
         I'm Thanh Lam — a multidisciplinary designer from Vietnam working
         across product, experience and communication. From skincare branding
-        to stage design, from packaging to photobooks, I turn ideas into
-        work people can see, touch and remember.
+        to stage design, from packaging to photobooks — every project is
+        built to be seen, touched and remembered.
       </p>
+    </section>
 
-      <div class="about__grid">
-        <div class="about__col">
-          <h2 class="about__col-title mono">DISCIPLINES</h2>
-          <ul class="about__list">
-            <li>Product</li>
-            <li>Experience</li>
-            <li>Communication</li>
-          </ul>
-        </div>
-        <div class="about__col">
-          <h2 class="about__col-title mono">SERVICES</h2>
-          <ul class="about__list about__list--small">
-            <li>Branding</li>
-            <li>Packaging</li>
-            <li>Illustration</li>
-            <li>UI / UX</li>
-            <li>Social</li>
-            <li>Photography</li>
-            <li>3D &amp; Merchandise</li>
-          </ul>
-        </div>
-        <div class="about__col about__col--stats">
-          <div class="about__stat">
-            <span class="about__stat-num mono" data-count="18">00</span>
-            <span class="about__stat-label mono">PROJECTS</span>
-          </div>
-          <div class="about__stat">
-            <span class="about__stat-num mono" data-count="12" data-suffix="+">00</span>
-            <span class="about__stat-label mono">COLLABORATIONS</span>
-          </div>
-          <div class="about__stat">
-            <span class="about__stat-num mono" data-count="3">0</span>
-            <span class="about__stat-label mono">DISCIPLINES</span>
+    <!-- ============ SERVICE CARDS (wall-fall on scroll) ============ -->
+    <section class="svc-cards" id="services">
+
+      <div class="svc-card svc-card--scheme-1">
+        <div class="svc-card__wrapper">
+          <div class="svc-card__content">
+            <div class="svc-card__top">
+              <p>BRANDING</p>
+              <svg class="svc-card__icon" viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="24" cy="24" r="21" stroke="currentColor" stroke-width="2.5"/><path d="M15 24h17M26 17l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="svc-card__bottom">
+              <div>
+                <p class="svc-card__tag mono">IDENTITIES WITH A SYSTEM BEHIND THEM</p>
+                <p class="svc-card__text">From skincare shelves to bio-tech labs, I build brands as complete systems — logo, type, colour and voice working together across every touchpoint.</p>
+              </div>
+              <div><p class="svc-card__num">(01)</p></div>
+            </div>
+            <div class="svc-card__showcase" aria-hidden="true">
+              <div class="svc-card__showcase-item"><img src="assets/img/1.jpg"  alt="" loading="lazy" /></div>
+              <div class="svc-card__showcase-item"><img src="assets/img/3.jpg"  alt="" loading="lazy" /></div>
+              <div class="svc-card__showcase-item"><img src="assets/img/11.jpg" alt="" loading="lazy" /></div>
+              <div class="svc-card__showcase-item"><img src="assets/img/17.jpg" alt="" loading="lazy" /></div>
+            </div>
           </div>
         </div>
       </div>
+
+      <div class="svc-card svc-card--scheme-2">
+        <div class="svc-card__wrapper">
+          <div class="svc-card__content">
+            <div class="svc-card__top">
+              <p>PACKAGING</p>
+              <svg class="svc-card__icon" viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="24" cy="24" r="21" stroke="currentColor" stroke-width="2.5"/><path d="M15 24h17M26 17l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="svc-card__bottom">
+              <div>
+                <p class="svc-card__tag mono">DESIGN YOU CAN HOLD</p>
+                <p class="svc-card__text">Boxes, bottles, labels and lucky-money envelopes — packaging made to survive the real world and still feel special in your hands.</p>
+              </div>
+              <div><p class="svc-card__num">(02)</p></div>
+            </div>
+            <div class="svc-card__showcase" aria-hidden="true">
+              <div class="svc-card__showcase-item"><img src="assets/img/4.jpg"  alt="" loading="lazy" /></div>
+              <div class="svc-card__showcase-item"><img src="assets/img/5.jpg"  alt="" loading="lazy" /></div>
+              <div class="svc-card__showcase-item"><img src="assets/img/14.jpg" alt="" loading="lazy" /></div>
+              <div class="svc-card__showcase-item"><img src="assets/img/6.jpg"  alt="" loading="lazy" /></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="svc-card svc-card--scheme-3">
+        <div class="svc-card__wrapper">
+          <div class="svc-card__content">
+            <div class="svc-card__top">
+              <p>ILLUSTRATION</p>
+              <svg class="svc-card__icon" viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="24" cy="24" r="21" stroke="currentColor" stroke-width="2.5"/><path d="M15 24h17M26 17l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="svc-card__bottom">
+              <div>
+                <p class="svc-card__tag mono">DRAWN, NOT DOWNLOADED</p>
+                <p class="svc-card__text">Mascots, characters and printed artwork, hand-drawn to give each brand a face — and each story a world of its own.</p>
+              </div>
+              <div><p class="svc-card__num">(03)</p></div>
+            </div>
+            <div class="svc-card__showcase" aria-hidden="true">
+              <div class="svc-card__showcase-item"><img src="assets/img/6.jpg"  alt="" loading="lazy" /></div>
+              <div class="svc-card__showcase-item"><img src="assets/img/7.jpg"  alt="" loading="lazy" /></div>
+              <div class="svc-card__showcase-item"><img src="assets/img/12.jpg" alt="" loading="lazy" /></div>
+              <div class="svc-card__showcase-item"><img src="assets/img/13.jpg" alt="" loading="lazy" /></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="svc-card svc-card--scheme-1">
+        <div class="svc-card__wrapper">
+          <div class="svc-card__content">
+            <div class="svc-card__top">
+              <p>UI / UX</p>
+              <svg class="svc-card__icon" viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="24" cy="24" r="21" stroke="currentColor" stroke-width="2.5"/><path d="M15 24h17M26 17l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="svc-card__bottom">
+              <div>
+                <p class="svc-card__tag mono">INTERFACES WITH INTENT</p>
+                <p class="svc-card__text">Websites and digital products designed screen by screen — clear structure, honest typography and details that make people stay.</p>
+              </div>
+              <div><p class="svc-card__num">(04)</p></div>
+            </div>
+            <div class="svc-card__showcase" aria-hidden="true">
+              <div class="svc-card__showcase-item"><img src="assets/img/15.jpg" alt="" loading="lazy" /></div>
+              <div class="svc-card__showcase-item"><img src="assets/img/1.jpg"  alt="" loading="lazy" /></div>
+              <div class="svc-card__showcase-item"><img src="assets/img/10.jpg" alt="" loading="lazy" /></div>
+              <div class="svc-card__showcase-item"><img src="assets/img/9.jpg"  alt="" loading="lazy" /></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="svc-card svc-card--scheme-2">
+        <div class="svc-card__wrapper">
+          <div class="svc-card__content">
+            <div class="svc-card__top">
+              <p>SOCIAL</p>
+              <svg class="svc-card__icon" viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="24" cy="24" r="21" stroke="currentColor" stroke-width="2.5"/><path d="M15 24h17M26 17l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="svc-card__bottom">
+              <div>
+                <p class="svc-card__tag mono">CONTENT PEOPLE STOP FOR</p>
+                <p class="svc-card__text">Campaigns and feeds art-directed as one continuous story — visuals that keep a brand consistent post after post.</p>
+              </div>
+              <div><p class="svc-card__num">(05)</p></div>
+            </div>
+            <div class="svc-card__showcase" aria-hidden="true">
+              <div class="svc-card__showcase-item"><img src="assets/img/3.jpg"  alt="" loading="lazy" /></div>
+              <div class="svc-card__showcase-item"><img src="assets/img/10.jpg" alt="" loading="lazy" /></div>
+              <div class="svc-card__showcase-item"><img src="assets/img/12.jpg" alt="" loading="lazy" /></div>
+              <div class="svc-card__showcase-item"><img src="assets/img/15.jpg" alt="" loading="lazy" /></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="svc-card svc-card--scheme-3">
+        <div class="svc-card__wrapper">
+          <div class="svc-card__content">
+            <div class="svc-card__top">
+              <p>PHOTOGRAPHY</p>
+              <svg class="svc-card__icon" viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="24" cy="24" r="21" stroke="currentColor" stroke-width="2.5"/><path d="M15 24h17M26 17l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="svc-card__bottom">
+              <div>
+                <p class="svc-card__tag mono">MOMENTS, COMPOSED</p>
+                <p class="svc-card__text">Concept shoots, products and photobooks — light and framing directed so every image feels deliberate, never accidental.</p>
+              </div>
+              <div><p class="svc-card__num">(06)</p></div>
+            </div>
+            <div class="svc-card__showcase" aria-hidden="true">
+              <div class="svc-card__showcase-item"><img src="assets/img/16.jpg" alt="" loading="lazy" /></div>
+              <div class="svc-card__showcase-item"><img src="assets/img/18.jpg" alt="" loading="lazy" /></div>
+              <div class="svc-card__showcase-item"><img src="assets/img/2.jpg"  alt="" loading="lazy" /></div>
+              <div class="svc-card__showcase-item"><img src="assets/img/13.jpg" alt="" loading="lazy" /></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="svc-card svc-card--scheme-1">
+        <div class="svc-card__wrapper">
+          <div class="svc-card__content">
+            <div class="svc-card__top">
+              <p>3D &amp; MERCH</p>
+              <svg class="svc-card__icon" viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="24" cy="24" r="21" stroke="currentColor" stroke-width="2.5"/><path d="M15 24h17M26 17l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="svc-card__bottom">
+              <div>
+                <p class="svc-card__tag mono">OFF THE SCREEN, INTO THE ROOM</p>
+                <p class="svc-card__text">Booths, mascots and merchandise that translate a brand into objects and spaces people can walk up to, pick up and keep.</p>
+              </div>
+              <div><p class="svc-card__num">(07)</p></div>
+            </div>
+            <div class="svc-card__showcase" aria-hidden="true">
+              <div class="svc-card__showcase-item"><img src="assets/img/8.jpg"  alt="" loading="lazy" /></div>
+              <div class="svc-card__showcase-item"><img src="assets/img/6.jpg"  alt="" loading="lazy" /></div>
+              <div class="svc-card__showcase-item"><img src="assets/img/4.jpg"  alt="" loading="lazy" /></div>
+              <div class="svc-card__showcase-item"><img src="assets/img/14.jpg" alt="" loading="lazy" /></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </section>
 
     <!-- ============ CONTACT ============ -->
-    <footer class="contact" id="contact">
+    <footer class="contact svc-after" id="contact">
       <div class="section-head">
-        <span class="section-head__label mono">02 — CONTACT</span>
+        <span class="section-head__label mono">CONTACT</span>
         <span class="section-head__rule" aria-hidden="true"></span>
         <span class="section-head__label mono">OPEN FOR PROJECTS</span>
       </div>
@@ -162,5 +318,6 @@
   <!-- site -->
   <script src="js/data.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/services.js"></script>
 </body>
 </html>

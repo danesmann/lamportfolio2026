@@ -26,18 +26,102 @@
     }
   });
 
-  /* if the animation libs failed to load (offline, blocked CDN), degrade
-     gracefully: drop the preloader and let the page scroll */
-  if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") {
-    var preEl = document.getElementById("preloader");
-    if (preEl) preEl.style.display = "none";
-    document.body.classList.remove("is-loading");
-    return;
+  /* if the animation libs fail to load (offline, blocked CDN, file://),
+     keep the content renderer alive with tiny no-op fallbacks. */
+  var gsap = window.gsap;
+  var ScrollTrigger = window.ScrollTrigger;
+  var Lenis = window.Lenis;
+  var HAS_GSAP = typeof gsap !== "undefined";
+  var HAS_SCROLL_TRIGGER = typeof ScrollTrigger !== "undefined";
+
+  function fallbackTargets(target) {
+    if (!target) return [];
+    if (typeof target === "string") return Array.prototype.slice.call(document.querySelectorAll(target));
+    if (target.nodeType || target === window) return [target];
+    if (typeof target.length === "number") return Array.prototype.slice.call(target);
+    return [target];
   }
 
-  var RM = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  /* headless browsers force reduced-motion; allow override for testing */
-  if (DEBUG && PARAMS.get("rm") === "0") RM = false;
+  function fallbackSet(target, vars) {
+    fallbackTargets(target).forEach(function (el) {
+      if (!el || !el.style || !vars) return;
+      if (vars.opacity !== undefined) el.style.opacity = vars.opacity;
+      if (vars.autoAlpha !== undefined) {
+        el.style.opacity = vars.autoAlpha;
+        el.style.visibility = vars.autoAlpha ? "visible" : "hidden";
+      }
+      if (vars.visibility !== undefined) el.style.visibility = vars.visibility;
+      if (vars.y !== undefined || vars.yPercent !== undefined || vars.scale !== undefined) {
+        el.style.transform = "none";
+      }
+      if (vars.clearProps) el.removeAttribute("style");
+    });
+  }
+
+  if (!HAS_GSAP) {
+    window.gsap = {
+      globalTimeline: { timeScale: function () {} },
+      registerPlugin: function () {},
+      ticker: { add: function () {}, remove: function () {}, lagSmoothing: function () {} },
+      utils: {
+        toArray: function (target) { return fallbackTargets(target); }
+      },
+      quickTo: function (target, prop) {
+        return function (value) {
+          var el = fallbackTargets(target)[0];
+          if (!el || !el.style) return;
+          if (prop === "x" || prop === "y") el.style[prop === "x" ? "left" : "top"] = value + "px";
+        };
+      },
+      killTweensOf: function () {},
+      set: fallbackSet,
+      to: function (target, vars) {
+        fallbackSet(target, vars);
+        if (vars && typeof vars.onUpdate === "function") vars.onUpdate();
+        if (vars && typeof vars.onComplete === "function") setTimeout(vars.onComplete, 0);
+        return this;
+      },
+      fromTo: function (target, fromVars, toVars) {
+        fallbackSet(target, toVars);
+        if (toVars && typeof toVars.onComplete === "function") setTimeout(toVars.onComplete, 0);
+        return this;
+      },
+      timeline: function (vars) {
+        var api = {
+          fromTo: function () { return api; },
+          to: function () { return api; }
+        };
+        if (vars && typeof vars.onComplete === "function") setTimeout(vars.onComplete, 0);
+        return api;
+      }
+    };
+    gsap = window.gsap;
+  }
+
+  if (!HAS_SCROLL_TRIGGER) {
+    window.ScrollTrigger = {
+      create: function (vars) {
+        if (vars && typeof vars.onEnter === "function") setTimeout(vars.onEnter, 0);
+        return { kill: function () {} };
+      },
+      batch: function (target, vars) {
+        if (vars && typeof vars.onEnter === "function") setTimeout(function () {
+          vars.onEnter(fallbackTargets(target));
+        }, 0);
+      },
+      refresh: function () {},
+      update: function () {},
+      getAll: function () { return []; }
+    };
+    ScrollTrigger = window.ScrollTrigger;
+  }
+
+  /* animations play regardless of the OS reduced-motion signal (owner
+     preference — Windows "animation effects off" would otherwise freeze
+     the whole site). Use ?rm=1 to simulate the reduced experience. */
+  var RM = PARAMS.get("rm") === "1";
+  /* lets CSS join the simulation (noise, marquee, transitions) */
+  if (RM) document.documentElement.classList.add("is-rm");
   var FINE = window.matchMedia("(pointer: fine)").matches;
 
   /* debug: fast-forward all animation (?debug=1&ts=50) */
@@ -203,6 +287,8 @@
     current: 0,
     target: 0,
     active: -1,
+    hover: null,
+    pointer: { x: 0, y: 0, inStage: false },
     itemH: 48,
     filter: "ALL",
     loop: false,
@@ -221,6 +307,40 @@
 
   function pad2(n) {
     return String(n).padStart(2, "0");
+  }
+
+  function slugify(value) {
+    return String(value || "")
+      .toLowerCase()
+      .replace(/&/g, " and ")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  }
+
+  function projectSlug(p) {
+    return p.slug || slugify(p.origin || p.title);
+  }
+
+  function projectUrl(p) {
+    return projectSlug(p) + ".html";
+  }
+
+  function findProjectBySlug(slug) {
+    for (var i = 0; i < PROJECTS.length; i++) {
+      if (projectSlug(PROJECTS[i]) === slug || String(PROJECTS[i].num) === slug) return PROJECTS[i];
+    }
+    return null;
+  }
+
+  function currentProjectSlug() {
+    var host = document.getElementById("projectPage");
+    var attr = host ? host.getAttribute("data-project-slug") : "";
+    if (attr) return attr;
+    if (window.PROJECT_PAGE_SLUG) return window.PROJECT_PAGE_SLUG;
+    if (PARAMS.get("p")) return PARAMS.get("p");
+    var file = location.pathname.split("/").pop().replace(/\.html$/i, "");
+    if (file && ["index", "archive", "about", "project"].indexOf(file) < 0) return file;
+    return PROJECTS[0] ? projectSlug(PROJECTS[0]) : "";
   }
 
   function buildWheelImages() {
@@ -252,6 +372,7 @@
     workList.innerHTML = "";
     wheel.els = [];
     wheel.rows = [];
+    wheel.hover = null;
     wheel.loop = wheel.filter === "ALL" && wheel.items.length >= 12;
     wheel.items.forEach(function (p, i) {
       var li = document.createElement("li");
@@ -276,12 +397,20 @@
       btn.appendChild(origin);
       btn.appendChild(scope);
 
+      btn.addEventListener("pointerdown", function () {
+        btn.setAttribute("data-pointer-focus", "true");
+      });
       btn.addEventListener("click", function () {
-        wheelGoTo(i);
+        btn.removeAttribute("data-pointer-focus");
+        location.href = projectUrl(p);
       });
       /* keyboard focus: keep the overflow:hidden stage from scrolling itself
          out of alignment, and bring the focused project to the center */
       btn.addEventListener("focus", function () {
+        if (btn.getAttribute("data-pointer-focus") === "true") {
+          btn.removeAttribute("data-pointer-focus");
+          return;
+        }
         if (workWrap) { workWrap.scrollTop = 0; workWrap.scrollLeft = 0; }
         wheelGoTo(i);
       });
@@ -330,6 +459,23 @@
 
   /* the page doesn't scroll — wheel / touch / arrows drive the list */
   function initWheelInput() {
+    if (FINE) {
+      workWrap.addEventListener("pointermove", function (e) {
+        wheel.pointer.x = e.clientX;
+        wheel.pointer.y = e.clientY;
+        wheel.pointer.inStage = true;
+      });
+      workWrap.addEventListener("pointerleave", function () {
+        wheel.pointer.inStage = false;
+        wheel.hover = null;
+        renderWheel(true);
+      });
+      window.addEventListener("blur", function () {
+        wheel.pointer.inStage = false;
+        wheel.hover = null;
+      });
+    }
+
     workWrap.addEventListener(
       "wheel",
       function (e) {
@@ -381,6 +527,57 @@
     });
   }
 
+  function updateWheelHoverFromPointer() {
+    if (!FINE || !wheel.pointer.inStage || wheel.transitioning) {
+      wheel.hover = null;
+      return null;
+    }
+
+    var best = null;
+    var bestDist = Infinity;
+    var rowReach = Math.max(wheel.itemH * 0.65, 30);
+
+    var hit = null;
+    for (var i = 0; i < wheel.rows.length; i++) {
+      var row = wheel.rows[i];
+      var item = wheel.els[i];
+      if (!row || !item || item.style.visibility === "hidden") continue;
+
+      var name = row.querySelector(".work__row-name");
+      if (!name) continue;
+
+      var colRect = name.getBoundingClientRect();
+      var rowRect = item.getBoundingClientRect();
+      if (
+        wheel.pointer.x < colRect.left ||
+        wheel.pointer.x > colRect.right ||
+        wheel.pointer.y < rowRect.top - rowReach ||
+        wheel.pointer.y > rowRect.bottom + rowReach
+      ) {
+        continue;
+      }
+
+      var rowCenter = (rowRect.top + rowRect.bottom) / 2;
+      var dist = Math.abs(wheel.pointer.y - rowCenter);
+      if (
+        wheel.pointer.y >= rowRect.top - 4 &&
+        wheel.pointer.y <= rowRect.bottom + 4
+      ) {
+        hit = i;
+        break;
+      }
+
+      if (dist < bestDist) {
+        best = i;
+        bestDist = dist;
+      }
+    }
+
+    if (hit === null && bestDist <= rowReach) hit = best;
+    wheel.hover = hit;
+    return hit;
+  }
+
   function setActive(idx) {
     if (idx === wheel.active) return;
     wheel.active = idx;
@@ -389,6 +586,7 @@
 
     wheel.els.forEach(function (el, i) {
       el.classList.toggle("is-active", i === idx);
+      el.classList.toggle("is-preview", i === idx);
     });
 
     /* load active image + neighbors, then crossfade */
@@ -452,15 +650,34 @@
       }
       el.style.visibility = "visible";
       el.style.transform = "translate3d(0," + (d * wheel.itemH).toFixed(2) + "px,0)";
-      /* far rows sit uniformly dim; rows brighten as they pass the center */
-      var mix = Math.max(0, 1 - ad);
-      el.style.opacity = (0.26 + 0.74 * mix).toFixed(3);
     }
 
     var activeIdx = wheel.loop
       ? ((Math.round(wheel.current) % n) + n) % n
       : Math.min(Math.max(Math.round(wheel.current), 0), n - 1);
-    setActive(activeIdx);
+    var hoverIdx = updateWheelHoverFromPointer();
+    var previewIdx = hoverIdx !== null ? hoverIdx : activeIdx;
+    setActive(previewIdx);
+
+    for (var j = 0; j < n; j++) {
+      var d2;
+      if (wheel.loop) {
+        d2 = (((j - wheel.current) % n) + n) % n;
+        if (d2 > n / 2) d2 -= n;
+      } else {
+        d2 = j - wheel.current;
+      }
+      var ad2 = Math.abs(d2);
+      var el2 = wheel.els[j];
+      if (!el2 || el2.style.visibility === "hidden") continue;
+      el2.classList.toggle("is-hovered", hoverIdx === j);
+      /* far rows sit uniformly dim; rows brighten as they pass the center */
+      var mix2 = Math.max(0, 1 - ad2);
+      var opacity2 = 0.26 + 0.74 * mix2;
+      if (hoverIdx !== null && hoverIdx !== j) opacity2 = Math.min(opacity2, 0.42);
+      if (previewIdx === j) opacity2 = 1;
+      el2.style.opacity = opacity2.toFixed(3);
+    }
   }
 
   function renderWheelTick() {
@@ -539,6 +756,164 @@
   }
 
   /* ============================================================
+     PROJECT DETAIL PAGE
+     ============================================================ */
+  function makeEl(tag, className, text) {
+    var el = document.createElement(tag);
+    if (className) el.className = className;
+    if (text !== undefined) el.textContent = text;
+    return el;
+  }
+
+  function appendMeta(parent, label, value) {
+    var item = makeEl("div", "project-meta__item");
+    item.appendChild(makeEl("span", "project-meta__label mono", label));
+    item.appendChild(makeEl("span", "project-meta__value", value || "TBC"));
+    parent.appendChild(item);
+  }
+
+  function makeProjectImage(p, className, alt, position) {
+    var img = document.createElement("img");
+    img.className = className || "";
+    img.src = p.img;
+    img.alt = alt || "";
+    img.loading = "lazy";
+    img.decoding = "async";
+    if (position) img.style.objectPosition = position;
+    return img;
+  }
+
+  function projectLead(p) {
+    var sub = p.subCategory || p.tags.join(", ");
+    return p.title + " is a " + p.category.toLowerCase() + " project for " + p.origin +
+      ", shaped around " + sub.toLowerCase() + ". The page structure frames the work as a compact case study: context first, then image-led evidence, then a focused breakdown of the design decisions behind the final direction.";
+  }
+
+  function projectNotes(p) {
+    return [
+      {
+        title: "Context",
+        body: "The project starts from the visual and strategic world of " + p.origin +
+          ". Its role is to make the core idea immediately readable while keeping enough detail for the audience to understand the system, mood, and intended use."
+      },
+      {
+        title: "Design Response",
+        body: "The direction uses " + (p.subCategory || p.tags.join(", ")).toLowerCase() +
+          " as the main language. Scale, rhythm, and image sequencing are used to keep the work editorial, direct, and easy to scan across the page."
+      },
+      {
+        title: "Case Study Breakdown",
+        body: "Each following section is built as a reusable case-study block: one image-led moment, one explanation panel, and one closing image field. The same framework can hold deeper process notes once final project writing is ready."
+      }
+    ];
+  }
+
+  function buildTextBlock(title, body, className) {
+    var section = makeEl("section", className || "project-copy project-reveal");
+    var h = makeEl("h2", "project-copy__title", title);
+    var p = makeEl("p", "project-copy__body", body);
+    section.appendChild(h);
+    section.appendChild(p);
+    return section;
+  }
+
+  function buildProjectDetail() {
+    var page = document.getElementById("projectPage");
+    if (!page) return;
+
+    var p = findProjectBySlug(currentProjectSlug());
+    if (!p) p = PROJECTS[0];
+    if (!p) return;
+
+    var idx = PROJECTS.indexOf(p);
+    var next = PROJECTS[(idx + 1) % PROJECTS.length];
+
+    document.body.classList.add("project-page");
+
+    if (PARAMS.get("p") && history.replaceState) {
+      history.replaceState(null, "", projectUrl(p));
+    }
+
+    document.title = p.title + " - " + p.origin + " - Thanh Lam";
+    var metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) metaDescription.setAttribute("content", projectLead(p));
+    var ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) ogTitle.setAttribute("content", p.title + " - " + p.origin);
+    var ogImage = document.querySelector('meta[property="og:image"]');
+    if (ogImage) ogImage.setAttribute("content", p.img);
+
+    page.setAttribute("data-project-slug", projectSlug(p));
+    page.innerHTML = "";
+
+    var intro = makeEl("section", "project-intro");
+    var eyebrow = makeEl("div", "project-eyebrow mono");
+    var back = makeEl("a", "project-back", "BACK TO PORTFOLIO");
+    back.href = "index.html";
+    back.setAttribute("data-cursor", "");
+    eyebrow.appendChild(back);
+    intro.appendChild(eyebrow);
+
+    var meta = makeEl("div", "project-meta");
+    appendMeta(meta, "PROJECT NAME", p.title);
+    appendMeta(meta, "ORIGIN", p.origin);
+    appendMeta(meta, "DATE", p.date || String(p.year));
+    appendMeta(meta, "SUB CATEGORY", p.subCategory || p.tags.join(", "));
+    intro.appendChild(meta);
+
+    var titleRow = makeEl("div", "project-title-row");
+    titleRow.appendChild(makeEl("span", "project-number mono", "BN " + pad2(p.num)));
+    titleRow.appendChild(makeEl("h1", "project-title", p.title));
+    intro.appendChild(titleRow);
+    page.appendChild(intro);
+
+    var hero = makeEl("figure", "project-hero project-reveal");
+    hero.appendChild(makeProjectImage(p, "project-hero__img", p.title + " hero image", "center center"));
+    page.appendChild(hero);
+
+    page.appendChild(buildTextBlock("Overview", projectLead(p), "project-copy project-copy--center project-reveal"));
+
+    var fullOne = makeEl("figure", "project-media project-reveal");
+    fullOne.appendChild(makeProjectImage(p, "project-media__img", p.title + " project image", "center center"));
+    page.appendChild(fullOne);
+
+    var notes = projectNotes(p);
+    var splitOne = makeEl("section", "project-split project-reveal");
+    var splitImg = makeEl("figure", "project-split__media");
+    splitImg.appendChild(makeProjectImage(p, "project-split__img", p.title + " detail image", "30% center"));
+    splitOne.appendChild(splitImg);
+    splitOne.appendChild(buildTextBlock(notes[0].title, notes[0].body, "project-panel"));
+    page.appendChild(splitOne);
+
+    var splitTwo = makeEl("section", "project-split project-split--reverse project-reveal");
+    splitTwo.appendChild(buildTextBlock(notes[1].title, notes[1].body, "project-panel"));
+    var splitImgTwo = makeEl("figure", "project-split__media");
+    splitImgTwo.appendChild(makeProjectImage(p, "project-split__img", p.title + " process image", "70% center"));
+    splitTwo.appendChild(splitImgTwo);
+    page.appendChild(splitTwo);
+
+    var duo = makeEl("section", "project-duo project-reveal");
+    var d1 = makeEl("figure", "project-duo__item");
+    d1.appendChild(makeProjectImage(p, "project-duo__img", p.title + " image variation one", "left center"));
+    var d2 = makeEl("figure", "project-duo__item");
+    d2.appendChild(makeProjectImage(p, "project-duo__img", p.title + " image variation two", "right center"));
+    duo.appendChild(d1);
+    duo.appendChild(d2);
+    page.appendChild(duo);
+
+    page.appendChild(buildTextBlock(notes[2].title, notes[2].body, "project-copy project-copy--center project-reveal"));
+
+    var outro = makeEl("nav", "project-next project-reveal");
+    var nextLink = makeEl("a", "project-next__link", "");
+    nextLink.href = projectUrl(next);
+    nextLink.setAttribute("data-cursor", "");
+    nextLink.appendChild(makeEl("span", "project-next__label mono", "NEXT PROJECT"));
+    nextLink.appendChild(makeEl("span", "project-next__title", next.title));
+    nextLink.appendChild(makeEl("span", "project-next__meta mono", next.origin + " / " + (next.date || next.year)));
+    outro.appendChild(nextLink);
+    page.appendChild(outro);
+  }
+
+  /* ============================================================
      ARCHIVE TABLE
      ============================================================ */
   var archiveFloat = document.getElementById("archiveFloat");
@@ -600,14 +975,7 @@
       /* click → jump to this project in the wheel (same page on index.html,
          cross-page via ?p= when the archive lives on its own page) */
       function go() {
-        if (!wheelExists()) {
-          location.href = "index.html?p=" + p.num;
-          return;
-        }
-        if (wheel.filter !== "ALL") applyFilter("ALL");
-        var idx = wheel.items.indexOf(p);
-        if (idx < 0) idx = p.num - 1;
-        wheelGoTo(idx);
+        location.href = projectUrl(p);
       }
       row.addEventListener("click", go);
       row.addEventListener("keydown", function (e) {
@@ -882,6 +1250,142 @@
         }
       );
     }
+
+    if (document.querySelector(".project-detail")) {
+      /* ---- intro: masked title chars + staggered meta (about-style) ---- */
+      var pTitle = document.querySelector(".project-title");
+      if (pTitle) {
+        var pChars = splitChars(pTitle);
+        gsap.fromTo(
+          pChars,
+          { yPercent: 130 },
+          {
+            yPercent: 0,
+            duration: RM ? 0.01 : 1,
+            stagger: RM ? 0 : 0.024,
+            ease: "power4.out",
+            delay: RM ? 0 : 0.12
+          }
+        );
+      }
+
+      gsap.fromTo(
+        ".project-eyebrow, .project-meta__item, .project-number",
+        { opacity: 0, y: 34 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: RM ? 0.01 : 0.9,
+          stagger: RM ? 0 : 0.06,
+          ease: "power3.out",
+          delay: RM ? 0 : 0.15
+        }
+      );
+
+      /* ---- copy blocks: title then body rise in ---- */
+      gsap.utils.toArray(".project-copy, .project-panel").forEach(function (sec) {
+        var bits = sec.querySelectorAll(".project-copy__title, .project-copy__body");
+        if (!bits.length) return;
+        gsap.fromTo(
+          bits,
+          { opacity: 0, y: 40 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: RM ? 0.01 : 0.9,
+            stagger: RM ? 0 : 0.12,
+            ease: "power3.out",
+            scrollTrigger: { trigger: sec, start: "top 80%", once: true }
+          }
+        );
+      });
+
+      /* ---- images: clip-wipe entry + parallax drift inside the frame ---- */
+      function wipeIn(fig, fromClip, delay) {
+        gsap.fromTo(
+          fig,
+          { clipPath: fromClip, webkitClipPath: fromClip },
+          {
+            clipPath: "inset(0% 0% 0% 0%)",
+            webkitClipPath: "inset(0% 0% 0% 0%)",
+            duration: RM ? 0.01 : 1.15,
+            ease: "power4.inOut",
+            delay: RM ? 0 : delay || 0,
+            scrollTrigger: { trigger: fig, start: "top 88%", once: true }
+          }
+        );
+      }
+      function drift(fig) {
+        var img = fig.querySelector("img");
+        if (!img) return;
+        /* extra scale gives the drift headroom so edges never show */
+        gsap.set(img, { scale: 1.14 });
+        gsap.fromTo(
+          img,
+          { yPercent: -6 },
+          {
+            yPercent: 6,
+            ease: "none",
+            scrollTrigger: {
+              trigger: fig,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: RM ? false : true
+            }
+          }
+        );
+      }
+
+      gsap.utils.toArray(".project-hero, .project-media, .project-duo__item").forEach(function (fig, i) {
+        var delay = 0;
+        if (i === 0) delay = 0.25; /* hero settles just after the title */
+        else if (fig.matches(".project-duo__item:nth-child(2)")) delay = 0.15;
+        wipeIn(fig, "inset(100% 0% 0% 0%)", delay);
+        drift(fig);
+      });
+
+      /* split sections wipe from the text side for direction contrast */
+      gsap.utils.toArray(".project-split").forEach(function (sec) {
+        var media = sec.querySelector(".project-split__media");
+        if (!media) return;
+        var fromSide = sec.classList.contains("project-split--reverse")
+          ? "inset(0% 0% 0% 100%)"
+          : "inset(0% 100% 0% 0%)";
+        wipeIn(media, fromSide, 0);
+        drift(media);
+      });
+
+      /* ---- next-project bar: masked title on approach ---- */
+      var nextTitle = document.querySelector(".project-next__title");
+      if (nextTitle) {
+        var nChars = splitChars(nextTitle);
+        gsap.set(nChars, { yPercent: 130 });
+        ScrollTrigger.create({
+          trigger: ".project-next",
+          start: "top 85%",
+          once: true,
+          onEnter: function () {
+            gsap.to(nChars, {
+              yPercent: 0,
+              duration: RM ? 0.01 : 0.9,
+              stagger: RM ? 0 : 0.03,
+              ease: "power4.out"
+            });
+          }
+        });
+      }
+      gsap.fromTo(
+        ".project-next__label, .project-next__meta",
+        { opacity: 0 },
+        {
+          opacity: 1,
+          duration: RM ? 0.01 : 0.8,
+          ease: "power2.out",
+          delay: RM ? 0 : 0.25,
+          scrollTrigger: { trigger: ".project-next", start: "top 85%", once: true }
+        }
+      );
+    }
   }
 
   /* ============================================================
@@ -912,67 +1416,23 @@
   }
 
   function initPreloader() {
-    var pre = document.getElementById("preloader");
+    startScroll();
+    /* opacity-only: a transformed <main> ancestor would break ScrollTrigger
+       pinning (services wall-fall on about.html) */
+    gsap.fromTo(
+      "main",
+      { opacity: 0 },
+      { opacity: 1, duration: RM ? 0.01 : 0.7, ease: "power3.out", clearProps: "all" }
+    );
+    ScrollTrigger.refresh();
+    if (wheelExists()) measureWheel();
 
-    /* pages without a preloader (about) get a simple fade-in */
-    if (!pre) {
-      startScroll();
-      gsap.fromTo(
-        "main",
-        { opacity: 0, y: 24 },
-        { opacity: 1, y: 0, duration: RM ? 0.01 : 0.7, ease: "power3.out", clearProps: "all" }
-      );
-      ScrollTrigger.refresh();
+    var pParam = PARAMS.get("p");
+    if (pParam) {
+      jumpToProject(parseInt(pParam, 10));
+    } else {
       jumpToHash();
-      return;
     }
-
-    var count = document.getElementById("preCount");
-    var name = document.getElementById("preName");
-    var nameChars = splitChars(name);
-
-    stopScroll();
-
-    var obj = { v: 0 };
-    var fast = DEBUG || RM;
-    var tl = gsap.timeline({
-      onComplete: function () {
-        pre.style.display = "none";
-        startScroll();
-        ScrollTrigger.refresh();
-        measureWheel();
-        var pParam = PARAMS.get("p");
-        if (pParam) {
-          jumpToProject(parseInt(pParam, 10));
-        } else {
-          jumpToHash();
-        }
-      }
-    });
-
-    tl.fromTo(
-      nameChars,
-      { yPercent: 115 },
-      { yPercent: 0, duration: fast ? 0.01 : 0.9, stagger: fast ? 0 : 0.05, ease: "power4.out" }
-    )
-      .to(
-        obj,
-        {
-          v: 100,
-          duration: fast ? 0.05 : 1.8,
-          ease: "power2.inOut",
-          onUpdate: function () {
-            count.textContent = String(Math.round(obj.v)).padStart(3, "0");
-          }
-        },
-        fast ? ">" : "-=0.4"
-      )
-      .to(pre, {
-        yPercent: -100,
-        duration: fast ? 0.05 : 0.9,
-        ease: "power4.inOut",
-        delay: fast ? 0 : 0.15
-      });
   }
 
   /* ============================================================
@@ -991,6 +1451,7 @@
       buildFilters();
       initWheelInput();
     }
+    buildProjectDetail();
     if (document.getElementById("archiveTable")) buildArchive();
     buildMarquees();
     initNav();
