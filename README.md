@@ -1,7 +1,13 @@
 # Thanh Lam — Portfolio
 
-A dark, editorial single-page portfolio showcasing 18 selected projects
-(2023–2026) across **Product**, **Experience** and **Communication** design.
+A dark, editorial portfolio showcasing 18 selected projects (2023–2026)
+across **Product**, **Experience** and **Communication** design.
+
+Three pages:
+
+- **index.html** — selected work (scroll-driven project wheel)
+- **archive.html** — the full project index/table
+- **about.html** — about + contact, merged
 
 Animation-driven, inspired by modern award-site interaction patterns:
 
@@ -10,6 +16,8 @@ Animation-driven, inspired by modern award-site interaction patterns:
 - **Scroll-driven project wheel** — sticky full-screen list with category
   filters and crossfading image previews
 - **Archive index** — full project table with cursor-following image preview
+- **Expanding menu** — logo left, pill button right; opens a spring-animated
+  white rounded panel with the site nav
 - Custom cursor, marquees, grain overlay, preloader
 
 ## Run it
@@ -29,10 +37,13 @@ powershell -ExecutionPolicy Bypass -File serve.ps1
 ## Structure
 
 ```
-index.html          # single page: hero → work wheel → archive → about → contact
+index.html          # work wheel
+archive.html        # full project index/table
+about.html          # about → contact
 css/style.css       # dark design system (Space Grotesk + Space Mono)
 js/data.js          # the 18 projects: title / origin / category / tags / year / image
 js/main.js          # all animation + interaction logic
+assets/logo.svg     # nav logo
 assets/img/         # optimized project images (1600×900 JPEG)
 serve.ps1           # tiny local static server (PowerShell, no dependencies)
 ```
@@ -53,4 +64,5 @@ All content lives in `js/data.js`. Each project:
 }
 ```
 
-Contact email, social links and about copy are in `index.html`.
+Contact email, social links and about copy are in `about.html`. The nav
+(logo + menu links) is duplicated at the top of both HTML files.

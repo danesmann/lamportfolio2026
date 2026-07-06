@@ -26,6 +26,15 @@
     }
   });
 
+  /* if the animation libs failed to load (offline, blocked CDN), degrade
+     gracefully: drop the preloader and let the page scroll */
+  if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") {
+    var preEl = document.getElementById("preloader");
+    if (preEl) preEl.style.display = "none";
+    document.body.classList.remove("is-loading");
+    return;
+  }
+
   var RM = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   /* headless browsers force reduced-motion; allow override for testing */
   if (DEBUG && PARAMS.get("rm") === "0") RM = false;
@@ -83,11 +92,14 @@
      ============================================================ */
   function splitChars(el) {
     var text = el.textContent;
+    /* keep the accessible name intact — the char spans are presentation */
+    if (!el.hasAttribute("aria-label")) el.setAttribute("aria-label", text);
     el.textContent = "";
     var chars = [];
     for (var i = 0; i < text.length; i++) {
       var mask = document.createElement("span");
       mask.className = "split-mask";
+      mask.setAttribute("aria-hidden", "true");
       var ch = document.createElement("span");
       ch.className = "split-char";
       ch.textContent = text[i] === " " ? " " : text[i];
@@ -122,7 +134,13 @@
     if (!root) return;
     var xTo = gsap.quickTo(root, "x", { duration: 0.35, ease: "power3.out" });
     var yTo = gsap.quickTo(root, "y", { duration: 0.35, ease: "power3.out" });
+    var shown = false;
     window.addEventListener("mousemove", function (e) {
+      if (!shown) {
+        shown = true;
+        gsap.set(root, { x: e.clientX, y: e.clientY });
+        root.classList.add("is-on");
+      }
       xTo(e.clientX);
       yTo(e.clientY);
     });
@@ -158,40 +176,48 @@
 
       if (RM) return;
       var speed = parseFloat(track.getAttribute("data-marquee-speed")) || 24;
-      gsap.to(track, { xPercent: -50, ease: "none", duration: speed, repeat: -1 });
+      var tween = gsap.to(track, { xPercent: -50, ease: "none", duration: speed, repeat: -1 });
+      /* don't burn frames while the marquee is off-screen */
+      ScrollTrigger.create({
+        trigger: track.parentNode,
+        start: "top bottom",
+        end: "bottom top",
+        onToggle: function (self) {
+          if (self.isActive) tween.play();
+          else tween.pause();
+        }
+      });
     });
   }
 
   /* ============================================================
-     WORK WHEEL — scroll-driven infinite-feeling project list
+     WORK WHEEL — input-driven project list
+     [filter rail] [name] [origin] [scope] · loops when showing ALL
      ============================================================ */
   var wheel = {
     items: PROJECTS.slice(),
     els: [],
+    rows: [],
     imgs: {},
     activeImg: null,
     current: 0,
     target: 0,
     active: -1,
-    wrapTop: 0,
-    travel: 1,
-    itemH: 80,
+    itemH: 48,
     filter: "ALL",
-    STEP: 160,
-    DWELL: 260
+    loop: false,
+    transitioning: false
   };
 
   var workWrap = document.getElementById("workWrap");
   var workList = document.getElementById("workList");
   var workBg = document.getElementById("workBg");
   var workFilters = document.getElementById("workFilters");
-  var metaIndex = document.getElementById("metaIndex");
-  var metaOrigin = document.getElementById("metaOrigin");
-  var metaTags = document.getElementById("metaTags");
-  var metaYear = document.getElementById("metaYear");
-  var progCurrent = document.getElementById("progCurrent");
-  var progTotal = document.getElementById("progTotal");
-  var progFill = document.getElementById("progFill");
+
+  /* the wheel only exists on index.html — archive.html links back to it */
+  function wheelExists() {
+    return !!(workWrap && workList && workBg && workFilters);
+  }
 
   function pad2(n) {
     return String(n).padStart(2, "0");
@@ -200,65 +226,159 @@
   function buildWheelImages() {
     PROJECTS.forEach(function (p) {
       var img = document.createElement("img");
-      img.src = p.img;
+      /* load on demand (active project + neighbors) instead of all 18 at once */
+      img.setAttribute("data-src", p.img);
       img.alt = "";
       img.decoding = "async";
       workBg.appendChild(img);
       wheel.imgs[p.num] = img;
     });
+    /* warm the rest of the images once the page has settled */
+    window.addEventListener("load", function () {
+      setTimeout(function () {
+        PROJECTS.forEach(function (p) { ensureImg(wheel.imgs[p.num]); });
+      }, 2500);
+    });
+  }
+
+  function ensureImg(img) {
+    if (img && !img.src) {
+      var src = img.getAttribute("data-src");
+      if (src) img.src = src;
+    }
   }
 
   function buildWheelList() {
     workList.innerHTML = "";
     wheel.els = [];
+    wheel.rows = [];
+    wheel.loop = wheel.filter === "ALL" && wheel.items.length >= 12;
     wheel.items.forEach(function (p, i) {
       var li = document.createElement("li");
       li.className = "work__item";
       var btn = document.createElement("button");
-      btn.className = "work__item-btn";
+      btn.className = "work__row";
       btn.type = "button";
-      btn.textContent = p.title;
       btn.setAttribute("data-cursor", "");
+      btn.setAttribute("aria-label", p.title + ", " + p.origin + ", " + p.tags.join(", "));
+
+      var name = document.createElement("span");
+      name.className = "work__row-name";
+      name.textContent = p.title;
+      var origin = document.createElement("span");
+      origin.className = "work__row-origin";
+      origin.textContent = p.origin;
+      var scope = document.createElement("span");
+      scope.className = "work__row-scope";
+      scope.textContent = p.tags.join(", ");
+
+      btn.appendChild(name);
+      btn.appendChild(origin);
+      btn.appendChild(scope);
+
       btn.addEventListener("click", function () {
-        wheelScrollToIndex(i);
+        wheelGoTo(i);
+      });
+      /* keyboard focus: keep the overflow:hidden stage from scrolling itself
+         out of alignment, and bring the focused project to the center */
+      btn.addEventListener("focus", function () {
+        if (workWrap) { workWrap.scrollTop = 0; workWrap.scrollLeft = 0; }
+        wheelGoTo(i);
       });
       li.appendChild(btn);
       workList.appendChild(li);
       wheel.els.push(li);
+      wheel.rows.push(btn);
     });
     wheel.active = -1;
+    measureWheel();
     renderWheel(true);
   }
 
-  function setWrapHeight() {
-    var n = Math.max(wheel.items.length, 1);
-    var travel = (n - 1) * wheel.STEP + wheel.DWELL;
-    workWrap.style.height = "calc(100vh + " + travel + "px)";
-  }
-
   function measureWheel() {
-    var rect = workWrap.getBoundingClientRect();
-    wheel.wrapTop = rect.top + window.scrollY;
-    wheel.travel = Math.max(workWrap.offsetHeight - window.innerHeight, 1);
+    if (!workWrap) return;
     var first = wheel.els[0];
-    if (first) wheel.itemH = first.offsetHeight || 80;
+    if (first) wheel.itemH = first.offsetHeight || 48;
   }
 
-  function wheelScrollToIndex(i) {
+  /* move the wheel to an item — shortest way around when looping */
+  function wheelGoTo(i) {
     var n = wheel.items.length;
-    var p = n > 1 ? i / (n - 1) : 0;
-    scrollToY(wheel.wrapTop + p * wheel.travel, { duration: 1.1 });
+    if (!n) return;
+    if (wheel.loop) {
+      var curMod = ((wheel.current % n) + n) % n;
+      var delta = i - curMod;
+      if (delta > n / 2) delta -= n;
+      if (delta < -n / 2) delta += n;
+      wheel.target = wheel.current + delta;
+    } else {
+      wheel.target = i;
+    }
   }
 
-  function setMetaValue(el, text) {
-    el.textContent = "";
-    var s = document.createElement("span");
-    s.style.display = "inline-block";
-    s.textContent = text;
-    el.appendChild(s);
-    if (!RM) {
-      gsap.fromTo(s, { yPercent: 130 }, { yPercent: 0, duration: 0.5, ease: "power3.out" });
-    }
+  /* settle on a row once input goes quiet */
+  var snapT = null;
+  function scheduleSnap() {
+    clearTimeout(snapT);
+    snapT = setTimeout(function () {
+      wheel.target = Math.round(wheel.target);
+      if (!wheel.loop) {
+        wheel.target = Math.min(Math.max(wheel.target, 0), wheel.items.length - 1);
+      }
+    }, 160);
+  }
+
+  /* the page doesn't scroll — wheel / touch / arrows drive the list */
+  function initWheelInput() {
+    workWrap.addEventListener(
+      "wheel",
+      function (e) {
+        e.preventDefault();
+        if (wheel.transitioning) return;
+        var dy = e.deltaY * (e.deltaMode === 1 ? 33 : e.deltaMode === 2 ? window.innerHeight : 1);
+        wheel.target += dy * 0.006;
+        scheduleSnap();
+      },
+      { passive: false }
+    );
+
+    var touchY = null;
+    workWrap.addEventListener(
+      "touchstart",
+      function (e) {
+        touchY = e.touches[0].clientY;
+      },
+      { passive: true }
+    );
+    workWrap.addEventListener(
+      "touchmove",
+      function (e) {
+        if (touchY === null || wheel.transitioning) return;
+        e.preventDefault();
+        var y = e.touches[0].clientY;
+        wheel.target += (touchY - y) / wheel.itemH;
+        touchY = y;
+        scheduleSnap();
+      },
+      { passive: false }
+    );
+    workWrap.addEventListener("touchend", function () {
+      touchY = null;
+      scheduleSnap();
+    });
+
+    window.addEventListener("keydown", function (e) {
+      if (wheel.transitioning || document.body.classList.contains("menu-open")) return;
+      if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+        e.preventDefault();
+        wheel.target = Math.round(wheel.target) + 1;
+        scheduleSnap();
+      } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+        e.preventDefault();
+        wheel.target = Math.round(wheel.target) - 1;
+        scheduleSnap();
+      }
+    });
   }
 
   function setActive(idx) {
@@ -271,8 +391,14 @@
       el.classList.toggle("is-active", i === idx);
     });
 
-    /* crossfade background image */
+    /* load active image + neighbors, then crossfade */
+    var n = wheel.items.length;
     var img = wheel.imgs[p.num];
+    ensureImg(img);
+    var next = wheel.items[(idx + 1) % n];
+    var prev = wheel.items[(idx - 1 + n) % n];
+    if (next) ensureImg(wheel.imgs[next.num]);
+    if (prev) ensureImg(wheel.imgs[prev.num]);
     if (img && img !== wheel.activeImg) {
       if (wheel.activeImg) {
         gsap.to(wheel.activeImg, { opacity: 0, duration: 0.55, ease: "power2.out", overwrite: true });
@@ -284,48 +410,57 @@
       );
       wheel.activeImg = img;
     }
-
-    /* meta panel */
-    setMetaValue(metaIndex, pad2(idx + 1) + " / " + pad2(wheel.items.length));
-    setMetaValue(metaOrigin, p.origin);
-    setMetaValue(metaTags, p.tags.join(" · "));
-    setMetaValue(metaYear, String(p.year));
-    progCurrent.textContent = pad2(idx + 1);
-    progTotal.textContent = pad2(wheel.items.length);
   }
 
   function renderWheel(force) {
     var n = wheel.items.length;
     if (!n) return;
 
-    var sy = window.scrollY;
-    var pRaw = (sy - wheel.wrapTop) / wheel.travel;
-    var p = Math.min(Math.max(pRaw, 0), 1);
-    wheel.target = p * (n - 1);
+    if (!wheel.loop) {
+      if (wheel.target < 0) wheel.target = 0;
+      if (wheel.target > n - 1) wheel.target = n - 1;
+    }
 
     var ease = RM ? 1 : 0.09;
     wheel.current += (wheel.target - wheel.current) * ease;
-    if (Math.abs(wheel.target - wheel.current) < 0.001) wheel.current = wheel.target;
+    if (Math.abs(wheel.target - wheel.current) < 0.0005) wheel.current = wheel.target;
+
+    /* keep the running position bounded so floats stay precise */
+    if (wheel.loop && Math.abs(wheel.current) > n * 1000) {
+      var shift = Math.floor(wheel.current / n) * n;
+      wheel.current -= shift;
+      wheel.target -= shift;
+    }
+
+    var visRange = Math.ceil(window.innerHeight / (wheel.itemH * 2)) + 1;
 
     for (var i = 0; i < n; i++) {
-      var d = i - wheel.current;
+      var d;
+      if (wheel.loop) {
+        /* wrap each row to its nearest position around the center */
+        d = (((i - wheel.current) % n) + n) % n;
+        if (d > n / 2) d -= n;
+      } else {
+        d = i - wheel.current;
+      }
       var ad = Math.abs(d);
       var el = wheel.els[i];
       if (!el) continue;
-      if (ad > 4.6 && !force) {
-        el.style.opacity = "0";
+      if (ad > visRange && !force) {
         el.style.visibility = "hidden";
         continue;
       }
       el.style.visibility = "visible";
-      el.style.transform =
-        "translate3d(0," + (d * wheel.itemH).toFixed(2) + "px,0) scale(" +
-        Math.max(1 - ad * 0.055, 0.7).toFixed(3) + ")";
-      el.style.opacity = String(Math.max(1 - ad * 0.26, 0.08).toFixed(3));
+      el.style.transform = "translate3d(0," + (d * wheel.itemH).toFixed(2) + "px,0)";
+      /* far rows sit uniformly dim; rows brighten as they pass the center */
+      var mix = Math.max(0, 1 - ad);
+      el.style.opacity = (0.26 + 0.74 * mix).toFixed(3);
     }
 
-    if (progFill) progFill.style.transform = "scaleY(" + p.toFixed(4) + ")";
-    setActive(Math.min(Math.max(Math.round(wheel.current), 0), n - 1));
+    var activeIdx = wheel.loop
+      ? ((Math.round(wheel.current) % n) + n) % n
+      : Math.min(Math.max(Math.round(wheel.current), 0), n - 1);
+    setActive(activeIdx);
   }
 
   function renderWheelTick() {
@@ -343,8 +478,7 @@
       btn.className = "work__filter mono" + (cat === wheel.filter ? " is-active" : "");
       btn.type = "button";
       btn.setAttribute("data-cursor", "");
-      btn.setAttribute("role", "tab");
-      btn.setAttribute("aria-selected", cat === wheel.filter ? "true" : "false");
+      btn.setAttribute("aria-pressed", cat === wheel.filter ? "true" : "false");
       btn.textContent = cat + " ";
       var sup = document.createElement("sup");
       sup.textContent = String(count);
@@ -357,36 +491,51 @@
   }
 
   function applyFilter(cat) {
-    if (cat === wheel.filter) return;
+    if (cat === wheel.filter || wheel.transitioning) return;
     wheel.filter = cat;
+    wheel.transitioning = true;
 
     Array.prototype.forEach.call(workFilters.children, function (b) {
-      var on = b.textContent.indexOf(cat) === 0;
+      var on = b.textContent.indexOf(cat + " ") === 0;
       b.classList.toggle("is-active", on);
-      b.setAttribute("aria-selected", on ? "true" : "false");
+      b.setAttribute("aria-pressed", on ? "true" : "false");
     });
 
-    wheel.items =
+    var newItems =
       cat === "ALL"
         ? PROJECTS.slice()
         : PROJECTS.filter(function (p) { return p.category === cat; });
 
-    /* rebuild + re-measure */
-    buildWheelList();
-    setWrapHeight();
-    measureWheel();
-    ScrollTrigger.refresh();
-    measureWheel();
-
-    /* snap back to the start of the wheel & reset state */
-    wheel.current = 0;
-    wheel.target = 0;
-    scrollToY(wheel.wrapTop, { duration: 0.7 });
-
-    if (!RM) {
-      gsap.fromTo(workList, { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" });
-    }
-    renderWheel(true);
+    /* current group drifts down + fades out, new group rises in from below */
+    var oldRows = wheel.rows.slice();
+    gsap.to(oldRows, {
+      y: 46,
+      opacity: 0,
+      duration: RM ? 0.01 : 0.45,
+      stagger: RM ? 0 : 0.018,
+      ease: "power2.in",
+      onComplete: function () {
+        wheel.items = newItems;
+        wheel.current = 0;
+        wheel.target = 0;
+        buildWheelList();
+        gsap.fromTo(
+          wheel.rows,
+          { y: 46, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: RM ? 0.01 : 0.6,
+            stagger: RM ? 0 : 0.03,
+            ease: "power3.out",
+            onComplete: function () {
+              gsap.set(wheel.rows, { clearProps: "transform,opacity" });
+              wheel.transitioning = false;
+            }
+          }
+        );
+      }
+    });
   }
 
   /* ============================================================
@@ -448,15 +597,17 @@
         });
       }
 
-      /* click → jump to this project in the wheel */
+      /* click → jump to this project in the wheel (same page on index.html,
+         cross-page via ?p= when the archive lives on its own page) */
       function go() {
+        if (!wheelExists()) {
+          location.href = "index.html?p=" + p.num;
+          return;
+        }
         if (wheel.filter !== "ALL") applyFilter("ALL");
         var idx = wheel.items.indexOf(p);
         if (idx < 0) idx = p.num - 1;
-        measureWheel();
-        var n = wheel.items.length;
-        var prog = n > 1 ? idx / (n - 1) : 0;
-        scrollToY(wheel.wrapTop + prog * wheel.travel, { duration: 1.4 });
+        wheelGoTo(idx);
       }
       row.addEventListener("click", go);
       row.addEventListener("keydown", function (e) {
@@ -483,72 +634,128 @@
      NAV + MOBILE MENU + ANCHORS
      ============================================================ */
   function initNav() {
-    var nav = document.getElementById("nav");
-    var burger = document.getElementById("burger");
-    var menu = document.getElementById("menu");
+    var btn = document.getElementById("menuBtn");
+    var panel = document.getElementById("menuPanel");
+    var label = btn ? btn.querySelector(".menu-btn__label") : null;
     var menuOpen = false;
-    var lastY = 0;
+    var closeMenu = null;
 
-    /* hide on scroll down, show on scroll up */
-    if (!RM) {
-      window.addEventListener(
-        "scroll",
-        function () {
-          var y = window.scrollY;
-          if (menuOpen) return;
-          if (y > 200 && y > lastY + 4) {
-            gsap.to(nav, { yPercent: -110, duration: 0.45, ease: "power3.out", overwrite: true });
-          } else if (y < lastY - 4 || y <= 200) {
-            gsap.to(nav, { yPercent: 0, duration: 0.45, ease: "power3.out", overwrite: true });
+    if (btn && panel) {
+      var links = panel.querySelectorAll(".menu-panel__link");
+      var foot = panel.querySelector(".menu-panel__foot");
+
+      gsap.set(panel, { scale: 0.4, opacity: 0, visibility: "hidden" });
+
+      var openMenu = function () {
+        menuOpen = true;
+        document.body.classList.add("menu-open");
+        btn.setAttribute("aria-expanded", "true");
+        panel.setAttribute("aria-hidden", "false");
+        if (label) label.textContent = "close";
+        gsap.killTweensOf([panel, links, foot]);
+        gsap.set(panel, { visibility: "visible" });
+        /* spring pop from the button corner */
+        gsap.fromTo(
+          panel,
+          { scale: 0.4, opacity: 0 },
+          { scale: 1, opacity: 1, duration: RM ? 0.01 : 0.85, ease: RM ? "none" : "elastic.out(1, 0.62)" }
+        );
+        gsap.fromTo(
+          links,
+          { y: 28, opacity: 0 },
+          { y: 0, opacity: 1, duration: RM ? 0.01 : 0.5, stagger: RM ? 0 : 0.06, delay: RM ? 0 : 0.12, ease: "power3.out" }
+        );
+        if (foot) {
+          gsap.fromTo(foot, { opacity: 0 }, { opacity: 1, duration: RM ? 0.01 : 0.4, delay: RM ? 0 : 0.3 });
+        }
+        if (links[0]) links[0].focus();
+      };
+
+      closeMenu = function (refocus) {
+        menuOpen = false;
+        document.body.classList.remove("menu-open");
+        btn.setAttribute("aria-expanded", "false");
+        panel.setAttribute("aria-hidden", "true");
+        if (label) label.textContent = "menu";
+        gsap.killTweensOf([panel, links, foot]);
+        gsap.to(panel, {
+          scale: 0.5,
+          opacity: 0,
+          duration: RM ? 0.01 : 0.28,
+          ease: "power3.in",
+          onComplete: function () {
+            gsap.set(panel, { visibility: "hidden" });
           }
-          lastY = y;
-        },
-        { passive: true }
-      );
-    }
+        });
+        if (refocus !== false) btn.focus();
+      };
 
-    var menuTl = gsap.timeline({ paused: true });
-    menuTl
-      .set(menu, { visibility: "visible" })
-      .fromTo(
-        menu,
-        { clipPath: "inset(0 0 100% 0)" },
-        { clipPath: "inset(0 0 0% 0)", duration: RM ? 0.01 : 0.65, ease: "power4.inOut" }
-      )
-      .fromTo(
-        menu.querySelectorAll(".menu__link"),
-        { yPercent: 60, opacity: 0 },
-        { yPercent: 0, opacity: 1, duration: RM ? 0.01 : 0.5, stagger: RM ? 0 : 0.07, ease: "power3.out" },
-        RM ? ">" : "-=0.25"
-      );
+      btn.addEventListener("click", function () {
+        if (menuOpen) closeMenu();
+        else openMenu();
+      });
 
-    function toggleMenu(open) {
-      menuOpen = open;
-      document.body.classList.toggle("menu-open", open);
-      burger.setAttribute("aria-expanded", open ? "true" : "false");
-      menu.setAttribute("aria-hidden", open ? "false" : "true");
-      if (open) {
-        stopScroll();
-        menuTl.timeScale(1).play();
-      } else {
-        startScroll();
-        menuTl.timeScale(1.6).reverse();
+      /* click outside the panel closes it */
+      document.addEventListener("pointerdown", function (e) {
+        if (menuOpen && !panel.contains(e.target) && !btn.contains(e.target)) {
+          closeMenu(false);
+        }
+      });
+
+      /* following any menu link closes the panel */
+      panel.querySelectorAll("a").forEach(function (a) {
+        a.addEventListener("click", function () {
+          closeMenu(false);
+        });
+      });
+
+      /* debug: open the menu for screenshots (?debug=1&menu=1) */
+      if (DEBUG && PARAMS.get("menu") === "1") {
+        window.addEventListener("load", function () {
+          setTimeout(openMenu, 700);
+        });
       }
+
+      /* keyboard: Escape closes, Tab cycles inside the open menu */
+      document.addEventListener("keydown", function (e) {
+        if (!menuOpen) return;
+        if (e.key === "Escape") {
+          e.preventDefault();
+          closeMenu();
+          return;
+        }
+        if (e.key === "Tab") {
+          var focusables = [btn].concat(
+            Array.prototype.slice.call(panel.querySelectorAll("a"))
+          );
+          var idx = focusables.indexOf(document.activeElement);
+          if (idx === -1) {
+            e.preventDefault();
+            focusables[0].focus();
+            return;
+          }
+          var next = idx + (e.shiftKey ? -1 : 1);
+          if (next < 0 || next >= focusables.length) {
+            e.preventDefault();
+            focusables[next < 0 ? focusables.length - 1 : 0].focus();
+          }
+        }
+      });
     }
 
-    burger.addEventListener("click", function () {
-      toggleMenu(!menuOpen);
-    });
-
-    /* smooth anchors */
+    /* smooth same-page anchors */
     document.querySelectorAll('a[href^="#"]').forEach(function (a) {
       a.addEventListener("click", function (e) {
         var id = a.getAttribute("href");
-        if (id === "#") return;
+        if (id === "#") {
+          /* placeholder links (socials) — don't jump the page to the top */
+          e.preventDefault();
+          return;
+        }
         var target = document.querySelector(id);
         if (!target) return;
         e.preventDefault();
-        if (menuOpen) toggleMenu(false);
+        if (menuOpen && closeMenu) closeMenu(false);
         var y = target.getBoundingClientRect().top + window.scrollY;
         scrollToY(y, { duration: 1.4 });
       });
@@ -573,8 +780,8 @@
       );
     });
 
-    /* big split titles (archive + contact) */
-    document.querySelectorAll(".archive__title[data-split], .contact__line[data-split]").forEach(function (el) {
+    /* big split titles (page titles + contact) */
+    document.querySelectorAll(".page-title[data-split], .contact__line[data-split]").forEach(function (el) {
       var chars = splitChars(el);
       gsap.fromTo(
         chars,
@@ -647,81 +854,79 @@
     });
 
     /* about columns fade */
-    gsap.fromTo(
-      ".about__col",
-      { opacity: 0, y: 34 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: RM ? 0.01 : 0.8,
-        stagger: 0.12,
-        ease: "power3.out",
-        scrollTrigger: { trigger: ".about__grid", start: "top 82%" }
-      }
-    );
+    if (document.querySelector(".about__grid")) {
+      gsap.fromTo(
+        ".about__col",
+        { opacity: 0, y: 34 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: RM ? 0.01 : 0.8,
+          stagger: 0.12,
+          ease: "power3.out",
+          scrollTrigger: { trigger: ".about__grid", start: "top 82%" }
+        }
+      );
+    }
 
     /* contact bottom rows */
-    gsap.fromTo(
-      ".contact__row, .contact__bottom",
-      { opacity: 0 },
-      {
-        opacity: 1,
-        duration: RM ? 0.01 : 0.9,
-        ease: "power2.out",
-        scrollTrigger: { trigger: ".contact__row", start: "top 94%" }
-      }
-    );
+    if (document.querySelector(".contact__row")) {
+      gsap.fromTo(
+        ".contact__row, .contact__bottom",
+        { opacity: 0 },
+        {
+          opacity: 1,
+          duration: RM ? 0.01 : 0.9,
+          ease: "power2.out",
+          scrollTrigger: { trigger: ".contact__row", start: "top 94%" }
+        }
+      );
+    }
   }
 
   /* ============================================================
-     HERO INTRO + PRELOADER
+     PRELOADER
      ============================================================ */
-  var heroChars = [];
-
-  function prepareHero() {
-    document.querySelectorAll(".hero__line[data-split]").forEach(function (el) {
-      heroChars.push(splitChars(el));
-    });
-    gsap.set(".hero__line .split-char", { yPercent: 115 });
-    gsap.set(".hero__meta-item, .hero__desc, .hero__scroll", { opacity: 0, y: 16 });
-    gsap.set(".hero__marquee", { opacity: 0 });
+  function jumpToHash() {
+    if (!location.hash) return;
+    var target = null;
+    try { target = document.querySelector(location.hash); } catch (err) {}
+    if (!target) return;
+    setTimeout(function () {
+      scrollToY(target.getBoundingClientRect().top + window.scrollY, { immediate: true });
+    }, 60);
   }
 
-  function heroIntro() {
-    var tl = gsap.timeline();
-    window.__heroTl = tl;
-    tl.to(".hero__line .split-char", {
-      yPercent: 0,
-      duration: RM ? 0.01 : 1.1,
-      stagger: RM ? 0 : 0.045,
-      ease: "power4.out"
-    })
-      .to(
-        ".hero__meta-item",
-        { opacity: 1, y: 0, duration: RM ? 0.01 : 0.6, stagger: RM ? 0 : 0.08, ease: "power3.out" },
-        RM ? ">" : "-=0.7"
-      )
-      .to(
-        ".hero__desc, .hero__scroll",
-        { opacity: 1, y: 0, duration: RM ? 0.01 : 0.7, stagger: RM ? 0 : 0.1, ease: "power3.out" },
-        RM ? ">" : "-=0.5"
-      )
-      .to(".hero__marquee", { opacity: 1, duration: RM ? 0.01 : 0.8 }, RM ? ">" : "-=0.4");
-
-    if (!RM) {
-      gsap.to(".hero__scroll-arrow", {
-        y: 6,
-        duration: 0.7,
-        repeat: -1,
-        yoyo: true,
-        ease: "power1.inOut"
-      });
+  /* land on a specific project after following an archive.html link
+     (index.html?p=<num>) */
+  function jumpToProject(num) {
+    if (!wheelExists() || isNaN(num)) return;
+    var idx = -1;
+    for (var i = 0; i < wheel.items.length; i++) {
+      if (wheel.items[i].num === num) { idx = i; break; }
     }
-    return tl;
+    if (idx < 0) return;
+    wheel.current = idx;
+    wheel.target = idx;
+    renderWheel(true);
   }
 
   function initPreloader() {
     var pre = document.getElementById("preloader");
+
+    /* pages without a preloader (about) get a simple fade-in */
+    if (!pre) {
+      startScroll();
+      gsap.fromTo(
+        "main",
+        { opacity: 0, y: 24 },
+        { opacity: 1, y: 0, duration: RM ? 0.01 : 0.7, ease: "power3.out", clearProps: "all" }
+      );
+      ScrollTrigger.refresh();
+      jumpToHash();
+      return;
+    }
+
     var count = document.getElementById("preCount");
     var name = document.getElementById("preName");
     var nameChars = splitChars(name);
@@ -736,6 +941,12 @@
         startScroll();
         ScrollTrigger.refresh();
         measureWheel();
+        var pParam = PARAMS.get("p");
+        if (pParam) {
+          jumpToProject(parseInt(pParam, 10));
+        } else {
+          jumpToHash();
+        }
       }
     });
 
@@ -761,45 +972,47 @@
         duration: fast ? 0.05 : 0.9,
         ease: "power4.inOut",
         delay: fast ? 0 : 0.15
-      })
-      .add(heroIntro(), fast ? ">" : "-=0.45");
+      });
   }
 
   /* ============================================================
      INIT
      ============================================================ */
   function init() {
-    buildWheelImages();
-    buildWheelList();
-    buildFilters();
-    setWrapHeight();
-    buildArchive();
+    var navCount = document.getElementById("navWorkCount");
+    if (navCount) navCount.textContent = String(PROJECTS.length);
+
+    /* the work wheel only exists on index.html */
+    var hasWheel = wheelExists();
+
+    if (hasWheel) {
+      buildWheelImages();
+      buildWheelList();
+      buildFilters();
+      initWheelInput();
+    }
+    if (document.getElementById("archiveTable")) buildArchive();
     buildMarquees();
-    prepareHero();
     initNav();
     initReveals();
 
-    measureWheel();
-    setActive(0);
-    renderWheel(true);
-
-    /* wheel render loop */
-    gsap.ticker.add(renderWheelTick);
+    if (hasWheel) {
+      renderWheel(true);
+      gsap.ticker.add(renderWheelTick);
+    }
 
     /* keep measurements fresh */
     var resizeT = null;
     window.addEventListener("resize", function () {
       clearTimeout(resizeT);
       resizeT = setTimeout(function () {
-        setWrapHeight();
-        measureWheel();
+        if (hasWheel) measureWheel();
         ScrollTrigger.refresh();
-        measureWheel();
       }, 200);
     });
     window.addEventListener("load", function () {
       ScrollTrigger.refresh();
-      measureWheel();
+      if (hasWheel) measureWheel();
     });
 
     initPreloader();
@@ -813,18 +1026,10 @@
           box.style.cssText =
             "position:fixed;top:0;right:0;z-index:9999;background:#036;color:#fff;" +
             "font:10px monospace;padding:4px 8px;white-space:pre;";
-          var h = window.__heroTl;
-          var c1 = h && h.getChildren(false)[0];
-          var l2 = document.querySelector(".hero__line--right");
-          var l2cs = l2 ? getComputedStyle(l2) : null;
-          var l2r = l2 ? l2.getBoundingClientRect() : null;
           box.textContent = [
             "RM=" + RM,
             "lenis=" + !!lenis,
-            "heroTl=" + (h ? h.progress().toFixed(2) + "/" + h.totalDuration().toFixed(2) : "none"),
-            "c1=" + (c1 ? c1.progress().toFixed(2) + " t:" + c1.targets().length : "none"),
-            "sy=" + Math.round(window.scrollY),
-            l2cs ? "l2 disp=" + l2cs.display + " ta=" + l2cs.textAlign + " fs=" + l2cs.fontSize + " w=" + Math.round(l2r.width) + " x=" + Math.round(l2r.left) + " r=" + Math.round(l2r.right) + " vw=" + window.innerWidth : ""
+            "sy=" + Math.round(window.scrollY)
           ].join(" | ");
           document.body.appendChild(box);
         }, 2500);
@@ -845,15 +1050,11 @@
           gsap.set(".about__col", { opacity: 1, y: 0 });
           gsap.set(".contact__row, .contact__bottom", { opacity: 1 });
           var lock = PARAMS.get("wheellock");
-          if (lock !== null) {
+          if (lock !== null && wheel.els.length) {
             var idx = Math.min(parseInt(lock, 10) || 0, wheel.items.length - 1);
-            wheel.current = wheel.target = idx;
             gsap.ticker.remove(renderWheelTick);
-            for (var k = 0; k < wheel.els.length; k++) wheel.els[k].style.visibility = "visible";
-            var save = wheel.wrapTop;
-            wheel.wrapTop = window.scrollY - idx / Math.max(wheel.items.length - 1, 1) * wheel.travel;
+            wheel.current = wheel.target = idx;
             renderWheel(true);
-            wheel.wrapTop = save;
           }
           var sec = PARAMS.get("shift");
           var el = document.getElementById(sec);
@@ -861,6 +1062,15 @@
           if (PARAMS.get("off")) y += parseInt(PARAMS.get("off"), 10);
           document.body.style.transform = "translateY(" + -y + "px)";
         }, 900);
+      });
+    }
+
+    /* debug: trigger a filter switch (?debug=1&filter=PRODUCT) */
+    if (DEBUG && PARAMS.get("filter") && hasWheel) {
+      window.addEventListener("load", function () {
+        setTimeout(function () {
+          applyFilter(PARAMS.get("filter"));
+        }, 800);
       });
     }
 

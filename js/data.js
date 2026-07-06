@@ -51,7 +51,7 @@ window.PROJECTS = [
   },
   {
     num: 6,
-    title: "Merchandise & Mascot",
+    title: "Merchandise and Mascot",
     origin: "Merit Christmas",
     category: "PRODUCT",
     tags: ["Illustration", "Merch"],
