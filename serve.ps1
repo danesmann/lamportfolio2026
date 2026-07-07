@@ -37,6 +37,14 @@ while ($true) {
     $file = Join-Path $root ($path.TrimStart("/") -replace "/", "\")
     $fullRoot = (Resolve-Path $root).Path
 
+    # emulate Vercel's cleanUrls: "/about" -> about.html when there's no
+    # exact file at that path and it has no extension of its own
+    if (-not (Test-Path $file -PathType Leaf)) {
+      if ([string]::IsNullOrEmpty([System.IO.Path]::GetExtension($file))) {
+        $file = "$file.html"
+      }
+    }
+
     if ((Test-Path $file -PathType Leaf) -and ((Resolve-Path $file).Path.StartsWith($fullRoot))) {
       $bytes = [System.IO.File]::ReadAllBytes($file)
       $ext = [System.IO.Path]::GetExtension($file).ToLower()

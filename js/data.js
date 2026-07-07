@@ -1,14 +1,14 @@
 /* ============================================================
    THANH LAM — PORTFOLIO DATA
-   18 projects · PRODUCT / EXPERIENCE / COMMUNICATION
+   18 projects · MARKETING CASE STUDY / CREATIVE WORK
    ============================================================ */
 
 window.PROJECTS = [
   {
     num: 1,
-    title: "K-Derma Skin Care",
+    title: "Korean Skincare Brand",
     origin: "Lubylab",
-    category: "PRODUCT",
+    category: "MARKETING CASE STUDY",
     subCategory: "Branding, Social, UI UX",
     date: "2026",
     slug: "lubylab-1",
@@ -18,9 +18,9 @@ window.PROJECTS = [
   },
   {
     num: 2,
-    title: "Born In Red",
+    title: "Born In Red Shortfilm",
     origin: "Campari Competition",
-    category: "EXPERIENCE",
+    category: "CREATIVE WORK",
     subCategory: "Story-telling, Photography",
     date: "2025",
     slug: "campari-competition",
@@ -30,9 +30,9 @@ window.PROJECTS = [
   },
   {
     num: 3,
-    title: "Wellness & Care",
+    title: "Wellness Spa",
     origin: "Fae Beauty",
-    category: "COMMUNICATION",
+    category: "MARKETING CASE STUDY",
     subCategory: "Branding, Social",
     date: "2025",
     slug: "fae-beauty",
@@ -42,9 +42,9 @@ window.PROJECTS = [
   },
   {
     num: 4,
-    title: "Lucky Money",
+    title: "Year Of Snake - Lucky Money",
     origin: "New Year 2025",
-    category: "PRODUCT",
+    category: "CREATIVE WORK",
     subCategory: "Packaging, Merchandise",
     date: "2025",
     slug: "new-year-2025",
@@ -54,9 +54,9 @@ window.PROJECTS = [
   },
   {
     num: 5,
-    title: "Pharmacies With Thought",
+    title: "Formulation For Family Care",
     origin: "Celavie",
-    category: "PRODUCT",
+    category: "MARKETING CASE STUDY",
     subCategory: "Branding, Packaging",
     date: "2024",
     slug: "celavie",
@@ -66,9 +66,9 @@ window.PROJECTS = [
   },
   {
     num: 6,
-    title: "Merchandise and Mascot",
+    title: "Xmas Merchandise",
     origin: "Merit Christmas",
-    category: "PRODUCT",
+    category: "CREATIVE WORK",
     subCategory: "Illustration, Merch",
     date: "2024",
     slug: "merit-christmas",
@@ -78,9 +78,9 @@ window.PROJECTS = [
   },
   {
     num: 7,
-    title: "Tradition Blends With Culture",
+    title: "Serenity In Every Stay",
     origin: "Mandala Hotel",
-    category: "COMMUNICATION",
+    category: "MARKETING CASE STUDY",
     subCategory: "Prints, Illustration",
     date: "2023",
     slug: "mandala-hotel",
@@ -90,9 +90,9 @@ window.PROJECTS = [
   },
   {
     num: 8,
-    title: "Booth Design",
+    title: "Thailand Skincare Exhibition",
     origin: "Lubylab",
-    category: "PRODUCT",
+    category: "MARKETING CASE STUDY",
     subCategory: "3D, B2B Communicate",
     date: "2026",
     slug: "lubylab-2",
@@ -102,9 +102,10 @@ window.PROJECTS = [
   },
   {
     num: 9,
-    title: "Color Changing Wear",
+    title: "Color Changing Clothing",
     origin: "Chromatic",
-    category: "COMMUNICATION",
+    category: "CREATIVE WORK",
+    archiveOnly: true,
     subCategory: "Logo, Mockup",
     date: "2024",
     slug: "chromatic",
@@ -114,9 +115,9 @@ window.PROJECTS = [
   },
   {
     num: 10,
-    title: "Eco-Friendly To Trendy Clothing",
+    title: "Eco-Friendly Wear",
     origin: "Leger-Boo",
-    category: "COMMUNICATION",
+    category: "CREATIVE WORK",
     subCategory: "Social, Logo",
     date: "2024",
     slug: "leger-boo",
@@ -126,9 +127,9 @@ window.PROJECTS = [
   },
   {
     num: 11,
-    title: "Bio-Tech Pioneer",
+    title: "Environment Solution Pioneer",
     origin: "Biolotus",
-    category: "COMMUNICATION",
+    category: "MARKETING CASE STUDY",
     subCategory: "Branding",
     date: "2025",
     slug: "biolotus",
@@ -138,9 +139,10 @@ window.PROJECTS = [
   },
   {
     num: 12,
-    title: "Drawing",
+    title: "Post-Apocalypse Theatre Experience",
     origin: "Dionysus",
-    category: "EXPERIENCE",
+    category: "CREATIVE WORK",
+    archiveOnly: true,
     subCategory: "Stage Design, Social",
     date: "2023",
     slug: "dionysus",
@@ -152,7 +154,8 @@ window.PROJECTS = [
     num: 13,
     title: "Fine Prints",
     origin: "Poster Design",
-    category: "EXPERIENCE",
+    category: "CREATIVE WORK",
+    archiveOnly: true,
     subCategory: "Art, Photograph",
     date: "2024",
     slug: "poster-design",
@@ -162,9 +165,9 @@ window.PROJECTS = [
   },
   {
     num: 14,
-    title: "Packaging",
+    title: "Product Packaging",
     origin: "Lubylab",
-    category: "PRODUCT",
+    category: "CREATIVE WORK",
     subCategory: "Product Design",
     date: "2026",
     slug: "lubylab-3",
@@ -176,7 +179,7 @@ window.PROJECTS = [
     num: 15,
     title: "Biopic Website",
     origin: "TEDxBUV",
-    category: "EXPERIENCE",
+    category: "MARKETING CASE STUDY",
     subCategory: "Website, UI, Social",
     date: "2023",
     slug: "tedxbuv",
@@ -186,9 +189,9 @@ window.PROJECTS = [
   },
   {
     num: 16,
-    title: "Concept",
+    title: "Concept Photobook",
     origin: "Photograph",
-    category: "EXPERIENCE",
+    category: "CREATIVE WORK",
     subCategory: "Photography",
     date: "2025",
     slug: "photograph-1",
@@ -200,7 +203,8 @@ window.PROJECTS = [
     num: 17,
     title: "Personal Branding",
     origin: "Thanh Lam",
-    category: "COMMUNICATION",
+    category: "CREATIVE WORK",
+    archiveOnly: true,
     subCategory: "Identity",
     date: "2024",
     slug: "thanh-lam",
@@ -212,7 +216,7 @@ window.PROJECTS = [
     num: 18,
     title: "Couple Photobook",
     origin: "Photograph",
-    category: "EXPERIENCE",
+    category: "CREATIVE WORK",
     subCategory: "Photography",
     date: "2026",
     slug: "photograph-2",
@@ -222,4 +226,4 @@ window.PROJECTS = [
   }
 ];
 
-window.CATEGORIES = ["ALL", "PRODUCT", "EXPERIENCE", "COMMUNICATION"];
+window.CATEGORIES = ["ALL", "MARKETING CASE STUDY", "CREATIVE WORK"];

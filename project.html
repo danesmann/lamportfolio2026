@@ -17,11 +17,18 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
   <script>
-    /* page transition: cover before first paint when arriving via an internal link */
+    /* cover before first paint when arriving via an internal link — and,
+       on a visitor's very first arrival, play that same curtain + logo
+       loader once as a preloader (persisted per browser in localStorage) */
     try {
       var __pt = +sessionStorage.getItem("pt") || 0;
       if (__pt) sessionStorage.removeItem("pt");
-      if (__pt && Date.now() - __pt < 15000) {
+      var __cover = !!(__pt && Date.now() - __pt < 15000);
+      if (!__cover && !localStorage.getItem("tl-visited")) {
+        localStorage.setItem("tl-visited", String(Date.now()));
+        __cover = true;
+      }
+      if (__cover) {
         document.documentElement.classList.add("pt-cover");
         window.__ptCoverAt = Date.now();
       }
@@ -43,7 +50,7 @@
   </div>
 
   <header class="nav" id="nav">
-    <a class="nav__logo" href="index.html" aria-label="Thanh Lam - home" data-cursor>
+    <a class="nav__logo" href="/" aria-label="Thanh Lam - home" data-cursor>
       <img class="nav__logo-img" src="assets/logo.svg" alt="" />
     </a>
     <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="menuPanel" data-cursor>
@@ -55,12 +62,12 @@
   <div class="menu-panel" id="menuPanel" aria-hidden="true">
     <p class="menu-panel__tag mono">NAVIGATION</p>
     <nav class="menu-panel__links" aria-label="Site">
-      <a class="menu-panel__link" href="index.html"><sup class="mono">01</sup>WORK</a>
-      <a class="menu-panel__link" href="archive.html"><sup class="mono">02</sup>ARCHIVE</a>
-      <a class="menu-panel__link" href="about.html"><sup class="mono">03</sup>ABOUT</a>
+      <a class="menu-panel__link" href="/"><sup class="mono">01</sup>Selected Work</a>
+      <a class="menu-panel__link" href="/archive"><sup class="mono">02</sup>ARCHIVE</a>
+      <a class="menu-panel__link" href="/about"><sup class="mono">03</sup>ABOUT</a>
     </nav>
     <div class="menu-panel__foot mono">
-      <a href="mailto:mkt.lubylab@gmail.com">MKT.LUBYLAB@GMAIL.COM</a>
+      <a href="mailto:thanhlamforwork2807@gmail.com">THANHLAMFORWORK2807@GMAIL.COM</a>
       <span>&copy; 2026 THANH LAM</span>
     </div>
   </div>
@@ -72,22 +79,22 @@
   <script>
     (function () {
       var fallbackProjects = [
-        ["lubylab-1", "K-Derma Skin Care", "Lubylab", "2026", "Branding, Social, UI UX", "assets/img/1.jpg"],
-        ["campari-competition", "Born In Red", "Campari Competition", "2025", "Story-telling, Photography", "assets/img/2.jpg"],
-        ["fae-beauty", "Wellness & Care", "Fae Beauty", "2025", "Branding, Social", "assets/img/3.jpg"],
-        ["new-year-2025", "Lucky Money", "New Year 2025", "2025", "Packaging, Merchandise", "assets/img/4.jpg"],
-        ["celavie", "Pharmacies With Thought", "Celavie", "2024", "Branding, Packaging", "assets/img/5.jpg"],
-        ["merit-christmas", "Merchandise and Mascot", "Merit Christmas", "2024", "Illustration, Merch", "assets/img/6.jpg"],
-        ["mandala-hotel", "Tradition Blends With Culture", "Mandala Hotel", "2023", "Prints, Illustration", "assets/img/7.jpg"],
-        ["lubylab-2", "Booth Design", "Lubylab", "2026", "3D, B2B Communicate", "assets/img/8.jpg"],
-        ["chromatic", "Color Changing Wear", "Chromatic", "2024", "Logo, Mockup", "assets/img/9.jpg"],
-        ["leger-boo", "Eco-Friendly To Trendy Clothing", "Leger-Boo", "2024", "Social, Logo", "assets/img/10.jpg"],
-        ["biolotus", "Bio-Tech Pioneer", "Biolotus", "2025", "Branding", "assets/img/11.jpg"],
-        ["dionysus", "Drawing", "Dionysus", "2023", "Stage Design, Social", "assets/img/12.jpg"],
+        ["lubylab-1", "Korean Skincare Brand", "Lubylab", "2026", "Branding, Social, UI UX", "assets/img/1.jpg"],
+        ["campari-competition", "Born In Red Shortfilm", "Campari Competition", "2025", "Story-telling, Photography", "assets/img/2.jpg"],
+        ["fae-beauty", "Wellness Spa", "Fae Beauty", "2025", "Branding, Social", "assets/img/3.jpg"],
+        ["new-year-2025", "Year Of Snake - Lucky Money", "New Year 2025", "2025", "Packaging, Merchandise", "assets/img/4.jpg"],
+        ["celavie", "Formulation For Family Care", "Celavie", "2024", "Branding, Packaging", "assets/img/5.jpg"],
+        ["merit-christmas", "Xmas Merchandise", "Merit Christmas", "2024", "Illustration, Merch", "assets/img/6.jpg"],
+        ["mandala-hotel", "Serenity In Every Stay", "Mandala Hotel", "2023", "Prints, Illustration", "assets/img/7.jpg"],
+        ["lubylab-2", "Thailand Skincare Exhibition", "Lubylab", "2026", "3D, B2B Communicate", "assets/img/8.jpg"],
+        ["chromatic", "Color Changing Clothing", "Chromatic", "2024", "Logo, Mockup", "assets/img/9.jpg"],
+        ["leger-boo", "Eco-Friendly Wear", "Leger-Boo", "2024", "Social, Logo", "assets/img/10.jpg"],
+        ["biolotus", "Environment Solution Pioneer", "Biolotus", "2025", "Branding", "assets/img/11.jpg"],
+        ["dionysus", "Post-Apocalypse Theatre Experience", "Dionysus", "2023", "Stage Design, Social", "assets/img/12.jpg"],
         ["poster-design", "Fine Prints", "Poster Design", "2024", "Art, Photograph", "assets/img/13.jpg"],
-        ["lubylab-3", "Packaging", "Lubylab", "2026", "Product Design", "assets/img/14.jpg"],
+        ["lubylab-3", "Product Packaging", "Lubylab", "2026", "Product Design", "assets/img/14.jpg"],
         ["tedxbuv", "Biopic Website", "TEDxBUV", "2023", "Website, UI, Social", "assets/img/15.jpg"],
-        ["photograph-1", "Concept", "Photograph", "2025", "Photography", "assets/img/16.jpg"],
+        ["photograph-1", "Concept Photobook", "Photograph", "2025", "Photography", "assets/img/16.jpg"],
         ["thanh-lam", "Personal Branding", "Thanh Lam", "2024", "Identity", "assets/img/17.jpg"],
         ["photograph-2", "Couple Photobook", "Photograph", "2026", "Photography", "assets/img/18.jpg"]
       ];
@@ -103,7 +110,7 @@
       page.setAttribute("data-project-slug", project[0]);
       page.innerHTML =
         '<section class="project-intro">' +
-          '<div class="project-eyebrow mono"><a class="project-back" href="index.html" data-cursor>BACK TO PORTFOLIO</a></div>' +
+          '<div class="project-eyebrow mono"><a class="project-back" href="/" data-cursor>BACK TO PORTFOLIO</a></div>' +
           '<div class="project-meta">' +
             '<div class="project-meta__item"><span class="project-meta__label mono">PROJECT NAME</span><span class="project-meta__value">' + project[1] + '</span></div>' +
             '<div class="project-meta__item"><span class="project-meta__label mono">ORIGIN</span><span class="project-meta__value">' + project[2] + '</span></div>' +

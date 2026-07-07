@@ -135,6 +135,17 @@
   var PROJECTS = window.PROJECTS || [];
   var CATEGORIES = window.CATEGORIES || ["ALL"];
 
+  /* the work page opens focused on Marketing Case Study instead of the full
+     list; falls back to ALL if that category is ever dropped from the data */
+  var DEFAULT_FILTER = CATEGORIES.indexOf("MARKETING CASE STUDY") >= 0 ? "MARKETING CASE STUDY" : "ALL";
+  /* the work wheel skips projects flagged archiveOnly — they live only in the
+     full archive table; the archive itself still lists every project */
+  function projectsForFilter(cat) {
+    return PROJECTS.filter(function (p) {
+      return !p.archiveOnly && (cat === "ALL" || p.category === cat);
+    });
+  }
+
   gsap.registerPlugin(ScrollTrigger);
 
   /* ============================================================
@@ -282,7 +293,7 @@
      [filter rail] [name] [origin] [scope] · loops when showing ALL
      ============================================================ */
   var wheel = {
-    items: PROJECTS.slice(),
+    items: projectsForFilter(DEFAULT_FILTER),
     els: [],
     rows: [],
     imgs: {},
@@ -293,7 +304,7 @@
     hover: null,
     pointer: { x: 0, y: 0, inStage: false },
     itemH: 48,
-    filter: "ALL",
+    filter: DEFAULT_FILTER,
     loop: false,
     transitioning: false
   };
@@ -325,7 +336,7 @@
   }
 
   function projectUrl(p) {
-    return projectSlug(p) + ".html";
+    return "/" + projectSlug(p);
   }
 
   function findProjectBySlug(slug) {
@@ -690,10 +701,7 @@
   function buildFilters() {
     workFilters.innerHTML = "";
     CATEGORIES.forEach(function (cat) {
-      var count =
-        cat === "ALL"
-          ? PROJECTS.length
-          : PROJECTS.filter(function (p) { return p.category === cat; }).length;
+      var count = projectsForFilter(cat).length;
       var btn = document.createElement("button");
       btn.className = "work__filter mono" + (cat === wheel.filter ? " is-active" : "");
       btn.type = "button";
@@ -721,10 +729,7 @@
       b.setAttribute("aria-pressed", on ? "true" : "false");
     });
 
-    var newItems =
-      cat === "ALL"
-        ? PROJECTS.slice()
-        : PROJECTS.filter(function (p) { return p.category === cat; });
+    var newItems = projectsForFilter(cat);
 
     /* current group drifts down + fades out, new group rises in from below */
     var oldRows = wheel.rows.slice();
@@ -828,13 +833,23 @@
     if (!p) p = PROJECTS[0];
     if (!p) return;
 
-    var idx = PROJECTS.indexOf(p);
-    var next = PROJECTS[(idx + 1) % PROJECTS.length];
+    /* the outro shows the next two projects, drawn from the selected-work
+       pool so archiveOnly projects are never surfaced as "next" */
+    var nextPool = PROJECTS.filter(function (q) { return !q.archiveOnly; });
+    if (nextPool.length < 2) nextPool = PROJECTS.slice();
+    var pn = nextPool.length;
+    var poolIdx = nextPool.indexOf(p);
+    var nextTwo = [
+      nextPool[(poolIdx + 1 + pn) % pn],
+      nextPool[(poolIdx + 2 + pn) % pn]
+    ];
 
     document.body.classList.add("project-page");
 
     if (PARAMS.get("p") && history.replaceState) {
-      history.replaceState(null, "", projectUrl(p));
+      /* file:// preview can't rewrite the path (SecurityError) — ignore it
+         so the rest of the page still builds */
+      try { history.replaceState(null, "", projectUrl(p)); } catch (e) {}
     }
 
     document.title = p.title + " - " + p.origin + " - Thanh Lam";
@@ -851,7 +866,7 @@
     var intro = makeEl("section", "project-intro");
     var eyebrow = makeEl("div", "project-eyebrow mono");
     var back = makeEl("a", "project-back", "BACK TO PORTFOLIO");
-    back.href = "index.html";
+    back.href = "/";
     back.setAttribute("data-cursor", "");
     eyebrow.appendChild(back);
     intro.appendChild(eyebrow);
@@ -906,13 +921,27 @@
     page.appendChild(buildTextBlock(notes[2].title, notes[2].body, "project-copy project-copy--center project-reveal"));
 
     var outro = makeEl("nav", "project-next project-reveal");
-    var nextLink = makeEl("a", "project-next__link", "");
-    nextLink.href = projectUrl(next);
-    nextLink.setAttribute("data-cursor", "");
-    nextLink.appendChild(makeEl("span", "project-next__label mono", "NEXT PROJECT"));
-    nextLink.appendChild(makeEl("span", "project-next__title", next.title));
-    nextLink.appendChild(makeEl("span", "project-next__meta mono", next.origin + " / " + (next.date || next.year)));
-    outro.appendChild(nextLink);
+    outro.setAttribute("aria-label", "More projects");
+    outro.appendChild(makeEl("span", "project-next__eyebrow mono", "MORE PROJECTS"));
+    var nextGrid = makeEl("div", "project-next__grid");
+    nextTwo.forEach(function (np) {
+      var card = makeEl("a", "project-next__card");
+      card.href = projectUrl(np);
+      card.setAttribute("data-cursor", "");
+      card.setAttribute("aria-label", np.title + ", " + np.origin + ", " + (np.date || np.year));
+
+      var media = makeEl("div", "project-next__media");
+      media.appendChild(makeProjectImage(np, "", "", "center center"));
+      card.appendChild(media);
+      card.appendChild(makeEl("div", "project-next__shade"));
+
+      card.appendChild(makeEl("span", "project-next__name", np.title));
+      card.appendChild(makeEl("span", "project-next__year mono", String(np.date || np.year)));
+      card.appendChild(makeEl("span", "project-next__code mono", "BN " + pad2(np.num)));
+      card.appendChild(makeEl("span", "project-next__cat mono", np.category));
+      nextGrid.appendChild(card);
+    });
+    outro.appendChild(nextGrid);
     page.appendChild(outro);
   }
 
@@ -1358,33 +1387,26 @@
         drift(media);
       });
 
-      /* ---- next-project bar: masked title on approach ---- */
-      var nextTitle = document.querySelector(".project-next__title");
-      if (nextTitle) {
-        var nChars = splitChars(nextTitle);
-        gsap.set(nChars, { yPercent: 130 });
-        ScrollTrigger.create({
-          trigger: ".project-next",
-          start: "top 85%",
-          once: true,
-          onEnter: function () {
-            gsap.to(nChars, {
-              yPercent: 0,
-              duration: RM ? 0.01 : 0.9,
-              stagger: RM ? 0 : 0.03,
-              ease: "power4.out"
-            });
-          }
-        });
-      }
+      /* ---- next-projects gallery: eyebrow + two cards rise and fade in ---- */
       gsap.fromTo(
-        ".project-next__label, .project-next__meta",
+        ".project-next__eyebrow",
         { opacity: 0 },
         {
           opacity: 1,
-          duration: RM ? 0.01 : 0.8,
+          duration: RM ? 0.01 : 0.7,
           ease: "power2.out",
-          delay: RM ? 0 : 0.25,
+          scrollTrigger: { trigger: ".project-next", start: "top 85%", once: true }
+        }
+      );
+      gsap.fromTo(
+        ".project-next__card",
+        { opacity: 0, y: 48 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: RM ? 0.01 : 0.9,
+          stagger: RM ? 0 : 0.12,
+          ease: "power3.out",
           scrollTrigger: { trigger: ".project-next", start: "top 85%", once: true }
         }
       );
@@ -1472,8 +1494,8 @@
     return ptLogoLoop;
   }
 
-  /* project rows link to slug.html stubs that bounce through a redirect;
-     transitions go straight to project.html?p=slug instead (the project
+  /* project rows link to /slug stubs that bounce through a redirect;
+     transitions go straight to /project?p=slug instead (the project
      page rewrites the pretty URL back via history.replaceState) */
   function ptResolveUrl(href) {
     try {
@@ -1482,11 +1504,11 @@
       var file = url.pathname.split("/").pop() || "";
       var slug = file.replace(/\.html$/i, "");
       if (
-        /\.html$/i.test(file) &&
+        slug &&
         ["index", "archive", "about", "project"].indexOf(slug) < 0 &&
         findProjectBySlug(slug)
       ) {
-        url.pathname = url.pathname.replace(/[^\/]*$/, "project.html");
+        url.pathname = url.pathname.replace(/[^\/]*$/, "project");
         url.search = "?p=" + slug;
         url.hash = "";
         return url.href;
@@ -1797,7 +1819,7 @@
       });
     }
 
-    /* debug: trigger a filter switch (?debug=1&filter=PRODUCT) */
+    /* debug: trigger a filter switch (?debug=1&filter=CREATIVE WORK) */
     if (DEBUG && PARAMS.get("filter") && hasWheel) {
       window.addEventListener("load", function () {
         setTimeout(function () {

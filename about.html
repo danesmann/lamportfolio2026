@@ -17,11 +17,18 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
   <script>
-    /* page transition: cover before first paint when arriving via an internal link */
+    /* cover before first paint when arriving via an internal link — and,
+       on a visitor's very first arrival, play that same curtain + logo
+       loader once as a preloader (persisted per browser in localStorage) */
     try {
       var __pt = +sessionStorage.getItem("pt") || 0;
       if (__pt) sessionStorage.removeItem("pt");
-      if (__pt && Date.now() - __pt < 15000) {
+      var __cover = !!(__pt && Date.now() - __pt < 15000);
+      if (!__cover && !localStorage.getItem("tl-visited")) {
+        localStorage.setItem("tl-visited", String(Date.now()));
+        __cover = true;
+      }
+      if (__cover) {
         document.documentElement.classList.add("pt-cover");
         window.__ptCoverAt = Date.now();
       }
@@ -46,7 +53,7 @@
 
   <!-- ============ NAV ============ -->
   <header class="nav" id="nav">
-    <a class="nav__logo" href="index.html" aria-label="Thanh Lam — home" data-cursor>
+    <a class="nav__logo" href="/" aria-label="Thanh Lam — home" data-cursor>
       <img class="nav__logo-img" src="assets/logo.svg" alt="" />
     </a>
     <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="menuPanel" data-cursor>
@@ -59,12 +66,12 @@
   <div class="menu-panel" id="menuPanel" aria-hidden="true">
     <p class="menu-panel__tag mono">NAVIGATION</p>
     <nav class="menu-panel__links" aria-label="Site">
-      <a class="menu-panel__link" href="index.html"><sup class="mono">01</sup>WORK</a>
-      <a class="menu-panel__link" href="archive.html"><sup class="mono">02</sup>ARCHIVE</a>
+      <a class="menu-panel__link" href="/"><sup class="mono">01</sup>Selected Work</a>
+      <a class="menu-panel__link" href="/archive"><sup class="mono">02</sup>ARCHIVE</a>
       <a class="menu-panel__link" href="#top"><sup class="mono">03</sup>ABOUT</a>
     </nav>
     <div class="menu-panel__foot mono">
-      <a href="mailto:mkt.lubylab@gmail.com">MKT.LUBYLAB@GMAIL.COM</a>
+      <a href="mailto:thanhlamforwork2807@gmail.com">THANHLAMFORWORK2807@GMAIL.COM</a>
       <span>© 2026 THANH LAM</span>
     </div>
   </div>
@@ -290,13 +297,13 @@
         <span class="section-head__label mono">OPEN FOR PROJECTS</span>
       </div>
 
-      <a class="contact__cta" href="mailto:mkt.lubylab@gmail.com" aria-label="Let's work together — email Thanh Lam" data-cursor>
+      <a class="contact__cta" href="mailto:thanhlamforwork2807@gmail.com" aria-label="Let's work together — email Thanh Lam" data-cursor>
         <span class="contact__line" data-split>LET'S WORK</span>
         <span class="contact__line contact__line--accent" data-split>TOGETHER&nbsp;↗</span>
       </a>
 
       <div class="contact__row">
-        <a class="contact__email mono" href="mailto:mkt.lubylab@gmail.com" data-cursor>MKT.LUBYLAB@GMAIL.COM</a>
+        <a class="contact__email mono" href="mailto:thanhlamforwork2807@gmail.com" data-cursor>THANHLAMFORWORK2807@GMAIL.COM</a>
         <nav class="contact__socials mono" aria-label="Social links">
           <a href="#" data-cursor>BEHANCE&nbsp;↗</a>
           <a href="#" data-cursor>INSTAGRAM&nbsp;↗</a>
@@ -314,7 +321,7 @@
 
       <div class="contact__bottom mono">
         <span>© 2026 THANH LAM — ALL RIGHTS RESERVED</span>
-        <a href="index.html" data-cursor>BACK TO WORK ↗</a>
+        <a href="/" data-cursor>BACK TO WORK ↗</a>
         <a href="#top" id="backToTop" data-cursor>BACK TO TOP ↑</a>
       </div>
     </footer>

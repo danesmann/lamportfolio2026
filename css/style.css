@@ -160,11 +160,11 @@ body.menu-open .menu-btn { background: #0a0a0a; color: #fff; }
   top: 12px;
   right: 12px;
   z-index: 150;
-  width: min(430px, calc(100vw - 24px));
+  width: min(600px, calc(100vw - 24px));
   background: #fff;
   color: #0a0a0a;
-  border-radius: 28px;
-  padding: 96px 36px 28px;
+  border-radius: 32px;
+  padding: 112px 44px 40px;
   transform-origin: top right;
   visibility: hidden;
   box-shadow: 0 30px 90px rgba(0, 0, 0, 0.5);
@@ -173,7 +173,7 @@ body.menu-open .menu-btn { background: #0a0a0a; color: #fff; }
   color: rgba(10, 10, 10, 0.45);
   margin-bottom: 12px;
 }
-.menu-panel__links { display: flex; flex-direction: column; gap: 6px; }
+.menu-panel__links { display: flex; flex-direction: column; gap: 10px; }
 .menu-panel__link {
   display: flex;
   align-items: baseline;
@@ -504,8 +504,7 @@ body.menu-open .menu-btn { background: #0a0a0a; color: #fff; }
   padding-bottom: 0.14em;
   margin-bottom: -0.14em;
 }
-.project-title .char,
-.project-next__title .char { display: inline-block; will-change: transform; }
+.project-title .char { display: inline-block; will-change: transform; }
 .project-hero {
   height: 560px;
   width: 100%;
@@ -586,26 +585,71 @@ body.menu-open .menu-btn { background: #0a0a0a; color: #fff; }
   border-top: 1px solid rgba(32, 32, 29, 0.14);
   background: #f2efe9;
   color: #20201d;
+  padding: clamp(24px, 5vh, 60px) var(--pad) clamp(32px, 6vh, 72px);
 }
-.project-next__link {
+.project-next__eyebrow {
+  display: block;
+  color: rgba(32, 32, 29, 0.5);
+  margin-bottom: clamp(14px, 2.4vh, 26px);
+}
+.project-next__grid {
   display: grid;
-  grid-template-columns: minmax(100px, 0.4fr) 1fr minmax(140px, 0.4fr);
-  align-items: center;
-  gap: var(--pad);
-  padding: clamp(28px, 5vh, 70px) var(--pad);
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(10px, 1.4vw, 20px);
 }
-.project-next__label,
-.project-next__meta { color: rgba(32, 32, 29, 0.5); }
-.project-next__title {
-  font-size: clamp(34px, 5vw, 88px);
-  font-weight: 600;
-  line-height: 0.98;
-  letter-spacing: -0.02em;
+/* each card is a fixed-ratio image box with corner labels + hover zoom */
+.project-next__card {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 10;
   overflow: hidden;
-  padding-bottom: 0.14em;
-  margin-bottom: -0.14em;
+  border-radius: 4px;
+  background: #14141a;
+  color: #fff;
 }
-.project-next__link:hover .project-next__title { color: var(--accent); }
+.project-next__media { position: absolute; inset: 0; }
+.project-next__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform: scale(1.03);
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+.project-next__card:hover .project-next__media img { transform: scale(1.1); }
+.project-next__shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(10, 10, 12, 0.5) 0%, rgba(10, 10, 12, 0.12) 38%, rgba(10, 10, 12, 0.55) 100%);
+  transition: opacity 0.5s ease;
+}
+.project-next__card:hover .project-next__shade { opacity: 0.78; }
+.project-next__name,
+.project-next__year,
+.project-next__code,
+.project-next__cat { position: absolute; z-index: 1; }
+.project-next__name {
+  top: clamp(14px, 1.8vw, 24px);
+  left: clamp(14px, 1.8vw, 24px);
+  right: 28%;
+  font-size: clamp(15px, 1.5vw, 24px);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+.project-next__year { top: clamp(14px, 1.8vw, 24px); right: clamp(14px, 1.8vw, 24px); }
+.project-next__code { bottom: clamp(14px, 1.8vw, 24px); left: clamp(14px, 1.8vw, 24px); }
+.project-next__cat {
+  bottom: clamp(14px, 1.8vw, 24px);
+  right: clamp(14px, 1.8vw, 24px);
+  max-width: 55%;
+  text-align: right;
+}
+.project-next__year,
+.project-next__code,
+.project-next__cat { color: rgba(255, 255, 255, 0.86); }
 @media (max-width: 767px) {
   .project-intro {
     min-height: 470px;
@@ -633,7 +677,7 @@ body.menu-open .menu-btn { background: #0a0a0a; color: #fff; }
   .project-split,
   .project-split--reverse,
   .project-duo,
-  .project-next__link {
+  .project-next__grid {
     grid-template-columns: 1fr;
   }
   .project-panel { min-height: auto; }
