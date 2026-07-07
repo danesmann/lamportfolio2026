@@ -26,7 +26,7 @@ window.PROJECTS = [
     slug: "campari-competition",
     tags: ["Story-telling", "Photography"],
     year: 2025,
-    img: "assets/img/2.jpg"
+    img: "assets/img/campari-competition/03.webp"
   },
   {
     num: 3,
@@ -38,7 +38,7 @@ window.PROJECTS = [
     slug: "fae-beauty",
     tags: ["Branding", "Social"],
     year: 2025,
-    img: "assets/img/3.jpg"
+    img: "assets/img/fae-beauty/02.webp"
   },
   {
     num: 4,
@@ -50,7 +50,7 @@ window.PROJECTS = [
     slug: "new-year-2025",
     tags: ["Packaging", "Merchandise"],
     year: 2025,
-    img: "assets/img/4.jpg"
+    img: "assets/img/new-year-2025/03.webp"
   },
   {
     num: 5,
@@ -62,7 +62,7 @@ window.PROJECTS = [
     slug: "celavie",
     tags: ["Branding", "Packaging"],
     year: 2024,
-    img: "assets/img/5.jpg"
+    img: "assets/img/celavie/03.webp"
   },
   {
     num: 6,
@@ -74,7 +74,7 @@ window.PROJECTS = [
     slug: "merit-christmas",
     tags: ["Illustration", "Merch"],
     year: 2024,
-    img: "assets/img/6.jpg"
+    img: "assets/img/merit-christmas/05.webp"
   },
   {
     num: 7,
@@ -98,7 +98,7 @@ window.PROJECTS = [
     slug: "lubylab-2",
     tags: ["3D", "B2B Communicate"],
     year: 2026,
-    img: "assets/img/8.jpg"
+    img: "assets/img/lubylab-2/09.webp"
   },
   {
     num: 9,
@@ -135,7 +135,7 @@ window.PROJECTS = [
     slug: "biolotus",
     tags: ["Branding"],
     year: 2025,
-    img: "assets/img/11.jpg"
+    img: "assets/img/biolotus/08.webp"
   },
   {
     num: 12,
@@ -197,7 +197,7 @@ window.PROJECTS = [
     slug: "photograph-1",
     tags: ["Photography"],
     year: 2025,
-    img: "assets/img/16.jpg"
+    img: "assets/img/photograph-1/03.webp"
   },
   {
     num: 17,
@@ -222,7 +222,7 @@ window.PROJECTS = [
     slug: "photograph-2",
     tags: ["Photography"],
     year: 2026,
-    img: "assets/img/18.jpg"
+    img: "assets/img/photograph-2/01.webp"
   }
 ];
 

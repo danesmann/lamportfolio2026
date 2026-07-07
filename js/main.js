@@ -825,65 +825,135 @@
     return section;
   }
 
-  function buildProjectDetail() {
-    var page = document.getElementById("projectPage");
-    if (!page) return;
+  /* ============================================================
+     FREESTYLE CASE-STUDY RENDERER
+     For projects with real content (window.PROJECT_CONTENT), text
+     boxes and image bands ALWAYS alternate (chữ và ảnh xen kẽ).
+     Image bands adapt to each photo's own orientation so nothing
+     is force-cropped; landscapes go full-width, portraits/squares
+     pair into duos or sit contained.
+     ============================================================ */
+  function pfOrient(im) {
+    var r = (im.w || 1) / (im.h || 1);
+    return r >= 1.15 ? "L" : (r <= 0.9 ? "P" : "S");
+  }
 
-    var p = findProjectBySlug(currentProjectSlug());
-    if (!p) p = PROJECTS[0];
-    if (!p) return;
+  function pfImage(im, alt) {
+    var img = document.createElement("img");
+    img.src = im.src;
+    img.alt = alt || "";
+    img.loading = "lazy";
+    img.decoding = "async";
+    if (im.w) img.width = im.w;
+    if (im.h) img.height = im.h;
+    return img;
+  }
 
-    /* the outro shows the next two projects, drawn from the selected-work
-       pool so archiveOnly projects are never surfaced as "next" */
-    var nextPool = PROJECTS.filter(function (q) { return !q.archiveOnly; });
-    if (nextPool.length < 2) nextPool = PROJECTS.slice();
-    var pn = nextPool.length;
-    var poolIdx = nextPool.indexOf(p);
-    var nextTwo = [
-      nextPool[(poolIdx + 1 + pn) % pn],
-      nextPool[(poolIdx + 2 + pn) % pn]
-    ];
+  function pfTextBox(box, secNum) {
+    var variant = box.variant || "body";
+    if (variant === "note") {
+      var note = makeEl("p", "pf-note mono");
+      note.textContent = box.body || "";
+      return note;
+    }
+    var side = variant === "section" ? (secNum % 2 ? " is-right" : " is-left") : "";
+    var sec = makeEl("section", "pf-text pf-text--" + variant + side);
+    if (variant === "lead" && box.tagline) {
+      sec.appendChild(makeEl("p", "pf-tagline", box.tagline));
+    }
+    if (variant === "section" && box.heading) {
+      sec.appendChild(makeEl("span", "pf-eyebrow mono", pad2(secNum)));
+      sec.appendChild(makeEl("h2", "pf-heading", box.heading));
+    }
+    if (box.body) {
+      var bodyWrap = makeEl("div", "pf-body");
+      String(box.body).split(/\n{2,}|\n/).forEach(function (par) {
+        par = par.trim();
+        if (par) bodyWrap.appendChild(makeEl("p", null, par));
+      });
+      sec.appendChild(bodyWrap);
+    }
+    if (box.bullets && box.bullets.length) {
+      var ul = makeEl("ul", "pf-bullets");
+      box.bullets.forEach(function (b) { ul.appendChild(makeEl("li", null, b)); });
+      sec.appendChild(ul);
+    }
+    return sec;
+  }
 
-    document.body.classList.add("project-page");
+  function buildFreestyleContent(page, content, p) {
+    var imgs = content.images.map(function (im) {
+      return { src: im.src, w: im.w, h: im.h, o: pfOrient(im) };
+    });
+    var texts = (content.text || []).slice();
 
-    if (PARAMS.get("p") && history.replaceState) {
-      /* file:// preview can't rewrite the path (SecurityError) — ignore it
-         so the rest of the page still builds */
-      try { history.replaceState(null, "", projectUrl(p)); } catch (e) {}
+    /* group images into rows: first image is the hero; then pair adjacent
+       non-landscape shots into duos, landscapes stand alone full-width */
+    var rows = [];
+    if (imgs.length) rows.push({ kind: "hero", imgs: [imgs[0]] });
+    var i = 1;
+    while (i < imgs.length) {
+      var a = imgs[i], b = imgs[i + 1];
+      if (b && a.o !== "L" && b.o !== "L") { rows.push({ kind: "duo", imgs: [a, b] }); i += 2; }
+      else { rows.push({ kind: "single", imgs: [a] }); i += 1; }
     }
 
-    document.title = p.title + " - " + p.origin + " - Thanh Lam";
-    var metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) metaDescription.setAttribute("content", projectLead(p));
-    var ogTitle = document.querySelector('meta[property="og:title"]');
-    if (ogTitle) ogTitle.setAttribute("content", p.title + " - " + p.origin);
-    var ogImage = document.querySelector('meta[property="og:image"]');
-    if (ogImage) ogImage.setAttribute("content", p.img);
+    /* weave: hero first, then each text box followed by a fair share of the
+       remaining image rows, so text and image bands always alternate and no
+       text box is ever adjacent to another (never a wall of either) */
+    var seq = [];
+    if (rows.length) seq.push({ t: "img", row: rows[0] });
+    var rest = rows.slice(1);
+    var T = texts.length, R = rest.length;
+    if (!T) {
+      rest.forEach(function (r) { seq.push({ t: "img", row: r }); });
+    } else {
+      var base = Math.floor(R / T), extra = R % T, ri = 0;
+      for (var ti = 0; ti < T; ti++) {
+        seq.push({ t: "text", box: texts[ti] });
+        var cnt = base + (ti < extra ? 1 : 0);
+        for (var k = 0; k < cnt; k++) { if (ri < R) seq.push({ t: "img", row: rest[ri++] }); }
+      }
+      while (ri < R) seq.push({ t: "img", row: rest[ri++] });
+    }
 
-    page.setAttribute("data-project-slug", projectSlug(p));
-    page.innerHTML = "";
+    var singleCycle = ["full", "offr", "full", "inset", "offl"];
+    var sCount = 0, secCount = 0;
+    seq.forEach(function (node) {
+      if (node.t === "text") {
+        if (node.box.variant === "section") secCount++;
+        page.appendChild(pfTextBox(node.box, secCount));
+        return;
+      }
+      var row = node.row;
+      if (row.kind === "hero") {
+        var h = makeEl("figure", "pf-hero project-reveal");
+        h.setAttribute("data-orient", row.imgs[0].o);
+        h.appendChild(pfImage(row.imgs[0], p.title + " — hero image"));
+        page.appendChild(h);
+      } else if (row.kind === "duo") {
+        var d = makeEl("div", "pf-duo project-reveal");
+        row.imgs.forEach(function (im) {
+          var fig = makeEl("figure", "pf-duo__item");
+          fig.appendChild(pfImage(im, p.title + " image"));
+          d.appendChild(fig);
+        });
+        page.appendChild(d);
+      } else {
+        var im0 = row.imgs[0];
+        var mode = im0.o === "L" ? singleCycle[sCount % singleCycle.length] : "inset";
+        sCount++;
+        var f = makeEl("figure", "pf-fig pf-fig--" + mode + " project-reveal");
+        f.setAttribute("data-orient", im0.o);
+        f.appendChild(pfImage(im0, p.title + " image"));
+        page.appendChild(f);
+      }
+    });
+  }
 
-    var intro = makeEl("section", "project-intro");
-    var eyebrow = makeEl("div", "project-eyebrow mono");
-    var back = makeEl("a", "project-back", "BACK TO PORTFOLIO");
-    back.href = "/";
-    back.setAttribute("data-cursor", "");
-    eyebrow.appendChild(back);
-    intro.appendChild(eyebrow);
-
-    var meta = makeEl("div", "project-meta");
-    appendMeta(meta, "PROJECT NAME", p.title);
-    appendMeta(meta, "ORIGIN", p.origin);
-    appendMeta(meta, "DATE", p.date || String(p.year));
-    appendMeta(meta, "SUB CATEGORY", p.subCategory || p.tags.join(", "));
-    intro.appendChild(meta);
-
-    var titleRow = makeEl("div", "project-title-row");
-    titleRow.appendChild(makeEl("span", "project-number mono", "BN " + pad2(p.num)));
-    titleRow.appendChild(makeEl("h1", "project-title", p.title));
-    intro.appendChild(titleRow);
-    page.appendChild(intro);
-
+  /* the original generic template — used for projects that don't yet have
+     real content in window.PROJECT_CONTENT (placeholder copy + one image) */
+  function buildGenericContent(page, p) {
     var hero = makeEl("figure", "project-hero project-reveal");
     hero.appendChild(makeProjectImage(p, "project-hero__img", p.title + " hero image", "center center"));
     page.appendChild(hero);
@@ -919,6 +989,78 @@
     page.appendChild(duo);
 
     page.appendChild(buildTextBlock(notes[2].title, notes[2].body, "project-copy project-copy--center project-reveal"));
+  }
+
+  function buildProjectDetail() {
+    var page = document.getElementById("projectPage");
+    if (!page) return;
+
+    var p = findProjectBySlug(currentProjectSlug());
+    if (!p) p = PROJECTS[0];
+    if (!p) return;
+
+    /* real per-project case study (images + text) if it has been authored */
+    var content = window.PROJECT_CONTENT && window.PROJECT_CONTENT[projectSlug(p)];
+    var hasContent = !!(content && content.images && content.images.length);
+
+    /* the outro shows the next two projects, drawn from the selected-work
+       pool so archiveOnly projects are never surfaced as "next" */
+    var nextPool = PROJECTS.filter(function (q) { return !q.archiveOnly; });
+    if (nextPool.length < 2) nextPool = PROJECTS.slice();
+    var pn = nextPool.length;
+    var poolIdx = nextPool.indexOf(p);
+    var nextTwo = [
+      nextPool[(poolIdx + 1 + pn) % pn],
+      nextPool[(poolIdx + 2 + pn) % pn]
+    ];
+
+    document.body.classList.add("project-page");
+
+    if (PARAMS.get("p") && history.replaceState) {
+      /* file:// preview can't rewrite the path (SecurityError) — ignore it
+         so the rest of the page still builds */
+      try { history.replaceState(null, "", projectUrl(p)); } catch (e) {}
+    }
+
+    document.title = p.title + " - " + p.origin + " - Thanh Lam";
+    var metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) metaDescription.setAttribute("content", projectLead(p));
+    var ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) ogTitle.setAttribute("content", p.title + " - " + p.origin);
+    var ogImage = document.querySelector('meta[property="og:image"]');
+    if (ogImage) ogImage.setAttribute("content", (hasContent && content.images[0].src) || p.img);
+
+    page.setAttribute("data-project-slug", projectSlug(p));
+    page.innerHTML = "";
+
+    var intro = makeEl("section", "project-intro");
+    var eyebrow = makeEl("div", "project-eyebrow mono");
+    var back = makeEl("a", "project-back", "BACK TO PORTFOLIO");
+    back.href = "/";
+    back.setAttribute("data-cursor", "");
+    eyebrow.appendChild(back);
+    intro.appendChild(eyebrow);
+
+    var meta = makeEl("div", "project-meta");
+    appendMeta(meta, "PROJECT NAME", p.title);
+    appendMeta(meta, "ORIGIN", p.origin);
+    appendMeta(meta, "DATE", p.date || String(p.year));
+    appendMeta(meta, "SUB CATEGORY", p.subCategory || p.tags.join(", "));
+    intro.appendChild(meta);
+
+    var titleRow = makeEl("div", "project-title-row");
+    titleRow.appendChild(makeEl("span", "project-number mono", "BN " + pad2(p.num)));
+    titleRow.appendChild(makeEl("h1", "project-title", p.title));
+    intro.appendChild(titleRow);
+    page.appendChild(intro);
+
+    /* the middle of the page: a real woven case study, or the generic
+       placeholder template for projects without authored content yet */
+    if (hasContent) {
+      buildFreestyleContent(page, content, p);
+    } else {
+      buildGenericContent(page, p);
+    }
 
     var outro = makeEl("nav", "project-next project-reveal");
     outro.setAttribute("aria-label", "More projects");
@@ -1385,6 +1527,39 @@
           : "inset(0% 100% 0% 0%)";
         wipeIn(media, fromSide, 0);
         drift(media);
+      });
+
+      /* ---- freestyle case study: image bands clip-wipe in, text rises ---- */
+      gsap.utils.toArray(".pf-hero, .pf-fig, .pf-duo").forEach(function (fig) {
+        gsap.fromTo(
+          fig,
+          { clipPath: "inset(12% 0% 0% 0%)", webkitClipPath: "inset(12% 0% 0% 0%)", opacity: 0.35 },
+          {
+            clipPath: "inset(0% 0% 0% 0%)", webkitClipPath: "inset(0% 0% 0% 0%)", opacity: 1,
+            duration: RM ? 0.01 : 1.05, ease: "power3.out",
+            scrollTrigger: { trigger: fig, start: "top 90%", once: true }
+          }
+        );
+      });
+      gsap.utils.toArray(".pf-text").forEach(function (t) {
+        gsap.fromTo(
+          t.children,
+          { opacity: 0, y: 34 },
+          {
+            opacity: 1, y: 0, duration: RM ? 0.01 : 0.8, stagger: 0.08, ease: "power3.out",
+            scrollTrigger: { trigger: t, start: "top 84%", once: true }
+          }
+        );
+      });
+      gsap.utils.toArray(".pf-note").forEach(function (n) {
+        gsap.fromTo(
+          n,
+          { opacity: 0, y: 18 },
+          {
+            opacity: 1, y: 0, duration: RM ? 0.01 : 0.7, ease: "power2.out",
+            scrollTrigger: { trigger: n, start: "top 92%", once: true }
+          }
+        );
       });
 
       /* ---- next-projects gallery: eyebrow + two cards rise and fade in ---- */

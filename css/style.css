@@ -683,6 +683,109 @@ body.menu-open .menu-btn { background: #0a0a0a; color: #fff; }
   .project-panel { min-height: auto; }
 }
 
+/* ============================================================
+   FREESTYLE CASE-STUDY CONTENT
+   Text boxes and image bands alternate down a dark page; every
+   image keeps its own aspect ratio (no forced crops), landscapes
+   run full-width, portraits/squares pair into duos or sit inset.
+   ============================================================ */
+.pf-text {
+  padding: clamp(44px, 9vh, 116px) var(--pad);
+}
+.pf-body {
+  font-size: clamp(15px, 1.15vw, 18px);
+  line-height: 1.75;
+  color: var(--muted);
+}
+.pf-body p + p { margin-top: 1.1em; }
+
+.pf-text--lead { max-width: 1080px; margin: 0 auto; }
+.pf-tagline {
+  font-size: clamp(26px, 3.6vw, 52px);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin-bottom: clamp(20px, 3vh, 36px);
+  max-width: 18ch;
+}
+.pf-text--lead .pf-body {
+  font-size: clamp(16px, 1.35vw, 20px);
+  color: rgba(242, 239, 233, 0.78);
+  max-width: 60ch;
+}
+
+.pf-text--body { max-width: 760px; margin: 0 auto; }
+
+.pf-text--section { max-width: 700px; }
+.pf-text--section.is-right { margin-left: auto; }
+.pf-eyebrow { display: block; color: var(--accent); margin-bottom: 16px; }
+.pf-heading {
+  font-size: clamp(28px, 3.6vw, 54px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin-bottom: clamp(16px, 2.4vh, 28px);
+}
+.pf-bullets { list-style: none; margin-top: clamp(18px, 2.6vh, 30px); }
+.pf-bullets li {
+  position: relative;
+  padding-left: 1.6em;
+  margin-top: 0.8em;
+  font-size: clamp(14px, 1.05vw, 16.5px);
+  line-height: 1.55;
+  color: var(--muted);
+}
+.pf-bullets li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+.pf-note {
+  padding: clamp(24px, 4vh, 44px) var(--pad) clamp(48px, 8vh, 90px);
+  max-width: 940px;
+  margin: 0 auto;
+  text-align: center;
+  color: var(--faint);
+  line-height: 1.7;
+}
+
+.pf-hero { overflow: hidden; background: var(--bg-2); }
+.pf-hero img { display: block; width: 100%; height: auto; }
+.pf-hero[data-orient="P"] img,
+.pf-hero[data-orient="S"] img {
+  width: auto;
+  max-width: min(100%, 960px);
+  max-height: 92vh;
+  margin: 0 auto;
+}
+
+.pf-fig { margin: clamp(8px, 1.6vh, 22px) 0; overflow: hidden; }
+.pf-fig img { display: block; width: 100%; height: auto; }
+.pf-fig--inset { padding: 0 var(--pad); }
+.pf-fig--inset img { max-width: 1500px; margin: 0 auto; }
+.pf-fig--inset[data-orient="P"] img,
+.pf-fig--inset[data-orient="S"] img { max-width: min(100%, 760px); }
+.pf-fig--offr,
+.pf-fig--offl { padding: 0 var(--pad); }
+.pf-fig--offr img { width: min(74%, 1180px); margin-left: auto; }
+.pf-fig--offl img { width: min(74%, 1180px); margin-right: auto; }
+
+.pf-duo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(8px, 1vw, 18px);
+  padding: clamp(8px, 1.6vh, 22px) var(--pad);
+  align-items: start;
+}
+.pf-duo__item { overflow: hidden; }
+.pf-duo__item img { display: block; width: 100%; height: auto; }
+
+@media (max-width: 767px) {
+  .pf-fig--offr img,
+  .pf-fig--offl img { width: 100%; }
+  .pf-duo { grid-template-columns: 1fr; }
+  .pf-text--section,
+  .pf-tagline { max-width: none; }
+}
+
 /* ---------- archive ---------- */
 .archive { position: relative; padding-bottom: clamp(60px, 10vh, 140px); }
 .archive--page { padding-top: var(--nav-h); }
