@@ -155,7 +155,10 @@
     if (lenis) {
       lenis.scrollTo(y, {
         duration: opts.immediate ? 0 : opts.duration || 1.2,
-        immediate: !!opts.immediate
+        immediate: !!opts.immediate,
+        /* immediate jumps must land even while lenis is stopped
+           (page-transition enter runs with scroll locked) */
+        force: !!opts.immediate
       });
     } else {
       window.scrollTo({ top: y, behavior: opts.immediate ? "auto" : "smooth" });
@@ -402,7 +405,7 @@
       });
       btn.addEventListener("click", function () {
         btn.removeAttribute("data-pointer-focus");
-        location.href = projectUrl(p);
+        ptNavigate(projectUrl(p));
       });
       /* keyboard focus: keep the overflow:hidden stage from scrolling itself
          out of alignment, and bring the focused project to the center */
@@ -975,7 +978,7 @@
       /* click → jump to this project in the wheel (same page on index.html,
          cross-page via ?p= when the archive lives on its own page) */
       function go() {
-        location.href = projectUrl(p);
+        ptNavigate(projectUrl(p));
       }
       row.addEventListener("click", go);
       row.addEventListener("keydown", function (e) {
@@ -1389,6 +1392,257 @@
   }
 
   /* ============================================================
+     PAGE TRANSITIONS — double-slide curtain + logo stinger
+     leaving: an accent slide leads and the black slide (carrying
+     the logo) follows up from the bottom; the logo then plays a
+     cartoony squash-and-stretch loop while the next page loads.
+     entering: the new page starts covered (inline head script +
+     html.pt-cover paints it before first paint) and both slides
+     exit upward while the page itself rises from the bottom.
+     ============================================================ */
+  var PT_FLAG = "pt";
+  var ptRoot = null;
+  var ptAccent = null;
+  var ptBlack = null;
+  var ptLogo = null;
+  var ptLogoLoop = null;
+  var ptBusy = false;
+  var ptExitTl = null; /* exit timeline — killed on bfcache restore */
+  var ptWatchdog = null; /* frees the page if a pending navigation is canceled */
+  var ptEnterCancel = null; /* cancels a pending enter reveal on bfcache restore */
+
+  /* full reset back to "no transition running" — used when the visitor
+     cancels a pending navigation (watchdog) or returns via bfcache */
+  function ptReset() {
+    clearTimeout(ptWatchdog);
+    if (ptExitTl) { ptExitTl.kill(); ptExitTl = null; }
+    if (ptEnterCancel) { ptEnterCancel(); ptEnterCancel = null; }
+    if (ptLogoLoop) { ptLogoLoop.kill(); ptLogoLoop = null; }
+    if (ptRoot) {
+      gsap.killTweensOf([ptAccent, ptBlack, ptLogo]);
+      ptRoot.classList.remove("is-active");
+      gsap.set([ptAccent, ptBlack], { yPercent: 100 });
+    }
+    gsap.killTweensOf("main");
+    gsap.set("main", { clearProps: "all" });
+    ScrollTrigger.refresh();
+    document.documentElement.classList.remove("pt-cover");
+    document.body.style.paddingRight = "";
+    startScroll();
+    ptBusy = false;
+  }
+
+  function buildTransitionOverlay() {
+    if (ptRoot) return;
+    ptRoot = document.createElement("div");
+    ptRoot.className = "pt";
+    ptRoot.setAttribute("aria-hidden", "true");
+
+    ptAccent = document.createElement("div");
+    ptAccent.className = "pt__slide pt__slide--accent";
+
+    ptBlack = document.createElement("div");
+    ptBlack.className = "pt__slide pt__slide--black";
+
+    ptLogo = document.createElement("img");
+    ptLogo.className = "pt__logo";
+    ptLogo.src = "assets/logo.svg";
+    ptLogo.alt = "";
+
+    ptBlack.appendChild(ptLogo);
+    ptRoot.appendChild(ptAccent); /* accent first: black paints on top */
+    ptRoot.appendChild(ptBlack);
+    document.body.appendChild(ptRoot);
+    /* park both slides below the viewport — GSAP is the only owner of
+       their transform (see .pt__slide note in style.css) */
+    gsap.set([ptAccent, ptBlack], { yPercent: 100 });
+  }
+
+  /* exaggerated take on the nav logo hover (rotate −8° / scale 1.06):
+     anticipation squash → jump with stretch → landing squash →
+     elastic wobble back to rest. loops while the next page loads */
+  function ptLogoStinger() {
+    if (ptLogoLoop) ptLogoLoop.kill();
+    ptLogoLoop = gsap.timeline({ repeat: -1, repeatDelay: 0.35 });
+    ptLogoLoop
+      .to(ptLogo, { rotation: -16, scaleX: 1.2, scaleY: 0.78, y: 10, duration: 0.16, ease: "power2.in" })
+      .to(ptLogo, { rotation: 12, scaleX: 0.84, scaleY: 1.22, y: -30, duration: 0.26, ease: "back.out(1.8)" })
+      .to(ptLogo, { rotation: -7, scaleX: 1.24, scaleY: 0.76, y: 8, duration: 0.18, ease: "power3.in" })
+      .to(ptLogo, { rotation: 0, scaleX: 1, scaleY: 1, y: 0, duration: 0.7, ease: "elastic.out(1.3, 0.32)" });
+    return ptLogoLoop;
+  }
+
+  /* project rows link to slug.html stubs that bounce through a redirect;
+     transitions go straight to project.html?p=slug instead (the project
+     page rewrites the pretty URL back via history.replaceState) */
+  function ptResolveUrl(href) {
+    try {
+      var url = new URL(href, location.href);
+      if (url.origin !== location.origin) return href;
+      var file = url.pathname.split("/").pop() || "";
+      var slug = file.replace(/\.html$/i, "");
+      if (
+        /\.html$/i.test(file) &&
+        ["index", "archive", "about", "project"].indexOf(slug) < 0 &&
+        findProjectBySlug(slug)
+      ) {
+        url.pathname = url.pathname.replace(/[^\/]*$/, "project.html");
+        url.search = "?p=" + slug;
+        url.hash = "";
+        return url.href;
+      }
+    } catch (err) {}
+    return href;
+  }
+
+  function ptNavigate(href) {
+    if (ptBusy) return;
+    var url = ptResolveUrl(href);
+    if (RM || !HAS_GSAP) {
+      location.href = url;
+      return;
+    }
+    ptBusy = true;
+    /* pad where the scrollbar was so overflow:hidden doesn't reflow the
+       still-visible page (classic-scrollbar platforms) */
+    var sw = window.innerWidth - document.documentElement.clientWidth;
+    if (sw > 0) document.body.style.paddingRight = sw + "px";
+    stopScroll();
+    buildTransitionOverlay();
+    ptRoot.classList.add("is-active");
+    gsap.killTweensOf([ptAccent, ptBlack, ptLogo]);
+    if (ptLogoLoop) { ptLogoLoop.kill(); ptLogoLoop = null; }
+
+    var tl = gsap.timeline();
+    ptExitTl = tl; /* retained so bfcache restore can kill the pending nav */
+    /* double slide up: accent leads, black covers right behind it */
+    tl.fromTo(ptAccent, { yPercent: 100 }, { yPercent: 0, duration: 0.55, ease: "power4.inOut" }, 0);
+    tl.fromTo(ptBlack, { yPercent: 100 }, { yPercent: 0, duration: 0.55, ease: "power4.inOut" }, 0.09);
+    /* logo pops in, then the stinger loop takes over — y: 0 clears any
+       pose a previous enter reveal froze the stinger loop in */
+    tl.fromTo(
+      ptLogo,
+      { scale: 0.5, opacity: 0, rotation: 9, y: 0 },
+      { scale: 1, opacity: 1, rotation: 0, duration: 0.4, ease: "back.out(2.4)" },
+      0.42
+    );
+    tl.add(function () { ptLogoStinger(); }, 0.85);
+    /* navigate mid-stinger — the loop keeps playing until the browser
+       swaps documents, and the next page resumes it while loading */
+    tl.add(function () {
+      try { sessionStorage.setItem(PT_FLAG, String(Date.now())); } catch (err) {}
+      location.href = url;
+      /* if the visitor cancels the pending navigation (Esc / stop button
+         on a slow connection) the document never unloads and no event
+         fires — free the page instead of trapping it under the overlay */
+      clearTimeout(ptWatchdog);
+      ptWatchdog = setTimeout(ptReset, 8000);
+    }, 1.2);
+  }
+
+  /* entering page: overlay is already painted by html.pt-cover — swap in
+     the JS overlay, keep the stinger looping until the page is ready,
+     then slide both curtains up while the page rises from the bottom */
+  function ptEnter(settle) {
+    /* the enter hold is part of the transition — block ptNavigate (e.g.
+       a keyboard user tabbing to a link and hitting Enter while covered)
+       from starting a second, conflicting transition */
+    ptBusy = true;
+    stopScroll();
+    buildTransitionOverlay();
+    ptRoot.classList.add("is-active");
+    gsap.set([ptAccent, ptBlack], { yPercent: 0 });
+    gsap.set(ptLogo, { opacity: 1 });
+    /* the JS overlay now owns the cover — drop the CSS pre-paint layer */
+    document.documentElement.classList.remove("pt-cover");
+    ptLogoStinger();
+
+    /* measure while hidden so reveals, pins and the wheel lay out right */
+    settle();
+
+    var revealed = false;
+    /* lets ptReset (bfcache restore) void the pending reveal timers so a
+       restored, already-visible page doesn't replay the rise animation */
+    ptEnterCancel = function () { revealed = true; };
+    function reveal() {
+      if (revealed) return;
+      revealed = true;
+      ptEnterCancel = null;
+      var tl = gsap.timeline({
+        onComplete: function () {
+          ptRoot.classList.remove("is-active");
+          gsap.set([ptAccent, ptBlack], { yPercent: 100 });
+          if (ptLogoLoop) { ptLogoLoop.kill(); ptLogoLoop = null; }
+          /* untransform <main> before remeasuring — a transformed <main>
+             ancestor would break ScrollTrigger pinning */
+          gsap.set("main", { clearProps: "all" });
+          /* restore the scrollbar first so the final measurements see
+             the real (scrollbar-visible) layout */
+          startScroll();
+          ScrollTrigger.refresh();
+          ptBusy = false;
+        }
+      });
+      /* double slide out: black exits first, accent trails as a band */
+      tl.to(ptBlack, { yPercent: -100, duration: 0.6, ease: "power4.inOut" }, 0);
+      tl.to(ptAccent, { yPercent: -100, duration: 0.6, ease: "power4.inOut" }, 0.09);
+      /* the page itself slides up from the bottom as it is revealed */
+      tl.fromTo(
+        "main",
+        { y: 72, opacity: 0.25 },
+        { y: 0, opacity: 1, duration: 0.85, ease: "power3.out" },
+        0.1
+      );
+    }
+
+    /* reveal when the page is actually ready — a minimum hold lets the
+       stinger read, a cap keeps a slow asset from trapping the visitor */
+    var started = Date.now();
+    var MIN_HOLD = 900;
+    var MAX_HOLD = 2600;
+    function scheduleReveal() {
+      var wait = Math.max(MIN_HOLD - (Date.now() - started), 0);
+      setTimeout(reveal, wait);
+    }
+    if (document.readyState === "complete") {
+      scheduleReveal();
+    } else {
+      window.addEventListener("load", scheduleReveal);
+      setTimeout(reveal, MAX_HOLD);
+    }
+  }
+
+  function initTransitions() {
+    /* intercept plain left-clicks on internal page links */
+    document.addEventListener("click", function (e) {
+      if (e.defaultPrevented || e.button !== 0) return;
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      var a = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+      if (!a) return;
+      if ((a.getAttribute("target") || "_self") !== "_self") return;
+      if (a.hasAttribute("download")) return;
+      var href = a.getAttribute("href");
+      /* same-page anchors keep their smooth-scroll handler */
+      if (!href || href.charAt(0) === "#") return;
+      var url;
+      try { url = new URL(href, location.href); } catch (err) { return; }
+      /* external links + mailto: stay native */
+      if (url.origin !== location.origin) return;
+      if (url.pathname === location.pathname && url.search === location.search && url.hash) return;
+      e.preventDefault();
+      ptNavigate(url.href);
+    });
+
+    /* bfcache restore (browser back/forward): the page returns mid-cover —
+       reset everything, including the exit timeline's pending navigation
+       callback and any pending enter-reveal timers */
+    window.addEventListener("pageshow", function (e) {
+      if (!e.persisted) return;
+      ptReset();
+    });
+  }
+
+  /* ============================================================
      PRELOADER
      ============================================================ */
   function jumpToHash() {
@@ -1416,6 +1670,30 @@
   }
 
   function initPreloader() {
+    function settle() {
+      ScrollTrigger.refresh();
+      if (wheelExists()) measureWheel();
+
+      var pParam = PARAMS.get("p");
+      if (pParam) {
+        jumpToProject(parseInt(pParam, 10));
+      } else {
+        jumpToHash();
+      }
+    }
+
+    /* arrived through an internal transition — the page is covered by
+       html.pt-cover; hold it, then double-slide the curtains away.
+       skip if the 6s CSS failsafe already uncovered the page (scripts
+       arrived very late) — never re-cover content the visitor is reading */
+    var entering = document.documentElement.classList.contains("pt-cover");
+    var coverAge = window.__ptCoverAt ? Date.now() - window.__ptCoverAt : 0;
+    if (entering && HAS_GSAP && !RM && coverAge < 5500) {
+      ptEnter(settle);
+      return;
+    }
+    document.documentElement.classList.remove("pt-cover");
+
     startScroll();
     /* opacity-only: a transformed <main> ancestor would break ScrollTrigger
        pinning (services wall-fall on about.html) */
@@ -1424,15 +1702,7 @@
       { opacity: 0 },
       { opacity: 1, duration: RM ? 0.01 : 0.7, ease: "power3.out", clearProps: "all" }
     );
-    ScrollTrigger.refresh();
-    if (wheelExists()) measureWheel();
-
-    var pParam = PARAMS.get("p");
-    if (pParam) {
-      jumpToProject(parseInt(pParam, 10));
-    } else {
-      jumpToHash();
-    }
+    settle();
   }
 
   /* ============================================================
@@ -1455,6 +1725,7 @@
     if (document.getElementById("archiveTable")) buildArchive();
     buildMarquees();
     initNav();
+    initTransitions();
     initReveals();
 
     if (hasWheel) {

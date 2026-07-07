@@ -16,6 +16,17 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
+  <script>
+    /* page transition: cover before first paint when arriving via an internal link */
+    try {
+      var __pt = +sessionStorage.getItem("pt") || 0;
+      if (__pt) sessionStorage.removeItem("pt");
+      if (__pt && Date.now() - __pt < 15000) {
+        document.documentElement.classList.add("pt-cover");
+        window.__ptCoverAt = Date.now();
+      }
+    } catch (e) {}
+  </script>
 </head>
 <body>
 

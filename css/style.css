@@ -1081,6 +1081,62 @@ body.menu-open .menu-btn { background: #0a0a0a; color: #fff; }
   .svc-card__bottom > div:last-child { display: none; }
 }
 
+/* ============================================================
+   PAGE TRANSITION — double-slide curtain + logo stinger
+   accent slide leads, black slide (with the logo) follows;
+   on the next page both exit upward once it has loaded
+   ============================================================ */
+
+/* pre-paint cover: a tiny inline <head> script stamps .pt-cover on <html>
+   when the page is entered through an internal transition, so the incoming
+   page is black (with the logo) before the JS overlay takes over — no flash */
+html.pt-cover body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 190;
+  background: var(--bg) url("../assets/logo.svg") center / clamp(74px, 9vw, 118px) no-repeat;
+  /* failsafe: if main.js never runs, uncover the page instead of trapping it */
+  animation: pt-failsafe 0.5s ease 6s forwards;
+}
+@keyframes pt-failsafe {
+  to { opacity: 0; visibility: hidden; }
+}
+
+.pt {
+  position: fixed;
+  inset: 0;
+  /* over nav (160) + menu (150), under grain (200) + cursor (300)
+     so the site texture stays on top of the loader */
+  z-index: 190;
+  visibility: hidden;
+  pointer-events: none;
+}
+.pt.is-active { visibility: visible; pointer-events: all; }
+.pt__slide {
+  position: absolute;
+  /* 1px overscan hides sub-pixel seams at the edges while sliding */
+  inset: -1px 0;
+  /* no CSS transform here — GSAP owns it via yPercent; a CSS translateY
+     would land in GSAP's separate px channel and permanently offset the
+     slides. Off-screen idle state comes from gsap.set(yPercent: 100)
+     at overlay creation (the .pt root is also visibility: hidden) */
+  will-change: transform;
+}
+.pt__slide--accent { background: var(--accent); }
+.pt__slide--black {
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pt__logo {
+  width: clamp(74px, 9vw, 118px);
+  height: auto;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
 /* note: the OS reduced-motion signal is intentionally not honored —
    see the RM flag in js/main.js. ?rm=1 simulates the reduced experience
    and stamps .is-rm on <html> so CSS can join in. */
