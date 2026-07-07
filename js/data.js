@@ -14,7 +14,7 @@ window.PROJECTS = [
     slug: "lubylab-1",
     tags: ["Branding", "Social", "UI UX"],
     year: 2026,
-    img: "assets/img/1.jpg"
+    img: "assets/img/1.webp"
   },
   {
     num: 2,
@@ -86,7 +86,7 @@ window.PROJECTS = [
     slug: "mandala-hotel",
     tags: ["Prints", "Illustration"],
     year: 2023,
-    img: "assets/img/7.jpg"
+    img: "assets/img/7.webp"
   },
   {
     num: 8,
@@ -111,7 +111,7 @@ window.PROJECTS = [
     slug: "chromatic",
     tags: ["Logo", "Mockup"],
     year: 2024,
-    img: "assets/img/9.jpg"
+    img: "assets/img/9.webp"
   },
   {
     num: 10,
@@ -123,7 +123,7 @@ window.PROJECTS = [
     slug: "leger-boo",
     tags: ["Social", "Logo"],
     year: 2024,
-    img: "assets/img/10.jpg"
+    img: "assets/img/10.webp"
   },
   {
     num: 11,
@@ -148,7 +148,7 @@ window.PROJECTS = [
     slug: "dionysus",
     tags: ["Stage Design", "Social"],
     year: 2023,
-    img: "assets/img/12.jpg"
+    img: "assets/img/12.webp"
   },
   {
     num: 13,
@@ -161,7 +161,7 @@ window.PROJECTS = [
     slug: "poster-design",
     tags: ["Art", "Photograph"],
     year: 2024,
-    img: "assets/img/13.jpg"
+    img: "assets/img/13.webp"
   },
   {
     num: 14,
@@ -173,7 +173,7 @@ window.PROJECTS = [
     slug: "lubylab-3",
     tags: ["Product Design"],
     year: 2026,
-    img: "assets/img/14.jpg"
+    img: "assets/img/14.webp"
   },
   {
     num: 15,
@@ -185,7 +185,7 @@ window.PROJECTS = [
     slug: "tedxbuv",
     tags: ["Website", "UI", "Social"],
     year: 2023,
-    img: "assets/img/15.jpg"
+    img: "assets/img/15.webp"
   },
   {
     num: 16,
@@ -210,7 +210,7 @@ window.PROJECTS = [
     slug: "thanh-lam",
     tags: ["Identity"],
     year: 2024,
-    img: "assets/img/17.jpg"
+    img: "assets/img/17.webp"
   },
   {
     num: 18,
