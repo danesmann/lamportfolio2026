@@ -760,5 +760,43 @@ window.PROJECT_CONTENT = {
                                           "body":  "Role: Solo \u00b7 Couple photoshoot \u00b7 Deliverables: photo series / photobook"
                                       }
                                   ]
-                     }
+                     },
+    "dimsum-corner":  {
+                          "images":  [
+                                         { "src": "assets/img/dimsum-corner/01.webp", "w": 748, "h": 499 },
+                                         { "src": "assets/img/dimsum-corner/02.webp", "w": 130, "h": 100 },
+                                         { "src": "assets/img/dimsum-corner/03.webp", "w": 137, "h": 100 },
+                                         { "src": "assets/img/dimsum-corner/04.webp", "w": 129, "h": 100 },
+                                         { "src": "assets/img/dimsum-corner/05.webp", "w": 100, "h": 100 },
+                                         { "src": "assets/img/dimsum-corner/06.webp", "w": 241, "h": 438 },
+                                         { "src": "assets/img/dimsum-corner/07.webp", "w": 130, "h": 131 },
+                                         { "src": "assets/img/dimsum-corner/08.webp", "w": 131, "h": 131 },
+                                         { "src": "assets/img/dimsum-corner/09.webp", "w": 131, "h": 131 },
+                                         { "src": "assets/img/dimsum-corner/10.webp", "w": 272, "h": 382 },
+                                         { "src": "assets/img/dimsum-corner/11.webp", "w": 264, "h": 384 },
+                                         { "src": "assets/img/dimsum-corner/12.webp", "w": 206, "h": 554 },
+                                         { "src": "assets/img/dimsum-corner/13.webp", "w": 131, "h": 131 }
+                                     ],
+                          "text":  [
+                                       {
+                                           "variant":  "lead",
+                                           "tagline":  "A festive dim sum corner for Mandala Hotel, drawn in lucky red and gold.",
+                                           "body":  "Dimsum Corner is the Chinese dim sum restaurant on the ground floor of Mandala Hotel & Suites in Bac Giang. The brief was to give it a room of its own inside the hotel identity \u2014 louder, warmer and more playful than the parent brand, yet unmistakably part of it. The answer was a hand-illustrated world anchored by a single lucky-red placemat \u2014 tiger mascot, dumplings, folding fans and a Lunar New Year welcome \u2014 that then fans out into paddle table-signs, coasters and menu art."
+                                       },
+                                       {
+                                           "variant":  "section",
+                                           "heading":  "A World of Good Luck",
+                                           "body":  "Every element leans into festive Lunar iconography: a striped tiger for the year, gold coins and steaming baskets of bao, paper fans and chili peppers. The palette stays disciplined \u2014 imperial navy, lucky red and warm gold \u2014 so the artwork feels abundant but never busy. The same motifs recur as small stamps and coasters, giving the table a collectable, souvenir quality."
+                                       },
+                                       {
+                                           "variant":  "section",
+                                           "heading":  "An Illustrated Menu",
+                                           "body":  "Beyond the placemat, the kit extends into menu and signage art \u2014 playful type lockups, hand-drawn bowls, lanterns and a Peking-duck spread. Each panel is built to drop straight into printed menus, table talkers and social posts, so the corner reads as one cheerful, appetite-first brand across every touchpoint."
+                                       },
+                                       {
+                                           "variant":  "note",
+                                           "body":  "Role: Brand illustration & art direction \u00b7 Client: Mandala Hotel \u2014 Dimsum Corner (Bac Giang) \u00b7 Deliverables: placemat, table signs, coasters, menu & social illustration kit"
+                                       }
+                                   ]
+                      }
 };

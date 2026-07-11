@@ -78,7 +78,7 @@ window.PROJECTS = [
   },
   {
     num: 7,
-    title: "Serenity In Every Stay",
+    title: "Hotel Of Serenity",
     origin: "Mandala Hotel",
     category: "MARKETING CASE STUDY",
     subCategory: "Prints, Illustration",
@@ -223,6 +223,18 @@ window.PROJECTS = [
     tags: ["Photography"],
     year: 2026,
     img: "assets/img/thumb/photograph-2.webp"
+  },
+  {
+    num: 19,
+    title: "Dimsum Corner",
+    origin: "Mandala Hotel",
+    category: "MARKETING CASE STUDY",
+    subCategory: "Branding, Illustration",
+    date: "2023",
+    slug: "dimsum-corner",
+    tags: ["Branding", "Illustration"],
+    year: 2023,
+    img: "assets/img/thumb/dimsum-corner.webp"
   }
 ];
 

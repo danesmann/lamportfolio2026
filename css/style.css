@@ -822,6 +822,40 @@ body.menu-open .menu-btn { background: #0a0a0a; color: #fff; }
   .pf-gallery--3 { grid-template-columns: 1fr; }
 }
 
+/* ---------- Dimsum Corner (festive brand-illustration kit) ----------
+   These are small, transparent illustrations drawn for light menu/table
+   surfaces, so this project's figures sit on warm cream cards — and never
+   upscale past their native size — keeping the linework crisp instead of
+   blurring the way big-photo case studies are laid out. */
+.project-detail[data-project-slug="dimsum-corner"] .pf-chapter__fig {
+  background: #f2efe9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(18px, 2.6vw, 40px);
+  max-width: 560px;
+  margin-inline: auto;
+}
+.project-detail[data-project-slug="dimsum-corner"] .pf-chapter__fig img {
+  width: auto;
+  max-width: 100%;
+  max-height: 440px;
+  margin: 0;
+}
+.project-detail[data-project-slug="dimsum-corner"] .pf-gallery .pf-chapter__fig,
+.project-detail[data-project-slug="dimsum-corner"] .pf-single .pf-chapter__fig {
+  max-width: 420px;
+}
+/* these are uniform small marks, so a lone 3rd tile reads better as a clean
+   row of three than blown full-width the way a stray big photo would be */
+.project-detail[data-project-slug="dimsum-corner"] .pf-gallery .pf-chapter__fig:last-child:nth-child(odd) {
+  grid-column: auto;
+  justify-self: center;
+}
+.project-detail[data-project-slug="dimsum-corner"] .pf-gallery .pf-chapter__fig:last-child:nth-child(odd) img {
+  margin: 0;
+}
+
 /* ---------- archive ---------- */
 .archive { position: relative; padding-bottom: clamp(60px, 10vh, 140px); }
 .archive--page { padding-top: var(--nav-h); }
