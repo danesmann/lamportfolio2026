@@ -685,61 +685,120 @@ body.menu-open .menu-btn { background: #0a0a0a; color: #fff; }
 
 /* ============================================================
    FREESTYLE CASE-STUDY CONTENT
-   Text boxes and image bands alternate down a dark page; every
-   image keeps its own aspect ratio (no forced crops), landscapes
-   run full-width, portraits/squares pair into duos or sit inset.
+   Every chapter (Challenge, Strategy, …) pairs its text with its
+   share of the images side-by-side on one row, alternating which
+   side the images sit on — so a section and its supporting images
+   share the same screen and the page stays short instead of
+   stacking each element into its own tall, lonely band.
    ============================================================ */
-.pf-text {
-  padding: clamp(44px, 9vh, 116px) var(--pad);
+.pf-story { background: var(--bg); }
+
+.pf-chapter {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+  align-items: center;
+  gap: clamp(28px, 4.5vw, 84px);
+  max-width: 1560px;
+  margin: 0 auto;
+  padding: clamp(38px, 7vh, 92px) var(--pad);
 }
+/* flipped rows swap BOTH the visual order and the track widths, so the image
+   column stays the wider one and the text the narrower one either way */
+.pf-chapter--flip { grid-template-columns: minmax(0, 1.18fr) minmax(0, 0.82fr); }
+.pf-chapter--flip .pf-chapter__text { order: 2; }
+.pf-chapter--flip .pf-chapter__media { order: 1; }
+/* a chapter with no images of its own reads as a centred full-width note */
+.pf-chapter--solo {
+  grid-template-columns: minmax(0, 760px);
+  justify-content: center;
+  text-align: center;
+}
+
+.pf-chapter__text { min-width: 0; }
+/* the text fills its column (kill the old standalone-band spacing) */
+.pf-chapter__text .pf-text { padding: 0; max-width: none; margin: 0; }
+.pf-chapter__text .pf-tagline { max-width: 22ch; }
+.pf-chapter--solo .pf-tagline { margin-left: auto; margin-right: auto; }
+
+.pf-chapter__media {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 1.4vw, 22px);
+  min-width: 0;
+}
+.pf-chapter__fig {
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--bg-2);
+}
+.pf-chapter__fig img { display: block; width: 100%; height: auto; }
+
+/* supporting-image bands sit at the same width + rhythm as the chapters */
+.pf-single,
+.pf-gallery {
+  max-width: 1560px;
+  margin: 0 auto;
+  padding: 0 var(--pad) clamp(30px, 6vh, 76px);
+}
+/* a lone supporting image is centred and capped so small assets never upscale */
+.pf-single { text-align: center; }
+.pf-single .pf-chapter__fig {
+  display: inline-block;
+  width: 100%;
+  max-width: 1040px;
+}
+.pf-single .pf-chapter__fig[data-orient="P"] { max-width: 680px; }
+
+.pf-gallery {
+  display: grid;
+  gap: clamp(12px, 1.4vw, 22px);
+  align-items: start;
+}
+.pf-gallery--2 { grid-template-columns: repeat(2, 1fr); }
+.pf-gallery--3 { grid-template-columns: repeat(3, 1fr); }
+/* an odd image left over from the grid spans the full row, centred + capped */
+.pf-gallery .pf-chapter__fig:last-child:nth-child(odd) { grid-column: 1 / -1; justify-self: center; }
+.pf-gallery .pf-chapter__fig:last-child:nth-child(odd) img { max-width: 1040px; margin: 0 auto; }
+
+/* ---- shared text typography (used inside chapters + the closing note) ---- */
 .pf-body {
-  font-size: clamp(15px, 1.15vw, 18px);
-  line-height: 1.75;
+  font-size: clamp(15px, 1.1vw, 17px);
+  line-height: 1.7;
   color: var(--muted);
 }
-.pf-body p + p { margin-top: 1.1em; }
+.pf-body p + p { margin-top: 1.05em; }
 
-.pf-text--lead { max-width: 1080px; margin: 0 auto; }
 .pf-tagline {
-  font-size: clamp(26px, 3.6vw, 52px);
+  font-size: clamp(24px, 2.7vw, 44px);
   font-weight: 600;
   line-height: 1.08;
   letter-spacing: -0.02em;
   color: var(--ink);
-  margin-bottom: clamp(20px, 3vh, 36px);
-  max-width: 18ch;
+  margin-bottom: clamp(18px, 2.4vh, 30px);
 }
-.pf-text--lead .pf-body {
-  font-size: clamp(16px, 1.35vw, 20px);
-  color: rgba(242, 239, 233, 0.78);
-  max-width: 60ch;
-}
+.pf-text--lead .pf-body { color: rgba(242, 239, 233, 0.8); }
 
-.pf-text--body { max-width: 760px; margin: 0 auto; }
-
-.pf-text--section { max-width: 700px; }
-.pf-text--section.is-right { margin-left: auto; }
-.pf-eyebrow { display: block; color: var(--accent); margin-bottom: 16px; }
+.pf-eyebrow { display: block; color: var(--accent); margin-bottom: 14px; }
 .pf-heading {
-  font-size: clamp(28px, 3.6vw, 54px);
+  font-size: clamp(26px, 3vw, 46px);
   font-weight: 600;
-  line-height: 1;
+  line-height: 1.02;
   letter-spacing: -0.02em;
   color: var(--ink);
-  margin-bottom: clamp(16px, 2.4vh, 28px);
+  margin-bottom: clamp(14px, 2.2vh, 24px);
 }
-.pf-bullets { list-style: none; margin-top: clamp(18px, 2.6vh, 30px); }
+.pf-bullets { list-style: none; margin-top: clamp(16px, 2.4vh, 26px); }
 .pf-bullets li {
   position: relative;
   padding-left: 1.6em;
   margin-top: 0.8em;
-  font-size: clamp(14px, 1.05vw, 16.5px);
+  font-size: clamp(14px, 1vw, 16px);
   line-height: 1.55;
   color: var(--muted);
 }
 .pf-bullets li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
 .pf-note {
-  padding: clamp(24px, 4vh, 44px) var(--pad) clamp(48px, 8vh, 90px);
+  padding: clamp(28px, 5vh, 60px) var(--pad) clamp(48px, 8vh, 90px);
   max-width: 940px;
   margin: 0 auto;
   text-align: center;
@@ -747,43 +806,20 @@ body.menu-open .menu-btn { background: #0a0a0a; color: #fff; }
   line-height: 1.7;
 }
 
-.pf-hero { overflow: hidden; background: var(--bg-2); }
-.pf-hero img { display: block; width: 100%; height: auto; }
-.pf-hero[data-orient="P"] img,
-.pf-hero[data-orient="S"] img {
-  width: auto;
-  max-width: min(100%, 960px);
-  max-height: 92vh;
-  margin: 0 auto;
-}
-
-.pf-fig { margin: clamp(8px, 1.6vh, 22px) 0; overflow: hidden; }
-.pf-fig img { display: block; width: 100%; height: auto; }
-.pf-fig--inset { padding: 0 var(--pad); }
-.pf-fig--inset img { max-width: 1500px; margin: 0 auto; }
-.pf-fig--inset[data-orient="P"] img,
-.pf-fig--inset[data-orient="S"] img { max-width: min(100%, 760px); }
-.pf-fig--offr,
-.pf-fig--offl { padding: 0 var(--pad); }
-.pf-fig--offr img { width: min(74%, 1180px); margin-left: auto; }
-.pf-fig--offl img { width: min(74%, 1180px); margin-right: auto; }
-
-.pf-duo {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(8px, 1vw, 18px);
-  padding: clamp(8px, 1.6vh, 22px) var(--pad);
-  align-items: start;
-}
-.pf-duo__item { overflow: hidden; }
-.pf-duo__item img { display: block; width: 100%; height: auto; }
-
-@media (max-width: 767px) {
-  .pf-fig--offr img,
-  .pf-fig--offl img { width: 100%; }
-  .pf-duo { grid-template-columns: 1fr; }
-  .pf-text--section,
-  .pf-tagline { max-width: none; }
+@media (max-width: 900px) {
+  .pf-chapter,
+  .pf-chapter--flip {
+    grid-template-columns: 1fr;
+    gap: clamp(20px, 4vh, 34px);
+    align-items: stretch;
+  }
+  /* on a phone always read the text first, then its images */
+  .pf-chapter--flip .pf-chapter__text { order: 1; }
+  .pf-chapter--flip .pf-chapter__media { order: 2; }
+  .pf-chapter--solo { text-align: left; }
+  .pf-chapter--solo .pf-tagline { margin-left: 0; margin-right: 0; }
+  .pf-gallery--2,
+  .pf-gallery--3 { grid-template-columns: 1fr; }
 }
 
 /* ---------- archive ---------- */

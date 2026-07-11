@@ -856,8 +856,7 @@
       note.textContent = box.body || "";
       return note;
     }
-    var side = variant === "section" ? (secNum % 2 ? " is-right" : " is-left") : "";
-    var sec = makeEl("section", "pf-text pf-text--" + variant + side);
+    var sec = makeEl("section", "pf-text pf-text--" + variant);
     if (variant === "lead" && box.tagline) {
       sec.appendChild(makeEl("p", "pf-tagline", box.tagline));
     }
@@ -881,73 +880,89 @@
     return sec;
   }
 
+  function pfFigure(im, p) {
+    var fig = makeEl("figure", "pf-chapter__fig project-reveal");
+    fig.setAttribute("data-orient", im.o);
+    fig.appendChild(pfImage(im, p.title + " image"));
+    return fig;
+  }
+
   function buildFreestyleContent(page, content, p) {
     var imgs = content.images.map(function (im) {
       return { src: im.src, w: im.w, h: im.h, o: pfOrient(im) };
     });
-    var texts = (content.text || []).slice();
+    var allTexts = (content.text || []).slice();
 
-    /* group images into rows: first image is the hero; then pair adjacent
-       non-landscape shots into duos, landscapes stand alone full-width */
-    var rows = [];
-    if (imgs.length) rows.push({ kind: "hero", imgs: [imgs[0]] });
-    var i = 1;
-    while (i < imgs.length) {
-      var a = imgs[i], b = imgs[i + 1];
-      if (b && a.o !== "L" && b.o !== "L") { rows.push({ kind: "duo", imgs: [a, b] }); i += 2; }
-      else { rows.push({ kind: "single", imgs: [a] }); i += 1; }
+    /* notes (role / deliverables) render as a full-width caption at the very
+       bottom; every other text box becomes a "chapter". Each chapter pairs
+       its text with ONE hero image side-by-side (always a balanced row), and
+       any additional images for that chapter flow into a full-width gallery
+       band right below — so text is never marooned on an empty screen, yet a
+       tall column of photos is never crammed beside a couple of sentences. */
+    var chapters = allTexts.filter(function (t) { return t.variant !== "note"; });
+    var notes = allTexts.filter(function (t) { return t.variant === "note"; });
+    var C = chapters.length;
+
+    /* no text at all — fall back to a simple stack of image bands */
+    if (C === 0) {
+      var stack = makeEl("section", "pf-story");
+      imgs.forEach(function (im) { stack.appendChild(pfFigure(im, p)); });
+      page.appendChild(stack);
+      return;
     }
 
-    /* weave: hero first, then each text box followed by a fair share of the
-       remaining image rows, so text and image bands always alternate and no
-       text box is ever adjacent to another (never a wall of either) */
-    var seq = [];
-    if (rows.length) seq.push({ t: "img", row: rows[0] });
-    var rest = rows.slice(1);
-    var T = texts.length, R = rest.length;
-    if (!T) {
-      rest.forEach(function (r) { seq.push({ t: "img", row: r }); });
-    } else {
-      var base = Math.floor(R / T), extra = R % T, ri = 0;
-      for (var ti = 0; ti < T; ti++) {
-        seq.push({ t: "text", box: texts[ti] });
-        var cnt = base + (ti < extra ? 1 : 0);
-        for (var k = 0; k < cnt; k++) { if (ri < R) seq.push({ t: "img", row: rest[ri++] }); }
-      }
-      while (ri < R) seq.push({ t: "img", row: rest[ri++] });
+    /* spread the images evenly across the chapters, in reading order — the
+       first (hero) image naturally lands beside the opening lead text */
+    var alloc = [];
+    var N = imgs.length, base = Math.floor(N / C), extra = N % C, idx = 0;
+    for (var ci = 0; ci < C; ci++) {
+      var cnt = base + (ci < extra ? 1 : 0);
+      alloc.push(imgs.slice(idx, idx + cnt));
+      idx += cnt;
     }
 
-    var singleCycle = ["full", "offr", "full", "inset", "offl"];
-    var sCount = 0, secCount = 0;
-    seq.forEach(function (node) {
-      if (node.t === "text") {
-        if (node.box.variant === "section") secCount++;
-        page.appendChild(pfTextBox(node.box, secCount));
-        return;
+    var story = makeEl("section", "pf-story");
+    var secNum = 0;
+    chapters.forEach(function (box, ci) {
+      if (box.variant === "section") secNum++;
+      var chapterImgs = alloc[ci] || [];
+      var primary = chapterImgs[0];
+      var extras = chapterImgs.slice(1);
+      var flip = ci % 2 === 1; /* alternate which side the hero image sits on */
+
+      var row = makeEl("section", "pf-chapter" +
+        (flip ? " pf-chapter--flip" : "") +
+        (primary ? "" : " pf-chapter--solo"));
+      row.setAttribute("data-variant", box.variant);
+
+      var textCol = makeEl("div", "pf-chapter__text");
+      textCol.appendChild(pfTextBox(box, secNum));
+      row.appendChild(textCol);
+
+      if (primary) {
+        var mediaCol = makeEl("div", "pf-chapter__media");
+        mediaCol.appendChild(pfFigure(primary, p));
+        row.appendChild(mediaCol);
       }
-      var row = node.row;
-      if (row.kind === "hero") {
-        var h = makeEl("figure", "pf-hero project-reveal");
-        h.setAttribute("data-orient", row.imgs[0].o);
-        h.appendChild(pfImage(row.imgs[0], p.title + " — hero image"));
-        page.appendChild(h);
-      } else if (row.kind === "duo") {
-        var d = makeEl("div", "pf-duo project-reveal");
-        row.imgs.forEach(function (im) {
-          var fig = makeEl("figure", "pf-duo__item");
-          fig.appendChild(pfImage(im, p.title + " image"));
-          d.appendChild(fig);
-        });
-        page.appendChild(d);
-      } else {
-        var im0 = row.imgs[0];
-        var mode = im0.o === "L" ? singleCycle[sCount % singleCycle.length] : "inset";
-        sCount++;
-        var f = makeEl("figure", "pf-fig pf-fig--" + mode + " project-reveal");
-        f.setAttribute("data-orient", im0.o);
-        f.appendChild(pfImage(im0, p.title + " image"));
-        page.appendChild(f);
+      story.appendChild(row);
+
+      /* supporting images: a lone extra sits centred; two or more tile into a
+         full-width gallery whose column count adapts to how many there are */
+      if (extras.length === 1) {
+        var single = makeEl("section", "pf-single");
+        single.appendChild(pfFigure(extras[0], p));
+        story.appendChild(single);
+      } else if (extras.length > 1) {
+        var cols = extras.length === 2 || extras.length === 4 ? 2 : 3;
+        var gallery = makeEl("section", "pf-gallery pf-gallery--" + cols);
+        extras.forEach(function (im) { gallery.appendChild(pfFigure(im, p)); });
+        story.appendChild(gallery);
       }
+    });
+    page.appendChild(story);
+
+    notes.forEach(function (box) {
+      page.appendChild(pfTextBox(box, secNum));
     });
   }
 
@@ -1530,7 +1545,7 @@
       });
 
       /* ---- freestyle case study: image bands clip-wipe in, text rises ---- */
-      gsap.utils.toArray(".pf-hero, .pf-fig, .pf-duo").forEach(function (fig) {
+      gsap.utils.toArray(".pf-chapter__fig").forEach(function (fig) {
         gsap.fromTo(
           fig,
           { clipPath: "inset(12% 0% 0% 0%)", webkitClipPath: "inset(12% 0% 0% 0%)", opacity: 0.35 },
@@ -1991,6 +2006,31 @@
           if (PARAMS.get("off")) y += parseInt(PARAMS.get("off"), 10);
           document.body.style.transform = "translateY(" + -y + "px)";
         }, 900);
+      });
+    }
+
+    /* debug: force every scroll-reveal to its end state so a headless
+       full-page screenshot shows content that would otherwise stay hidden
+       below the fold (?debug=1&reveal=1) */
+    if (DEBUG && PARAMS.get("reveal") === "1") {
+      window.addEventListener("load", function () {
+        /* pull every lazy image in immediately so an offscreen headless
+           capture doesn't show undecoded boxes */
+        Array.prototype.forEach.call(document.querySelectorAll('img[loading="lazy"]'), function (img) {
+          img.loading = "eager";
+          if (!img.src && img.getAttribute("data-src")) img.src = img.getAttribute("data-src");
+        });
+        setTimeout(function () {
+          ScrollTrigger.getAll().forEach(function (st) { st.kill(); });
+          gsap.set(
+            ".pf-chapter__fig, .project-hero, .project-media, .project-split__media, .project-duo__item",
+            { clipPath: "none", webkitClipPath: "none", opacity: 1 }
+          );
+          gsap.set(".pf-chapter__fig img, .project-hero img, .project-media img, .project-split__media img, .project-duo__item img", { scale: 1, y: 0, yPercent: 0 });
+          gsap.set(".pf-text, .pf-text > *, .pf-note, .project-copy__title, .project-copy__body", { opacity: 1, y: 0 });
+          gsap.set(".project-eyebrow, .project-meta__item, .project-number, .project-next__eyebrow, .project-next__card", { opacity: 1, y: 0 });
+          gsap.set(".project-title .split-char", { yPercent: 0 });
+        }, 500);
       });
     }
 

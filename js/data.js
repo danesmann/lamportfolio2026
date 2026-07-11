@@ -14,7 +14,7 @@ window.PROJECTS = [
     slug: "lubylab-1",
     tags: ["Branding", "Social", "UI UX"],
     year: 2026,
-    img: "assets/img/1.webp"
+    img: "assets/img/thumb/lubylab-1.webp"
   },
   {
     num: 2,
@@ -26,7 +26,7 @@ window.PROJECTS = [
     slug: "campari-competition",
     tags: ["Story-telling", "Photography"],
     year: 2025,
-    img: "assets/img/campari-competition/03.webp"
+    img: "assets/img/thumb/campari-competition.webp"
   },
   {
     num: 3,
@@ -38,7 +38,7 @@ window.PROJECTS = [
     slug: "fae-beauty",
     tags: ["Branding", "Social"],
     year: 2025,
-    img: "assets/img/fae-beauty/02.webp"
+    img: "assets/img/thumb/fae-beauty.webp"
   },
   {
     num: 4,
@@ -50,7 +50,7 @@ window.PROJECTS = [
     slug: "new-year-2025",
     tags: ["Packaging", "Merchandise"],
     year: 2025,
-    img: "assets/img/new-year-2025/03.webp"
+    img: "assets/img/thumb/new-year-2025.webp"
   },
   {
     num: 5,
@@ -62,7 +62,7 @@ window.PROJECTS = [
     slug: "celavie",
     tags: ["Branding", "Packaging"],
     year: 2024,
-    img: "assets/img/celavie/03.webp"
+    img: "assets/img/thumb/celavie.webp"
   },
   {
     num: 6,
@@ -74,7 +74,7 @@ window.PROJECTS = [
     slug: "merit-christmas",
     tags: ["Illustration", "Merch"],
     year: 2024,
-    img: "assets/img/merit-christmas/05.webp"
+    img: "assets/img/thumb/merit-christmas.webp"
   },
   {
     num: 7,
@@ -86,7 +86,7 @@ window.PROJECTS = [
     slug: "mandala-hotel",
     tags: ["Prints", "Illustration"],
     year: 2023,
-    img: "assets/img/7.webp"
+    img: "assets/img/thumb/mandala-hotel.webp"
   },
   {
     num: 8,
@@ -98,7 +98,7 @@ window.PROJECTS = [
     slug: "lubylab-2",
     tags: ["3D", "B2B Communicate"],
     year: 2026,
-    img: "assets/img/lubylab-2/09.webp"
+    img: "assets/img/thumb/lubylab-2.webp"
   },
   {
     num: 9,
@@ -123,7 +123,7 @@ window.PROJECTS = [
     slug: "leger-boo",
     tags: ["Social", "Logo"],
     year: 2024,
-    img: "assets/img/10.webp"
+    img: "assets/img/thumb/leger-boo.webp"
   },
   {
     num: 11,
@@ -135,7 +135,7 @@ window.PROJECTS = [
     slug: "biolotus",
     tags: ["Branding"],
     year: 2025,
-    img: "assets/img/biolotus/08.webp"
+    img: "assets/img/thumb/biolotus.webp"
   },
   {
     num: 12,
@@ -173,7 +173,7 @@ window.PROJECTS = [
     slug: "lubylab-3",
     tags: ["Product Design"],
     year: 2026,
-    img: "assets/img/14.webp"
+    img: "assets/img/thumb/lubylab-3.webp"
   },
   {
     num: 15,
@@ -185,7 +185,7 @@ window.PROJECTS = [
     slug: "tedxbuv",
     tags: ["Website", "UI", "Social"],
     year: 2023,
-    img: "assets/img/15.webp"
+    img: "assets/img/thumb/tedxbuv.webp"
   },
   {
     num: 16,
@@ -197,7 +197,7 @@ window.PROJECTS = [
     slug: "photograph-1",
     tags: ["Photography"],
     year: 2025,
-    img: "assets/img/photograph-1/03.webp"
+    img: "assets/img/thumb/photograph-1.webp"
   },
   {
     num: 17,
@@ -222,7 +222,7 @@ window.PROJECTS = [
     slug: "photograph-2",
     tags: ["Photography"],
     year: 2026,
-    img: "assets/img/photograph-2/01.webp"
+    img: "assets/img/thumb/photograph-2.webp"
   }
 ];
 
