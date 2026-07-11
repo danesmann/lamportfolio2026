@@ -856,6 +856,21 @@ body.menu-open .menu-btn { background: #0a0a0a; color: #fff; }
   margin: 0;
 }
 
+/* ---------- Leger-Boo (3-post ribbon mechanic) ----------
+   The lead and approach galleries each hold exactly three tiles: the lookbook
+   trio, and the continuous leaves-raindrops-suns ribbon that only reads as one
+   sentence when the three posts sit in a single row. Keep gallery--3 as a clean
+   row of three instead of letting the "lone odd tile" rule blow the third one
+   out to full width. */
+.project-detail[data-project-slug="leger-boo"] .pf-gallery--3 .pf-chapter__fig:last-child:nth-child(odd) {
+  grid-column: auto;
+  justify-self: stretch;
+}
+.project-detail[data-project-slug="leger-boo"] .pf-gallery--3 .pf-chapter__fig:last-child:nth-child(odd) img {
+  max-width: 100%;
+  margin: 0;
+}
+
 /* ---------- archive ---------- */
 .archive { position: relative; padding-bottom: clamp(60px, 10vh, 140px); }
 .archive--page { padding-top: var(--nav-h); }

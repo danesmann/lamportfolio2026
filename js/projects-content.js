@@ -762,41 +762,283 @@ window.PROJECT_CONTENT = {
                                   ]
                      },
     "dimsum-corner":  {
-                          "images":  [
-                                         { "src": "assets/img/dimsum-corner/01.webp", "w": 748, "h": 499 },
-                                         { "src": "assets/img/dimsum-corner/02.webp", "w": 130, "h": 100 },
-                                         { "src": "assets/img/dimsum-corner/03.webp", "w": 137, "h": 100 },
-                                         { "src": "assets/img/dimsum-corner/04.webp", "w": 129, "h": 100 },
-                                         { "src": "assets/img/dimsum-corner/05.webp", "w": 100, "h": 100 },
-                                         { "src": "assets/img/dimsum-corner/06.webp", "w": 241, "h": 438 },
-                                         { "src": "assets/img/dimsum-corner/07.webp", "w": 130, "h": 131 },
-                                         { "src": "assets/img/dimsum-corner/08.webp", "w": 131, "h": 131 },
-                                         { "src": "assets/img/dimsum-corner/09.webp", "w": 131, "h": 131 },
-                                         { "src": "assets/img/dimsum-corner/10.webp", "w": 272, "h": 382 },
-                                         { "src": "assets/img/dimsum-corner/11.webp", "w": 264, "h": 384 },
-                                         { "src": "assets/img/dimsum-corner/12.webp", "w": 206, "h": 554 },
-                                         { "src": "assets/img/dimsum-corner/13.webp", "w": 131, "h": 131 }
-                                     ],
-                          "text":  [
-                                       {
-                                           "variant":  "lead",
-                                           "tagline":  "A festive dim sum corner for Mandala Hotel, drawn in lucky red and gold.",
-                                           "body":  "Dimsum Corner is the Chinese dim sum restaurant on the ground floor of Mandala Hotel & Suites in Bac Giang. The brief was to give it a room of its own inside the hotel identity \u2014 louder, warmer and more playful than the parent brand, yet unmistakably part of it. The answer was a hand-illustrated world anchored by a single lucky-red placemat \u2014 tiger mascot, dumplings, folding fans and a Lunar New Year welcome \u2014 that then fans out into paddle table-signs, coasters and menu art."
-                                       },
-                                       {
-                                           "variant":  "section",
-                                           "heading":  "A World of Good Luck",
-                                           "body":  "Every element leans into festive Lunar iconography: a striped tiger for the year, gold coins and steaming baskets of bao, paper fans and chili peppers. The palette stays disciplined \u2014 imperial navy, lucky red and warm gold \u2014 so the artwork feels abundant but never busy. The same motifs recur as small stamps and coasters, giving the table a collectable, souvenir quality."
-                                       },
-                                       {
-                                           "variant":  "section",
-                                           "heading":  "An Illustrated Menu",
-                                           "body":  "Beyond the placemat, the kit extends into menu and signage art \u2014 playful type lockups, hand-drawn bowls, lanterns and a Peking-duck spread. Each panel is built to drop straight into printed menus, table talkers and social posts, so the corner reads as one cheerful, appetite-first brand across every touchpoint."
-                                       },
-                                       {
-                                           "variant":  "note",
-                                           "body":  "Role: Brand illustration & art direction \u00b7 Client: Mandala Hotel \u2014 Dimsum Corner (Bac Giang) \u00b7 Deliverables: placemat, table signs, coasters, menu & social illustration kit"
-                                       }
-                                   ]
-                      }
+        "images":  [
+            { "src": "assets/img/dimsum-corner/01.webp", "w": 748, "h": 499 },
+            { "src": "assets/img/dimsum-corner/03.webp", "w": 137, "h": 100 },
+            { "src": "assets/img/dimsum-corner/02.webp", "w": 130, "h": 100 },
+            { "src": "assets/img/dimsum-corner/12.webp", "w": 206, "h": 554 },
+            { "src": "assets/img/dimsum-corner/07.webp", "w": 130, "h": 131 },
+            { "src": "assets/img/dimsum-corner/08.webp", "w": 131, "h": 131 },
+            { "src": "assets/img/dimsum-corner/06.webp", "w": 241, "h": 438 },
+            { "src": "assets/img/dimsum-corner/04.webp", "w": 129, "h": 100 },
+            { "src": "assets/img/dimsum-corner/09.webp", "w": 131, "h": 131 },
+            { "src": "assets/img/dimsum-corner/10.webp", "w": 272, "h": 382 },
+            { "src": "assets/img/dimsum-corner/05.webp", "w": 100, "h": 100 },
+            { "src": "assets/img/dimsum-corner/11.webp", "w": 264, "h": 384 },
+            { "src": "assets/img/dimsum-corner/13.webp", "w": 131, "h": 131 }
+        ],
+        "text":  [
+            {
+                "variant":  "lead",
+                "tagline":  "Don't be a hotel restaurant. Be a teahouse that happens to be in a hotel.",
+                "body":  "Dimsum Corner is the Cantonese dim sum restaurant on the ground floor of Mandala Hotel & Suites B\u1eafc Giang, serving since 2023. It needed a personality loud enough to pull a local family through a hotel lobby \u2014 a genuinely intimidating threshold for a non-guest to cross."
+            },
+            {
+                "variant":  "section",
+                "heading":  "Context",
+                "body":  "Hotel restaurants have a structural problem: guests treat them as a fallback, and locals don't treat them as restaurants at all. The room above the lobby is, by default, the least interesting place in town to eat.\n\nAnd B\u1eafc Giang is not a tourist city. The winning audience was never the hotel guest \u2014 it was the family two streets over, deciding where to have lunch on Sunday."
+            },
+            {
+                "variant":  "section",
+                "heading":  "Challenge",
+                "body":  "Three things had to be true at once. The brand had to walk out of the hotel \u2014 a hotel-branded outlet inherits the parent's politeness, beige and discreet and forgettable, and this one needed attitude. It had to earn the category without faking heritage: dim sum carries an enormous Cantonese-teahouse visual canon, and any attempt to fake a lineage would read as costume. And it had to work with zero paid media \u2014 the budget for pulling in locals was the room itself, so the brand had to land on a table, on a placemat, and in a photo taken by a customer."
+            },
+            {
+                "variant":  "section",
+                "heading":  "Strategy",
+                "body":  "The move was to stop looking premium and start looking fun and busy \u2014 because that is what makes a dim sum place feel authentic. Nobody wants a quiet dim sum lunch; the signal of quality here is noise: steam, chatter, stacked bamboo baskets, a room that is clearly working. So the identity was built to perform loudness even when the room is half-empty.\n\nThe reference was mid-century Hong Kong teahouse and matchbox printing \u2014 navy, vermilion and gold; heavy condensed slab lettering; double-line borders; a tiger seal (the outlet's founding-year mark, SINCE 2023) framed in an oval crest with \u597d\u5403!!! \u2014 delicious!!! \u2014 stamped beside it. Retro Cantonese, not red-lantern clich\u00e9. And with no media budget, the highest-leverage surface is the one the customer is already staring at: make the table do the marketing."
+            },
+            {
+                "variant":  "section",
+                "heading":  "Execution",
+                "body":  "A full identity kit, not a logo \u2014 a primary lockup, circular badge variants, a D \u9ede\u5fc3 C monogram seal and a stacked DIM SUM / COR NER mark, enough variety to dress an entire room without repeating an asset. The table talkers are the campaign: small double-sided signs doing the work paid media would otherwise do \u2014 It's a \"BAO\" time!, I \u2665 U SIU MAI-CH, STEAMING HOT!, I \u2665 DIMSUM CORNER \u2014 puns in English, deliberately, because they are photographable and give a table of friends a reason to point a phone at the food.\n\nThe placemat is the brand's front page: deep navy, a gold key-fret border, \u6b61\u8fce\u5149\u81e8 (welcome) across the top, the tiger crest centred, hotline and address running up both edges \u2014 functionally the best-read piece of media the restaurant owns. Under it sits a spot-illustration library \u2014 bamboo steamers, bao, siu mai, teapots, Peking duck \u5317\u4eac\u70e4\u9e2d, noodle bowls, fans, chrysanthemums \u2014 hand-drawn in the two-colour system so menus, signage and social posts assemble endlessly without new artwork. Copy runs in three languages on purpose: Chinese for authority, English for play, Vietnamese for the practical stuff.\n\nWhat held: the illustration library and badge system mean every later menu, seasonal promo and post is built from stock parts \u2014 the restaurant has never had to re-commission a brand asset since launch."
+            },
+            {
+                "variant":  "note",
+                "body":  "Role: Content creator & designer \u2014 identity, illustration, copy and in-store collateral \u00b7 Client: Mandala Hotel & Suites B\u1eafc Giang \u2014 Dimsum Corner \u00b7 Deliverables: logo suite & badges, tiger crest, placemat, double-sided table talkers, spot-illustration library, menu & social assets \u00b7 Tools: Illustrator, Photoshop"
+            }
+        ]
+    },
+    "mandala-hotel":  {
+        "images":  [
+            { "src": "assets/img/mandala-hotel/01.webp", "w": 2000, "h": 1125 },
+            { "src": "assets/img/mandala-hotel/02.webp", "w": 2000, "h": 1125 },
+            { "src": "assets/img/mandala-hotel/03.webp", "w": 2000, "h": 1333 },
+            { "src": "assets/img/mandala-hotel/04.webp", "w": 2000, "h": 1333 },
+            { "src": "assets/img/mandala-hotel/05.webp", "w": 2000, "h": 1462 },
+            { "src": "assets/img/mandala-hotel/06.webp", "w": 2000, "h": 1125 },
+            { "src": "assets/img/mandala-hotel/07.webp", "w": 2000, "h": 1333 },
+            { "src": "assets/img/mandala-hotel/08.webp", "w": 1410, "h": 2000 },
+            { "src": "assets/img/mandala-hotel/09.webp", "w": 1333, "h": 2000 },
+            { "src": "assets/img/mandala-hotel/10.webp", "w": 1280, "h": 732 },
+            { "src": "assets/img/mandala-hotel/11.webp", "w": 1280, "h": 997 },
+            { "src": "assets/img/mandala-hotel/12.webp", "w": 2000, "h": 1222 },
+            { "src": "assets/img/mandala-hotel/13.webp", "w": 2000, "h": 1333 }
+        ],
+        "text":  [
+            {
+                "variant":  "lead",
+                "tagline":  "Serenity in every stay.",
+                "body":  "A brand and F&B content system for Mandala Hotel & Spa \u2014 one identity elastic enough to cover a sunset over Ph\u00fa Y\u00ean, a children's waterslide, a hot-stone massage and a 99,000\u0111 breakfast, without ever fracturing."
+            },
+            {
+                "variant":  "section",
+                "heading":  "Context",
+                "body":  "Mandala Hotel & Spa operates across several Vietnamese properties with very different jobs to do. Ph\u00fa Y\u00ean is a beachfront resort \u2014 sunset arcs, an infinity pool over the water, a waterslide, a kids' playground the size of a tennis court. B\u1eafc Ninh and B\u1eafc Giang are city hotels serving business travellers, residents of the attached Apec developments, and local diners who may never book a room at all.\n\nOne brand. One visual identity. Wildly different guests, seasons and revenue lines \u2014 rooms, spa, breakfast, \u00e0 la carte, cake shop, banqueting."
+            },
+            {
+                "variant":  "section",
+                "heading":  "Challenge",
+                "body":  "Three problems sat on top of each other.",
+                "bullets":  [
+                    "A brand promise that had to survive a waterslide. \"Serenity\" is easy to shoot in a spa and almost impossible to hold onto in a photo of children screaming down a slide \u2014 the identity had to stretch to a rooftop cocktail, a treadmill and a 99,000\u0111 breakfast combo without breaking.",
+                    "Content demand vastly outrunning supply. Multiple properties, multiple outlets, constant promotional cycles \u2014 soft openings, seasonal spa offers, daily F&B deals \u2014 each needing its own asset, on time, on brand.",
+                    "Price-led promotion erodes a premium position. A hotel that keeps shouting \"10% OFF\" teaches the market to wait for the discount. Every promo had to sell value while still looking like it belongs to a hotel that charges what it charges."
+                ]
+            },
+            {
+                "variant":  "section",
+                "heading":  "Strategy",
+                "body":  "Serenity is not a mood \u2014 it's a guarantee. I reframed the promise from a feeling (quiet, still, spa-like) to a service standard: everything is taken care of, so nothing is your problem. That is what lets a family water park and a hot-stone massage live under the same promise \u2014 serenity as the absence of friction, not the absence of noise. One governing rule for every asset: show the guest what's handled, never what they have to figure out.\n\nRather than force one look across everything, I built three registers under a single identity.",
+                "bullets":  [
+                    "Brand & rooms, for aspiration \u2014 cinematic, wide, golden-hour. The sunset aerial of Ph\u00fa Y\u00ean isn't selling a room; it's selling the decision to come at all.",
+                    "Facility & lifestyle, for proof \u2014 spa, gym, pool bar, playground; real spaces, real people, natural light, answering \"will this actually be nice?\"",
+                    "F&B & promotion, for conversion \u2014 the deep-green-and-gold arch system, tight crops, hero food photography, price and hotline set large and unambiguous.",
+                    "Green and gold do the value work the discount would otherwise do: deep emerald and warm gold read hotel, not voucher, so a 99,000\u0111 breakfast feels like an unlock, not a markdown."
+                ]
+            },
+            {
+                "variant":  "section",
+                "heading":  "Execution",
+                "body":  "The arch \u2014 a recurring doorway motif \u2014 is the connective tissue across every promo, so a guest recognises the brand before reading a word of it.",
+                "bullets":  [
+                    "Always-on F&B calendar \u2014 a 99,000\u0111 breakfast combo, a Mandala Cake Shop buy-one-get-one, and The Bay Restaurant soft-opening with a scan-to-view menu; each carries the same arch, the same gold-on-green hierarchy, and the hotline as a closing device on every asset.",
+                    "Seasonal spa campaign \u2014 a four-tier promotion (Body Treatment, Early Bird, Spoil Yourself, Tropical Retreat) built as a menu rather than a discount, so the price ladder does the selling and the brand never has to.",
+                    "Property photography direction \u2014 sunset aerials, the infinity pool level with the horizon, the lobby's lacquered dragon, the spa's open-sky terrace: a stock of evergreen hero imagery the brand doesn't have to re-commission every season.",
+                    "Localised deployment \u2014 the same system retuned per property: waterslide and playground for family-facing Ph\u00fa Y\u00ean; The Bay Restaurant, cake shop and resident offers for the city hotels."
+                ]
+            },
+            {
+                "variant":  "section",
+                "heading":  "Results",
+                "body":  "The arch system is still doing its job: any new outlet or offer drops into it in an afternoon and still looks like Mandala. That's the real deliverable \u2014 not a campaign, but a machine that keeps producing on-brand assets long after the campaign ends."
+            },
+            {
+                "variant":  "note",
+                "body":  "Role: Content creator & designer \u2014 concept, copy and design across brand, F&B and spa assets \u00b7 Client: Mandala Hotel & Spa \u2014 Ph\u00fa Y\u00ean, B\u1eafc Ninh, B\u1eafc Giang \u00b7 Deliverables: F&B promo key visuals, seasonal spa campaign, property photography direction, brand & lifestyle content library \u00b7 Tools: Photoshop, Illustrator"
+            }
+        ]
+    },
+    "leger-boo":  {
+        "images":  [
+            { "src": "assets/img/leger-boo/01.webp", "w": 1414, "h": 2000 },
+            { "src": "assets/img/leger-boo/02.webp", "w": 2000, "h": 1125 },
+            { "src": "assets/img/leger-boo/03.webp", "w": 1284, "h": 1785 },
+            { "src": "assets/img/leger-boo/04.webp", "w": 1284, "h": 1788 },
+            { "src": "assets/img/leger-boo/05.webp", "w": 901, "h": 893 },
+            { "src": "assets/img/leger-boo/06.webp", "w": 2000, "h": 2000 },
+            { "src": "assets/img/leger-boo/07.webp", "w": 2000, "h": 2000 },
+            { "src": "assets/img/leger-boo/08.webp", "w": 2000, "h": 2000 },
+            { "src": "assets/img/leger-boo/09.webp", "w": 898, "h": 900 },
+            { "src": "assets/img/leger-boo/10.webp", "w": 2000, "h": 1125 },
+            { "src": "assets/img/leger-boo/11.webp", "w": 786, "h": 1918 }
+        ],
+        "text":  [
+            {
+                "variant":  "lead",
+                "tagline":  "Always there for you \u2014 no matter the weather.",
+                "body":  "A Gen-Z sustainable outerwear label concepted from scratch \u2014 brand, voice and a social content system that could actually run. The product is outerwear, so the promise wrote itself: L\u00e9ger-Boo will always be there for you, no matter the weather."
+            },
+            {
+                "variant":  "body",
+                "body":  "I turned that promise into the content architecture. One continuous white ribbon carries the sentence across three posts \u2014 leaves, raindrops, suns \u2014 so the message only completes if you keep scrolling. The identity leans soft-serif and bamboo-green (bamboo is the sustainable fibre, and the pun in the name), warm and approachable rather than eco-preachy. It extends into a Be x Kh\u00e1nh Vy KOL collab, a shoppable TikTok storefront and a nine-tile feed grid."
+            },
+            {
+                "variant":  "body",
+                "body":  "Sustainability is the material here, not the pitch. The brand sells reliability \u2014 a much easier thing for a 22-year-old to buy than a lecture about the planet."
+            },
+            {
+                "variant":  "note",
+                "body":  "Role: Concept, brand identity, copy & social design (spec project) \u00b7 Deliverables: logo & brand system, 3-post carousel mechanic, feed grid, KOL / partnership key visuals, TikTok shop mockup \u00b7 Tools: Illustrator, Photoshop"
+            }
+        ]
+    },
+    "lubylab-3":  {
+        "images":  [
+            { "src": "assets/img/lubylab-3/01.webp", "w": 1300, "h": 1300 },
+            { "src": "assets/img/lubylab-3/02.webp", "w": 2000, "h": 2000 },
+            { "src": "assets/img/lubylab-3/03.webp", "w": 1000, "h": 1000 },
+            { "src": "assets/img/lubylab-3/04.webp", "w": 1191, "h": 843 },
+            { "src": "assets/img/lubylab-3/05.webp", "w": 843, "h": 596 },
+            { "src": "assets/img/lubylab-3/06.webp", "w": 2000, "h": 2000 },
+            { "src": "assets/img/lubylab-3/07.webp", "w": 1333, "h": 2000 },
+            { "src": "assets/img/lubylab-3/08.webp", "w": 1342, "h": 2000 },
+            { "src": "assets/img/lubylab-3/09.webp", "w": 1300, "h": 1300 }
+        ],
+        "text":  [
+            {
+                "variant":  "lead",
+                "tagline":  "Korean skincare, engineered like lab equipment.",
+                "body":  "A full brand system for a Korean-made Artemisia skincare line \u2014 one that looks like science, not like a spa. Everything is anchored to a single tension: forest botanical meets clinical lab."
+            },
+            {
+                "variant":  "body",
+                "body":  "Deep petrol-teal carries the \"forest at night\" story; acid green does the work of a highlighter, pulling the eye straight to the actives \u2014 U-Oliosome\u00aeTECA 0.5, HA-Zn, Aqua Cera5 C8 \u2014 badged like a spec sheet, not a beauty claim. Condensed grotesk lettering, hairline rules and a data-callout hierarchy borrowed from lab packaging. The mask sachet's linear wave-field graphic gives the range a signature no competitor owns on shelf."
+            },
+            {
+                "variant":  "body",
+                "body":  "Photography reinforced the same argument: beakers, artemisia sprigs, foam, water \u2014 evidence, not lifestyle. In a category that defaults to pastel and softness, a near-black box with a neon marker reads as proof. It earns its price without saying a word."
+            },
+            {
+                "variant":  "note",
+                "body":  "Role: Brand system, full stack \u2014 identity, packaging, key visuals & photography art direction \u00b7 Deliverables: logo & mark, dielines (tube carton, mask carton, sachet), copy hierarchy, key visuals, product photography direction \u00b7 Tools: Illustrator, Photoshop"
+            }
+        ]
+    },
+    "lubylab-1":  {
+        "images":  [
+            { "src": "assets/img/lubylab-1/01.webp", "w": 1080, "h": 1350 },
+            { "src": "assets/img/lubylab-1/02.webp", "w": 1080, "h": 1350 },
+            { "src": "assets/img/lubylab-1/03.webp", "w": 1080, "h": 1350 },
+            { "src": "assets/img/lubylab-1/04.webp", "w": 1080, "h": 1350 },
+            { "src": "assets/img/lubylab-1/05.webp", "w": 1080, "h": 1350 },
+            { "src": "assets/img/lubylab-1/06.webp", "w": 1080, "h": 1350 },
+            { "src": "assets/img/lubylab-1/07.webp", "w": 1080, "h": 1350 },
+            { "src": "assets/img/lubylab-1/08.webp", "w": 1080, "h": 1350 },
+            { "src": "assets/img/lubylab-1/09.webp", "w": 1287, "h": 890 },
+            { "src": "assets/img/lubylab-1/10.webp", "w": 1080, "h": 1350 },
+            { "src": "assets/img/lubylab-1/11.webp", "w": 1080, "h": 1350 }
+        ],
+        "text":  [
+            {
+                "variant":  "lead",
+                "tagline":  "One brand, built once, engineered to sell in two rooms at once.",
+                "body":  "Lubylab had strong, science-led formulations \u2014 NAD+ and GF booster creams, vitamin C powder capsules \u2014 and almost no brand to carry them. I built the brand and trade system that opened its retail and export doors: a Guardian Vietnam listing in review, and exclusive distributors signed in Turkey and Germany."
+            },
+            {
+                "variant":  "section",
+                "heading":  "Challenge",
+                "body":  "Strong formulations, almost no brand \u2014 a problem in two directions at once. Consumers had no reason to trust an unfamiliar name in a crowded K-beauty aisle. And trade partners \u2014 franchise chains, retail buyers, overseas distributors \u2014 won't take on a product whose brand can't survive a shelf, a pitch deck, or a market they've never sold in.\n\nMost teams treat these as separate jobs. They aren't: a buyer's confidence is downstream of consumer desire, and consumer desire is downstream of a brand that looks like it knows what it's doing."
+            },
+            {
+                "variant":  "section",
+                "heading":  "Strategy",
+                "body":  "One brand, built once, engineered to work in both rooms. I positioned Lubylab on clinical credibility \u2014 the single asset that pays off for both audiences. To the consumer it says this is real science, not a trend; to the buyer it says this brand is legible, exportable, and won't embarrass you on your shelf.\n\nBrand marketing and trade marketing then ran in parallel rather than in sequence: every consumer-facing asset doubled as trade evidence, and every trade conversation fed back into how the brand explained itself."
+            },
+            {
+                "variant":  "section",
+                "heading":  "Execution",
+                "body":  "The brand system is a restrained visual language \u2014 laboratory glassware, mirror-silver packaging and near-total monochrome, broken only by the single yellow of the vitamin C sphere. Oversized editorial typography (\"Why do your skin ages\", \"Result with pure radiance\") turns product education into design, so ingredient science reads as premium rather than technical.\n\nOn the consumer channel, localized social content for the Vietnamese market teaches before it sells \u2014 problem-led hooks, ingredient reasoning, ritual over promise \u2014 giving the brand a real consumer story rather than an imagined one. For trade and export, I translated the same system into the B2B layer: brand and business proposals for foreign partners, and direct relationship management with international buyers, walking them through the positioning, the product logic and the commercial case until they understood Lubylab as a brand, not a shipment."
+            },
+            {
+                "variant":  "section",
+                "heading":  "Results",
+                "body":  "One brand foundation now serves consumer marketing, franchise and retail applications, and B2B export from the same source of truth.",
+                "bullets":  [
+                    "Guardian Vietnam \u2014 supported the retail listing application, currently in review.",
+                    "Turkey & Germany \u2014 sourced and secured exclusive export distribution partners.",
+                    "A single system doing the work of many: consumer story, trade evidence and export pitch, all from one place."
+                ]
+            },
+            {
+                "variant":  "note",
+                "body":  "Role: Brand & Trade Marketing Lead \u00b7 Timeline: 2025\u2013ongoing \u00b7 Deliverables: brand positioning & visual system, product key visuals, social content (VN), business & brand proposals, partner relations \u00b7 Scope: brand marketing, trade marketing, international B2B development"
+            }
+        ]
+    },
+    "tedxbuv":  {
+        "images":  [
+            { "src": "assets/img/tedxbuv/01.webp", "w": 2000, "h": 2000 },
+            { "src": "assets/img/tedxbuv/02.webp", "w": 2000, "h": 1333 },
+            { "src": "assets/img/tedxbuv/03.webp", "w": 2000, "h": 1333 },
+            { "src": "assets/img/tedxbuv/04.webp", "w": 2000, "h": 1333 },
+            { "src": "assets/img/tedxbuv/05.webp", "w": 1500, "h": 1500 },
+            { "src": "assets/img/tedxbuv/06.webp", "w": 1500, "h": 1500 },
+            { "src": "assets/img/tedxbuv/07.webp", "w": 2000, "h": 1999 },
+            { "src": "assets/img/tedxbuv/08.webp", "w": 1500, "h": 1500 },
+            { "src": "assets/img/tedxbuv/09.webp", "w": 2000, "h": 1500 },
+            { "src": "assets/img/tedxbuv/10.webp", "w": 1333, "h": 2000 }
+        ],
+        "text":  [
+            {
+                "variant":  "lead",
+                "tagline":  "Ideas worth spreading, finally with a home that lasts.",
+                "body":  "The official TEDxBUV website and the visual identity for Hide & Seek \u2014 a student-led season built on one question: what are you hiding from yourself?"
+            },
+            {
+                "variant":  "section",
+                "heading":  "Challenge",
+                "body":  "TEDx runs on ideas worth spreading \u2014 but a student-led chapter has no permanent home for them. Every edition of TEDxBUV vanished after event day: speakers, performers and the sponsors who made it possible, all scattered across expired social posts. Newcomers arriving cold had no way to understand what TEDxBUV was, and no straightforward path from interested to ticket in hand.\n\nThe theme raised the stakes. Hide & Seek asked attendees to break through their own boundaries and find their real selves \u2014 an inward, uncomfortable idea. Selling a ticket to that is harder than selling a ticket to a talk."
+            },
+            {
+                "variant":  "section",
+                "heading":  "Strategy",
+                "body":  "Two jobs, one system. First, give TEDxBUV a permanent home: the website had to work as an archive and a storefront at once \u2014 proof of legitimacy for sponsors and speakers, orientation for newcomers, and the ticketing platform, all in a single flow. Second, make the theme personal before it's promotional. Rather than shouting about the event, the social content would meet people where the theme actually lives \u2014 in the small things they've been avoiding. Confidence and self-integrity aren't sold with hype; they're sold with recognition."
+            },
+            {
+                "variant":  "section",
+                "heading":  "Execution",
+                "body":  "The identity leans hard into TEDx's red-black-white core, roughened with grain and set in a tight grotesque \u2014 urgent, editorial, unmistakably TED. The theme resolves into a single object: a black isometric box, half-open, HIDE on one face and SEEK on the other. It's the whole idea in one mark.\n\nCampaign moments push that system in two directions. Ticket announcements go loud and graphic \u2014 the Early Bird close is a black-and-white dove carrying a \"ticket closed\" stub, urgency without a countdown clock. The quote-card series goes quiet and grey: plain Vietnamese prompts, black type on paper, no imagery \u2014 find a day to sleep before 11pm, a day to wake with no notifications, a day to lie in as long as you want. The loud posts sell the event; the quiet ones sell the idea.\n\nThe website carries the same palette into a full-bleed photo grid of past editions, anchored by the line Ideas worth spreading. Navigation is built around what people actually come for \u2014 About, Event Details, Speakers, Talks, Sponsors, Connect \u2014 with ticketing folded into the same journey, and past speakers, performers and sponsors permanently credited rather than lost to the feed."
+            },
+            {
+                "variant":  "section",
+                "heading":  "Results",
+                "body":  "TEDxBUV's first official website went live and now serves as the chapter's standing archive and ticketing platform \u2014 sponsors and speakers have a public record of their contribution, and prospective attendees have one place that answers every question and sells them a seat.\n\nEarly Bird tickets closed out, and the Hide & Seek edition filled the auditorium with an audience that stayed engaged through Q&A. The quiet quote-card format outperformed expectations as the emotional entry point into the theme \u2014 people saw themselves in the prompts before they ever saw a ticket link."
+            },
+            {
+                "variant":  "note",
+                "body":  "Role: Website & design lead, supporting content writer \u00b7 Timeline: ~6-month season \u00b7 Deliverables: official TEDxBUV website (archive + ticketing), visual identity, social campaign, Vietnamese copywriting"
+            }
+        ]
+    }
 };

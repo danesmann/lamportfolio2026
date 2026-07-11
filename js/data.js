@@ -177,7 +177,7 @@ window.PROJECTS = [
   },
   {
     num: 15,
-    title: "Biopic Website",
+    title: "Ideas Worth Spreading",
     origin: "TEDxBUV",
     category: "MARKETING CASE STUDY",
     subCategory: "Website, UI, Social",
