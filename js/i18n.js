@@ -73,7 +73,7 @@
   var DICT = {
     /* nav + menu (shared) */
     nav_navigation: "ĐIỀU HƯỚNG",
-    nav_work: "Tác phẩm chọn lọc",
+    nav_work: "KINH NGHIỆM LÀM VIỆC",
     nav_archive: "LƯU TRỮ",
     nav_about: "GIỚI THIỆU",
     nav_home_aria: "Thanh Lam — trang chủ",

@@ -146,12 +146,27 @@
   /* the work page opens focused on Marketing Case Study instead of the full
      list; falls back to ALL if that category is ever dropped from the data */
   var DEFAULT_FILTER = CATEGORIES.indexOf("MARKETING CASE STUDY") >= 0 ? "MARKETING CASE STUDY" : "ALL";
+  var MARKETING_CASE_STUDY_ORDER = {
+    "lubylab-1": 1,
+    "lubylab-2": 2,
+    "biolotus": 3,
+    "mandala-hotel": 4,
+    "dimsum-corner": 5,
+    "tedxbuv": 6,
+    "fae-beauty": 7
+  };
   /* the work wheel skips projects flagged archiveOnly — they live only in the
      full archive table; the archive itself still lists every project */
   function projectsForFilter(cat) {
-    return PROJECTS.filter(function (p) {
+    var projects = PROJECTS.filter(function (p) {
       return !p.archiveOnly && (cat === "ALL" || p.category === cat);
     });
+    if (cat === "MARKETING CASE STUDY") {
+      projects.sort(function (a, b) {
+        return MARKETING_CASE_STUDY_ORDER[a.slug] - MARKETING_CASE_STUDY_ORDER[b.slug];
+      });
+    }
+    return projects;
   }
 
   gsap.registerPlugin(ScrollTrigger);
@@ -196,22 +211,38 @@
   /* ============================================================
      TEXT SPLITTING (lightweight SplitText substitute)
      ============================================================ */
-  function splitChars(el) {
+  function splitChars(el, preserveWords) {
     var text = el.textContent;
     /* keep the accessible name intact — the char spans are presentation */
     if (!el.hasAttribute("aria-label")) el.setAttribute("aria-label", text);
     el.textContent = "";
     var chars = [];
-    for (var i = 0; i < text.length; i++) {
+    function appendChar(target, character) {
       var mask = document.createElement("span");
       mask.className = "split-mask";
       mask.setAttribute("aria-hidden", "true");
       var ch = document.createElement("span");
       ch.className = "split-char";
-      ch.textContent = text[i] === " " ? " " : text[i];
+      ch.textContent = character === " " ? " " : character;
       mask.appendChild(ch);
-      el.appendChild(mask);
+      target.appendChild(mask);
       chars.push(ch);
+    }
+
+    if (preserveWords) {
+      text.split(/(\s+)/).forEach(function (part) {
+        if (/^\s+$/.test(part)) {
+          el.appendChild(document.createTextNode(" "));
+          return;
+        }
+        var word = document.createElement("span");
+        word.className = "split-word";
+        word.setAttribute("aria-hidden", "true");
+        for (var j = 0; j < part.length; j++) appendChar(word, part[j]);
+        el.appendChild(word);
+      });
+    } else {
+      for (var i = 0; i < text.length; i++) appendChar(el, text[i]);
     }
     return chars;
   }
@@ -1487,7 +1518,7 @@
       /* ---- intro: masked title chars + staggered meta (about-style) ---- */
       var pTitle = document.querySelector(".project-title");
       if (pTitle) {
-        var pChars = splitChars(pTitle);
+        var pChars = splitChars(pTitle, true);
         gsap.fromTo(
           pChars,
           { yPercent: 130 },

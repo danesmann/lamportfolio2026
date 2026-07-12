@@ -65,6 +65,7 @@ window.PROJECTS = [
     title_vi: "Công thức cho cả gia đình",
     origin: "Celavie",
     category: "MARKETING CASE STUDY",
+    archiveOnly: true,
     subCategory: "Branding, Packaging",
     date: "2024",
     slug: "celavie",
