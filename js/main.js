@@ -131,6 +131,7 @@
   /* lets CSS join the simulation (noise, marquee, transitions) */
   if (RM) document.documentElement.classList.add("is-rm");
   var FINE = window.matchMedia("(pointer: fine)").matches;
+  var MOBILE_PROJECT = !FINE || window.matchMedia("(max-width: 900px)").matches;
 
   /* debug: fast-forward all animation (?debug=1&ts=50) */
   if (DEBUG && PARAMS.get("ts")) {
@@ -171,12 +172,21 @@
   }
 
   gsap.registerPlugin(ScrollTrigger);
+  /* Mobile browser chrome repeatedly changes the visual viewport height while
+     the visitor scrolls. Treating those toolbar movements as layout resizes
+     makes ScrollTrigger recalculate the whole page mid-gesture, which can
+     visibly pull the page back when a large image is decoding at the same
+     time. Width/orientation changes still refresh normally. */
+  if (ScrollTrigger.config) ScrollTrigger.config({ ignoreMobileResize: true });
 
   /* ============================================================
      LENIS SMOOTH SCROLL
      ============================================================ */
   var lenis = null;
-  if (!RM && typeof Lenis !== "undefined") {
+  /* Keep touch devices on their native compositor-driven scroll path. Lenis
+     adds value for wheel input, but on touch it leaves two scroll states to
+     reconcile during delayed image decoding and mobile viewport changes. */
+  if (!RM && FINE && !MOBILE_PROJECT && typeof Lenis !== "undefined") {
     lenis = new Lenis({ duration: 1.1, smoothWheel: true });
     lenis.on("scroll", ScrollTrigger.update);
     gsap.ticker.add(function (time) {
@@ -820,13 +830,19 @@
     parent.appendChild(item);
   }
 
-  function makeProjectImage(p, className, alt, position) {
+  function makeProjectImage(p, className, alt, position, priority) {
     var img = document.createElement("img");
     img.className = className || "";
     img.src = p.img;
     img.alt = alt || "";
     img.loading = "lazy";
     img.decoding = "async";
+    if (priority) {
+      img.loading = "eager";
+      img.fetchPriority = "high";
+    } else {
+      img.fetchPriority = "low";
+    }
     if (position) img.style.objectPosition = position;
     return img;
   }
@@ -909,8 +925,18 @@
     img.decoding = "async";
     if (im.w) img.width = im.w;
     if (im.h) img.height = im.h;
+    /* The first case-study image is close enough to the fold to fetch now;
+       later images stay lazy. Pre-decoding that first visual prevents the
+       first large raster from landing in the middle of an active gesture. */
+    if (pfImage.serial++ === 0) {
+      img.loading = "eager";
+      img.fetchPriority = "high";
+    } else {
+      img.fetchPriority = "low";
+    }
     return img;
   }
+  pfImage.serial = 0;
 
   function pfTextBox(box, secNum) {
     var variant = box.variant || "body";
@@ -1118,7 +1144,7 @@
 
   function buildGenericContent(page, p) {
     var hero = makeEl("figure", "project-hero project-reveal");
-    hero.appendChild(makeProjectImage(p, "project-hero__img", p.title + " hero image", "center center"));
+    hero.appendChild(makeProjectImage(p, "project-hero__img", p.title + " hero image", "center center", true));
     page.appendChild(hero);
 
     page.appendChild(buildTextBlock(tlPick("Overview", "Tổng quan"), projectLead(p), "project-copy project-copy--center project-reveal"));
@@ -1195,6 +1221,7 @@
 
     page.setAttribute("data-project-slug", projectSlug(p));
     page.innerHTML = "";
+    pfImage.serial = 0;
 
     var intro = makeEl("section", "project-intro");
     var eyebrow = makeEl("div", "project-eyebrow mono");
@@ -1673,6 +1700,10 @@
       function drift(fig) {
         var img = fig.querySelector("img");
         if (!img) return;
+        /* Continuous image transforms compete with raster decoding on mobile;
+           the one-shot reveal below keeps the visual polish without doing
+           work on every touch-scroll frame. */
+        if (MOBILE_PROJECT) return;
         /* extra scale gives the drift headroom so edges never show */
         gsap.set(img, { scale: 1.14 });
         gsap.fromTo(
@@ -1712,6 +1743,19 @@
 
       /* ---- freestyle case study: image bands clip-wipe in, text rises ---- */
       gsap.utils.toArray(".pf-chapter__fig").forEach(function (fig) {
+        if (MOBILE_PROJECT) {
+          gsap.fromTo(
+            fig,
+            { opacity: 0.55 },
+            {
+              opacity: 1,
+              duration: RM ? 0.01 : 0.45,
+              ease: "power2.out",
+              scrollTrigger: { trigger: fig, start: "top 94%", once: true }
+            }
+          );
+          return;
+        }
         gsap.fromTo(
           fig,
           { clipPath: "inset(12% 0% 0% 0%)", webkitClipPath: "inset(12% 0% 0% 0%)", opacity: 0.35 },
@@ -2113,7 +2157,14 @@
 
     /* keep measurements fresh */
     var resizeT = null;
+    var layoutViewportWidth = document.documentElement.clientWidth;
     window.addEventListener("resize", function () {
+      var nextWidth = document.documentElement.clientWidth;
+      var widthChanged = Math.abs(nextWidth - layoutViewportWidth) > 1;
+      /* On touch devices a height-only resize is almost always the address
+         bar opening/closing. Refreshing here was the direct snap-back cause. */
+      if (MOBILE_PROJECT && !widthChanged) return;
+      layoutViewportWidth = nextWidth;
       clearTimeout(resizeT);
       resizeT = setTimeout(function () {
         if (hasWheel) measureWheel();
