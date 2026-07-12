@@ -6,6 +6,14 @@
 (function () {
   "use strict";
 
+  /* ---------- i18n helpers (from js/i18n.js; no-op fallbacks if absent) ---------- */
+  var tlPick = window.tlPick || function (en) { return en; };
+  var tlTitle = window.tlTitle || function (p) { return p.title; };
+  var tlOrigin = window.tlOrigin || function (s) { return s; };
+  var tlCategory = window.tlCategory || function (s) { return s; };
+  var tlSub = window.tlSub || function (s) { return s; };
+  var tlTags = window.tlTags || function (a) { return a || []; };
+
   /* ---------- debug helpers (only active with ?debug=1) ---------- */
   var PARAMS = new URLSearchParams(window.location.search);
   var DEBUG = PARAMS.has("debug");
@@ -395,17 +403,17 @@
       btn.className = "work__row";
       btn.type = "button";
       btn.setAttribute("data-cursor", "");
-      btn.setAttribute("aria-label", p.title + ", " + p.origin + ", " + p.tags.join(", "));
+      btn.setAttribute("aria-label", tlTitle(p) + ", " + tlOrigin(p.origin) + ", " + tlTags(p.tags).join(", "));
 
       var name = document.createElement("span");
       name.className = "work__row-name";
-      name.textContent = p.title;
+      name.textContent = tlTitle(p);
       var origin = document.createElement("span");
       origin.className = "work__row-origin";
-      origin.textContent = p.origin;
+      origin.textContent = tlOrigin(p.origin);
       var scope = document.createElement("span");
       scope.className = "work__row-scope";
-      scope.textContent = p.tags.join(", ");
+      scope.textContent = tlTags(p.tags).join(", ");
 
       btn.appendChild(name);
       btn.appendChild(origin);
@@ -707,7 +715,7 @@
       btn.type = "button";
       btn.setAttribute("data-cursor", "");
       btn.setAttribute("aria-pressed", cat === wheel.filter ? "true" : "false");
-      btn.textContent = cat + " ";
+      btn.textContent = tlCategory(cat) + " ";
       var sup = document.createElement("sup");
       sup.textContent = String(count);
       btn.appendChild(sup);
@@ -792,12 +800,35 @@
   }
 
   function projectLead(p) {
-    var sub = p.subCategory || p.tags.join(", ");
+    var sub = tlSub(p.subCategory) || tlTags(p.tags).join(", ");
+    if (window.TL_LANG === "vi") {
+      return tlTitle(p) + " là một dự án " + tlCategory(p.category).toLowerCase() + " cho " + tlOrigin(p.origin) +
+        ", xoay quanh " + sub.toLowerCase() + ". Bố cục trang trình bày tác phẩm như một case study cô đọng: bối cảnh trước, rồi tới phần hình ảnh làm bằng chứng, và cuối cùng là phân tích tập trung vào các quyết định thiết kế phía sau định hướng cuối cùng.";
+    }
     return p.title + " is a " + p.category.toLowerCase() + " project for " + p.origin +
       ", shaped around " + sub.toLowerCase() + ". The page structure frames the work as a compact case study: context first, then image-led evidence, then a focused breakdown of the design decisions behind the final direction.";
   }
 
   function projectNotes(p) {
+    if (window.TL_LANG === "vi") {
+      var subVi = (tlSub(p.subCategory) || tlTags(p.tags).join(", ")).toLowerCase();
+      return [
+        {
+          title: "Bối cảnh",
+          body: "Dự án bắt đầu từ thế giới hình ảnh và chiến lược của " + tlOrigin(p.origin) +
+            ". Vai trò của nó là làm cho ý tưởng cốt lõi dễ đọc ngay lập tức, đồng thời giữ đủ chi tiết để người xem hiểu được hệ thống, tinh thần và mục đích sử dụng."
+        },
+        {
+          title: "Hướng thiết kế",
+          body: "Định hướng lấy " + subVi +
+            " làm ngôn ngữ chính. Tỷ lệ, nhịp điệu và cách sắp xếp hình ảnh được dùng để giữ cho tác phẩm mang tính biên tập, trực diện và dễ nắm bắt xuyên suốt trang."
+        },
+        {
+          title: "Phân tích dự án",
+          body: "Mỗi phần tiếp theo được dựng như một khối case study có thể tái sử dụng: một khoảnh khắc dẫn dắt bằng hình ảnh, một khung giải thích, và một mảng hình ảnh khép lại. Cùng một khung sườn có thể chứa những ghi chú quy trình sâu hơn khi phần viết dự án hoàn thiện."
+        }
+      ];
+    }
     return [
       {
         title: "Context",
@@ -852,7 +883,7 @@
   function pfTextBox(box, secNum) {
     var variant = box.variant || "body";
     if (variant === "note") {
-      var note = makeEl("p", "pf-note mono");
+      var note = makeEl("p", "pf-note");
       note.textContent = box.body || "";
       return note;
     }
@@ -893,14 +924,14 @@
     });
     var allTexts = (content.text || []).slice();
 
-    /* notes (role / deliverables) render as a full-width caption at the very
-       bottom; every other text box becomes a "chapter". Each chapter pairs
-       its text with ONE hero image side-by-side (always a balanced row), and
-       any additional images for that chapter flow into a full-width gallery
-       band right below — so text is never marooned on an empty screen, yet a
-       tall column of photos is never crammed beside a couple of sentences. */
+    /* notes (role / deliverables) are rendered at the top of the intro by the
+       page builder, so here every remaining text box becomes a "chapter". Each
+       chapter pairs its text with ONE hero image side-by-side (always a
+       balanced row), and any additional images for that chapter flow into a
+       full-width gallery band right below — so text is never marooned on an
+       empty screen, yet a tall column of photos is never crammed beside a
+       couple of sentences. */
     var chapters = allTexts.filter(function (t) { return t.variant !== "note"; });
-    var notes = allTexts.filter(function (t) { return t.variant === "note"; });
     var C = chapters.length;
 
     /* no text at all — fall back to a simple stack of image bands */
@@ -960,10 +991,6 @@
       }
     });
     page.appendChild(story);
-
-    notes.forEach(function (box) {
-      page.appendChild(pfTextBox(box, secNum));
-    });
   }
 
   /* the original generic template — used for projects that don't yet have
@@ -973,7 +1000,7 @@
     hero.appendChild(makeProjectImage(p, "project-hero__img", p.title + " hero image", "center center"));
     page.appendChild(hero);
 
-    page.appendChild(buildTextBlock("Overview", projectLead(p), "project-copy project-copy--center project-reveal"));
+    page.appendChild(buildTextBlock(tlPick("Overview", "Tổng quan"), projectLead(p), "project-copy project-copy--center project-reveal"));
 
     var fullOne = makeEl("figure", "project-media project-reveal");
     fullOne.appendChild(makeProjectImage(p, "project-media__img", p.title + " project image", "center center"));
@@ -1037,11 +1064,11 @@
       try { history.replaceState(null, "", projectUrl(p)); } catch (e) {}
     }
 
-    document.title = p.title + " - " + p.origin + " - Thanh Lam";
+    document.title = tlTitle(p) + " - " + tlOrigin(p.origin) + " - Thanh Lam";
     var metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) metaDescription.setAttribute("content", projectLead(p));
     var ogTitle = document.querySelector('meta[property="og:title"]');
-    if (ogTitle) ogTitle.setAttribute("content", p.title + " - " + p.origin);
+    if (ogTitle) ogTitle.setAttribute("content", tlTitle(p) + " - " + tlOrigin(p.origin));
     var ogImage = document.querySelector('meta[property="og:image"]');
     if (ogImage) ogImage.setAttribute("content", (hasContent && content.images[0].src) || p.img);
 
@@ -1050,52 +1077,68 @@
 
     var intro = makeEl("section", "project-intro");
     var eyebrow = makeEl("div", "project-eyebrow mono");
-    var back = makeEl("a", "project-back", "BACK TO PORTFOLIO");
+    var back = makeEl("a", "project-back", tlPick("BACK TO PORTFOLIO", "QUAY LẠI PORTFOLIO"));
     back.href = "/";
     back.setAttribute("data-cursor", "");
     eyebrow.appendChild(back);
     intro.appendChild(eyebrow);
 
     var meta = makeEl("div", "project-meta");
-    appendMeta(meta, "PROJECT NAME", p.title);
-    appendMeta(meta, "ORIGIN", p.origin);
-    appendMeta(meta, "DATE", p.date || String(p.year));
-    appendMeta(meta, "SUB CATEGORY", p.subCategory || p.tags.join(", "));
+    appendMeta(meta, tlPick("PROJECT NAME", "TÊN DỰ ÁN"), tlTitle(p));
+    appendMeta(meta, tlPick("ORIGIN", "THƯƠNG HIỆU"), tlOrigin(p.origin));
+    appendMeta(meta, tlPick("DATE", "NĂM"), p.date || String(p.year));
+    appendMeta(meta, tlPick("SUB CATEGORY", "HẠNG MỤC"), tlSub(p.subCategory) || tlTags(p.tags).join(", "));
     intro.appendChild(meta);
 
     var titleRow = makeEl("div", "project-title-row");
     titleRow.appendChild(makeEl("span", "project-number mono", "BN " + pad2(p.num)));
-    titleRow.appendChild(makeEl("h1", "project-title", p.title));
+    titleRow.appendChild(makeEl("h1", "project-title", tlTitle(p)));
     intro.appendChild(titleRow);
+
+    /* pick the Vietnamese case-study text when VI is active (falls back to
+       the English text array if this project has no VI content) */
+    var contentText = (window.TL_LANG === "vi" && window.PROJECT_CONTENT_VI &&
+      PROJECT_CONTENT_VI[projectSlug(p)] && PROJECT_CONTENT_VI[projectSlug(p)].text) ||
+      (hasContent ? content.text : null);
+
+    /* role / deliverables note now sits at the top of the intro, right under
+       the project name, in a readable sans-serif band (it used to be buried
+       at the very bottom of the case study) */
+    if (hasContent && contentText) {
+      contentText.forEach(function (t) {
+        if (t.variant === "note") intro.appendChild(pfTextBox(t, 0));
+      });
+    }
+
     page.appendChild(intro);
 
     /* the middle of the page: a real woven case study, or the generic
        placeholder template for projects without authored content yet */
     if (hasContent) {
-      buildFreestyleContent(page, content, p);
+      buildFreestyleContent(page, { images: content.images, text: contentText }, p);
     } else {
       buildGenericContent(page, p);
     }
 
     var outro = makeEl("nav", "project-next project-reveal");
     outro.setAttribute("aria-label", "More projects");
-    outro.appendChild(makeEl("span", "project-next__eyebrow mono", "MORE PROJECTS"));
+    outro.appendChild(makeEl("span", "project-next__eyebrow mono", tlPick("MORE PROJECTS", "DỰ ÁN KHÁC")));
     var nextGrid = makeEl("div", "project-next__grid");
     nextTwo.forEach(function (np) {
       var card = makeEl("a", "project-next__card");
       card.href = projectUrl(np);
       card.setAttribute("data-cursor", "");
-      card.setAttribute("aria-label", np.title + ", " + np.origin + ", " + (np.date || np.year));
+      card.setAttribute("aria-label", tlTitle(np) + ", " + tlOrigin(np.origin) + ", " + (np.date || np.year));
 
       var media = makeEl("div", "project-next__media");
       media.appendChild(makeProjectImage(np, "", "", "center center"));
       card.appendChild(media);
       card.appendChild(makeEl("div", "project-next__shade"));
 
-      card.appendChild(makeEl("span", "project-next__name", np.title));
+      card.appendChild(makeEl("span", "project-next__name", tlTitle(np)));
       card.appendChild(makeEl("span", "project-next__year mono", String(np.date || np.year)));
       card.appendChild(makeEl("span", "project-next__code mono", "BN " + pad2(np.num)));
-      card.appendChild(makeEl("span", "project-next__cat mono", np.category));
+      card.appendChild(makeEl("span", "project-next__cat mono", tlCategory(np.category)));
       nextGrid.appendChild(card);
     });
     outro.appendChild(nextGrid);
@@ -1116,7 +1159,7 @@
       row.setAttribute("data-cursor", "");
       row.setAttribute("tabindex", "0");
       row.setAttribute("role", "button");
-      row.setAttribute("aria-label", p.title + ", " + p.origin + ", " + p.year);
+      row.setAttribute("aria-label", tlTitle(p) + ", " + tlOrigin(p.origin) + ", " + p.year);
 
       var num = document.createElement("span");
       num.className = "archive__num";
@@ -1124,15 +1167,15 @@
 
       var name = document.createElement("span");
       name.className = "archive__name";
-      name.textContent = p.title;
+      name.textContent = tlTitle(p);
 
       var origin = document.createElement("span");
       origin.className = "archive__origin";
-      origin.textContent = p.origin;
+      origin.textContent = tlOrigin(p.origin);
 
       var cat = document.createElement("span");
       cat.className = "archive__cat";
-      cat.textContent = p.category + " — " + p.tags.join(", ");
+      cat.textContent = tlCategory(p.category) + " — " + tlTags(p.tags).join(", ");
 
       var year = document.createElement("span");
       year.className = "archive__year";
@@ -1208,7 +1251,7 @@
         document.body.classList.add("menu-open");
         btn.setAttribute("aria-expanded", "true");
         panel.setAttribute("aria-hidden", "false");
-        if (label) label.textContent = "close";
+        if (label) label.textContent = tlPick("close", "đóng");
         gsap.killTweensOf([panel, links, foot]);
         gsap.set(panel, { visibility: "visible" });
         /* spring pop from the button corner */
@@ -1233,7 +1276,7 @@
         document.body.classList.remove("menu-open");
         btn.setAttribute("aria-expanded", "false");
         panel.setAttribute("aria-hidden", "true");
-        if (label) label.textContent = "menu";
+        if (label) label.textContent = tlPick("menu", "menu");
         gsap.killTweensOf([panel, links, foot]);
         gsap.to(panel, {
           scale: 0.5,

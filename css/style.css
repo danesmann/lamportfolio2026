@@ -1,13 +1,12 @@
 /* ============================================================
    THANH LAM — PORTFOLIO
-   Dark editorial design system · Inter + Departure Mono
+   Dark editorial design system · Inter + Haskoy
    ============================================================ */
 
 @font-face {
-  font-family: "Departure Mono";
-  src: url("../assets/fonts/DepartureMono-Regular.woff2") format("woff2"),
-       url("../assets/fonts/DepartureMono-Regular.woff") format("woff");
-  font-weight: 400;
+  font-family: "Haskoy";
+  src: url("../assets/fonts/Haskoy-Medium.woff2") format("woff2");
+  font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
@@ -21,7 +20,7 @@
   --line: rgba(242, 239, 233, 0.14);
   --accent: #0057FF;
   --font-sans: "Inter", "Segoe UI", Helvetica, Arial, sans-serif;
-  --font-mono: "Departure Mono", Consolas, "Courier New", monospace;
+  --font-mono: "Haskoy", Consolas, "Courier New", monospace;
   --pad: clamp(16px, 2.6vw, 44px);
   --wheel-item-h: clamp(40px, 5.6vh, 58px);
   --nav-h: 72px;
@@ -200,9 +199,38 @@ body.menu-open .menu-btn { background: #0a0a0a; color: #fff; }
 }
 .menu-panel__foot a { color: rgba(10, 10, 10, 0.75); }
 .menu-panel__foot a:hover { color: var(--accent); }
+
+/* language switch — sits in the panel's empty top-left band, aligned with
+   the close button opposite it */
+.menu-lang {
+  position: absolute;
+  top: 44px;
+  left: 44px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.menu-lang__btn {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(10, 10, 10, 0.4);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.22s;
+}
+.menu-lang__btn:hover { color: #0a0a0a; }
+.menu-lang__btn.is-active { color: var(--accent); }
+.menu-lang__sep { color: rgba(10, 10, 10, 0.25); font-size: 12px; }
+
 /* on small screens the panel covers the logo — flip it dark for contrast */
 @media (max-width: 560px) {
   body.menu-open .nav__logo-img { filter: invert(1); }
+  .menu-lang { top: 34px; left: 28px; }
 }
 
 /* ---------- shared section head ---------- */
@@ -797,13 +825,16 @@ body.menu-open .menu-btn { background: #0a0a0a; color: #fff; }
   color: var(--muted);
 }
 .pf-bullets li::before { content: "—"; position: absolute; left: 0; color: var(--accent); }
+/* role / deliverables note — now sits at the top inside the light intro,
+   directly under the project title, in readable sans-serif (was a faint
+   monospace caption at the very bottom of the page) */
 .pf-note {
-  padding: clamp(28px, 5vh, 60px) var(--pad) clamp(48px, 8vh, 90px);
-  max-width: 940px;
-  margin: 0 auto;
-  text-align: center;
-  color: var(--faint);
-  line-height: 1.7;
+  max-width: 1060px;
+  font-family: var(--font-sans);
+  font-size: clamp(12px, 0.95vw, 15px);
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  color: rgba(32, 32, 29, 0.66);
 }
 
 @media (max-width: 900px) {
@@ -1088,6 +1119,10 @@ body.menu-open .menu-btn { background: #0a0a0a; color: #fff; }
 .svc-word__scroll { display: block; will-change: transform; }
 .svc-word__visible { display: block; }
 .svc-word__hidden { position: absolute; left: 0; top: -100%; }
+/* Vietnamese stacks a tone mark ABOVE the circumflex on uppercase caps (Ế, Ậ,
+   Ố …), plus a dot below — taller than Latin caps. Give the word box enough
+   line-height that both extremes clear the 2% clip-path that trims the title. */
+:root[lang="vi"] .svc-word { line-height: 1.45; }
 
 .svc-desc {
   position: absolute;
@@ -1137,11 +1172,14 @@ body.menu-open .menu-btn { background: #0a0a0a; color: #fff; }
   align-items: center;
 }
 .svc-card__top p {
-  font-size: 8vw;
-  line-height: 0.9;
-  letter-spacing: -0.04em;
+  /* titles are full phrases now (not one-word labels), so the type steps
+     down from 8vw and is allowed to wrap to a second line beside the icon */
+  font-size: clamp(2rem, 4.6vw, 4.75rem);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
   font-weight: 700;
   text-transform: uppercase;
+  max-width: 62vw;
 }
 .svc-card__icon {
   width: 6vw;
@@ -1287,8 +1325,8 @@ body.menu-open .menu-btn { background: #0a0a0a; color: #fff; }
     padding: 12dvh 1rem 2.5rem;
   }
   .svc-card__top { order: 1; }
-  .svc-card__top p { font-size: 11vw; }
-  .svc-card__icon { width: 11vw; }
+  .svc-card__top p { font-size: 7.5vw; max-width: none; }
+  .svc-card__icon { width: 8vw; }
   .svc-card__showcase {
     order: 2;
     position: static;

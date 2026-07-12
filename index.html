@@ -35,7 +35,7 @@
     } catch (e) {}
   </script>
 </head>
-<body>
+<body data-i18n-title="doc_home">
 
   <!-- grain overlay -->
   <div class="noise" aria-hidden="true"></div>
@@ -48,7 +48,7 @@
 
   <!-- ============ NAV ============ -->
   <header class="nav" id="nav">
-    <a class="nav__logo" href="/" aria-label="Thanh Lam — home" data-cursor>
+    <a class="nav__logo" href="/" aria-label="Thanh Lam — home" data-i18n-aria="nav_home_aria" data-cursor>
       <img class="nav__logo-img" src="assets/logo.svg" alt="" />
     </a>
     <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="menuPanel" data-cursor>
@@ -59,11 +59,16 @@
 
   <!-- expanding white menu -->
   <div class="menu-panel" id="menuPanel" aria-hidden="true">
-    <p class="menu-panel__tag mono">NAVIGATION</p>
+    <div class="menu-lang mono" role="group" aria-label="Language / Ngôn ngữ">
+      <button type="button" class="menu-lang__btn" data-lang-set="vi">VIE</button>
+      <span class="menu-lang__sep" aria-hidden="true">/</span>
+      <button type="button" class="menu-lang__btn" data-lang-set="en">ENG</button>
+    </div>
+    <p class="menu-panel__tag mono" data-i18n="nav_navigation">NAVIGATION</p>
     <nav class="menu-panel__links" aria-label="Site">
-      <a class="menu-panel__link" href="#top"><sup class="mono">01</sup>Selected Work</a>
-      <a class="menu-panel__link" href="/archive"><sup class="mono">02</sup>ARCHIVE</a>
-      <a class="menu-panel__link" href="/about"><sup class="mono">03</sup>ABOUT</a>
+      <a class="menu-panel__link" href="#top"><sup class="mono">01</sup><span data-i18n="nav_work">Selected Work</span></a>
+      <a class="menu-panel__link" href="/archive"><sup class="mono">02</sup><span data-i18n="nav_archive">ARCHIVE</span></a>
+      <a class="menu-panel__link" href="/about"><sup class="mono">03</sup><span data-i18n="nav_about">ABOUT</span></a>
     </nav>
     <div class="menu-panel__foot mono">
       <a href="mailto:thanhlamforwork2807@gmail.com">THANHLAMFORWORK2807@GMAIL.COM</a>
@@ -75,7 +80,7 @@
 
     <!-- ============ SELECTED WORK — WHEEL ============ -->
     <section class="work" id="work">
-      <h1 class="sr-only">Selected work</h1>
+      <h1 class="sr-only" data-i18n="home_sr">Selected work</h1>
 
       <div class="work__stage" id="workWrap">
         <div class="work__bg" id="workBg" aria-hidden="true"></div>
@@ -95,6 +100,7 @@
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.min.js"></script>
 
   <!-- site -->
+  <script src="js/i18n.js"></script>
   <script src="js/data.js"></script>
   <script src="js/main.js"></script>
 </body>
