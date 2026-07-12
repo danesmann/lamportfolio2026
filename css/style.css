@@ -1598,6 +1598,33 @@ body.menu-open .menu-btn { background: #0a0a0a; color: #fff; }
   .svc-card__bottom > div:last-child { display: none; }
 }
 
+/* Touch-device wall fall: native sticky stacking avoids ScrollTrigger pin
+   re-parenting and 3D perspective work while the browser chrome is moving. */
+@media (max-width: 1024px) and (min-height: 601px) {
+  .svc-cards {
+    padding-bottom: 35svh;
+    overflow: visible;
+  }
+  .svc-card,
+  .svc-card:not(:last-child) {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    min-height: 0;
+    margin-bottom: 0;
+  }
+  .svc-card__wrapper {
+    height: 100svh;
+    overflow: clip;
+    perspective: none;
+  }
+  .svc-card__content {
+    transform-style: flat;
+    backface-visibility: hidden;
+    will-change: transform, opacity;
+  }
+}
+
 /* ============================================================
    PAGE TRANSITION — double-slide curtain + logo stinger
    accent slide leads, black slide (with the logo) follows;

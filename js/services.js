@@ -1,7 +1,7 @@
 /* ============================================================
    THANH LAM — ABOUT / SERVICES PAGE
    Hero reveals + mouse parallax + scroll-out
-   Wall-fall pinned service cards (desktop)
+   Wall-fall service cards (pinned desktop + native-sticky touch)
    Runs after main.js (gsap / ScrollTrigger / Lenis already set up)
    ============================================================ */
 
@@ -25,6 +25,12 @@
      preference, same policy as main.js). Use ?rm=1 to simulate reduced. */
   var RM = PARAMS.get("rm") === "1";
   var FINE = window.matchMedia("(pointer: fine)").matches;
+
+  /* Mobile browser chrome changes the visual viewport height while scrolling.
+     Ignore those tiny resize events so card triggers are not rebuilt mid-swipe. */
+  if (!FINE && ScrollTrigger && ScrollTrigger.config) {
+    ScrollTrigger.config({ ignoreMobileResize: true });
+  }
 
   /* without real GSAP everything stays visible in its natural position —
      no hidden states are ever applied, so just bail out */
@@ -225,7 +231,7 @@
   });
 
   /* ============================================================
-     SERVICE CARDS — pinned wall-fall (desktop only)
+     SERVICE CARDS — responsive wall-fall
      ============================================================ */
   var cards = document.querySelectorAll(".svc-card");
 
@@ -241,7 +247,7 @@
 
   /* pin + fall needs a viewport tall enough to show a full card — short
      landscape screens (>=768px wide but <=600px tall) use the static stack */
-  mm.add("(min-width: 768px) and (min-height: 601px)", function () {
+  mm.add("(min-width: 1025px) and (min-height: 601px)", function () {
     /* the last card needs 2 viewport-heights of scroll room past its top;
        the section's run-out padding tops up whatever the footer can't give */
     var cardsSection = document.querySelector(".svc-cards");
@@ -344,9 +350,71 @@
     };
   });
 
-  /* mobile + short-landscape: static stack — texts and images fade up
-     as they enter */
-  mm.add("(max-width: 767px), (max-height: 600px)", function () {
+  /* Touch layouts use native position:sticky rather than JS pinning. Only
+     compositor-friendly 2D transforms are scrubbed, preserving the falling
+     feel without the expensive desktop perspective work. */
+  mm.add("(max-width: 1024px) and (min-height: 601px)", function () {
+    cards.forEach(function (card, index) {
+      var content = card.querySelector(".svc-card__content");
+      if (!content) return;
+
+      var parts = card.querySelectorAll(
+        ".svc-card__top, .svc-card__showcase-item, .svc-card__bottom"
+      );
+      card.style.zIndex = String(index + 1);
+      gsap.set(parts, { opacity: 0, y: 24 });
+
+      ScrollTrigger.create({
+        trigger: card,
+        start: "top 82%",
+        once: true,
+        onEnter: function () {
+          gsap.to(parts, {
+            opacity: 1,
+            y: 0,
+            duration: 0.65,
+            stagger: 0.07,
+            ease: "power3.out",
+            overwrite: "auto"
+          });
+        }
+      });
+
+      gsap.fromTo(
+        content,
+        { yPercent: 0, scale: 1, rotationZ: 0, autoAlpha: 1 },
+        {
+          yPercent: 16,
+          scale: 0.94,
+          rotationZ: index % 2 ? 1.25 : -1.25,
+          autoAlpha: 0.28,
+          ease: "none",
+          force3D: true,
+          scrollTrigger: {
+            trigger: card,
+            start: "top top",
+            end: "bottom top",
+            scrub: 0.18,
+            invalidateOnRefresh: true
+          }
+        }
+      );
+    });
+
+    return function () {
+      cards.forEach(function (card) {
+        card.style.zIndex = "";
+        gsap.set(card.querySelector(".svc-card__content"), { clearProps: "all" });
+        gsap.set(
+          card.querySelectorAll(".svc-card__top, .svc-card__showcase-item, .svc-card__bottom"),
+          { clearProps: "opacity,transform" }
+        );
+      });
+    };
+  });
+
+  /* Very short landscape screens cannot fit a useful sticky card. */
+  mm.add("(max-height: 600px)", function () {
     cards.forEach(function (card) {
       var parts = card.querySelectorAll(
         ".svc-card__top, .svc-card__showcase-item, .svc-card__bottom"
