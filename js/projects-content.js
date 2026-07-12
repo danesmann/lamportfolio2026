@@ -415,38 +415,38 @@ window.PROJECT_CONTENT = {
                       "images":  [
                                      {
                                          "src":  "assets/img/lubylab-2/01.webp",
-                                         "w":  2000,
-                                         "h":  1123
+                                         "w":  1673,
+                                         "h":  940
                                      },
                                      {
                                          "src":  "assets/img/lubylab-2/02.webp",
-                                         "w":  2000,
-                                         "h":  1123
+                                         "w":  1673,
+                                         "h":  940
                                      },
                                      {
                                          "src":  "assets/img/lubylab-2/03.webp",
-                                         "w":  2000,
-                                         "h":  1123
+                                         "w":  1673,
+                                         "h":  940
                                      },
                                      {
                                          "src":  "assets/img/lubylab-2/04.webp",
-                                         "w":  2000,
-                                         "h":  1123
+                                         "w":  1673,
+                                         "h":  940
                                      },
                                      {
                                          "src":  "assets/img/lubylab-2/05.webp",
-                                         "w":  2000,
-                                         "h":  1123
+                                         "w":  1673,
+                                         "h":  940
                                      },
                                      {
                                          "src":  "assets/img/lubylab-2/06.webp",
-                                         "w":  2000,
-                                         "h":  1123
+                                         "w":  1673,
+                                         "h":  940
                                      },
                                      {
                                          "src":  "assets/img/lubylab-2/07.webp",
-                                         "w":  2000,
-                                         "h":  3563
+                                         "w":  939,
+                                         "h":  1674
                                      },
                                      {
                                          "src":  "assets/img/lubylab-2/08.webp",
@@ -455,23 +455,23 @@ window.PROJECT_CONTENT = {
                                      },
                                      {
                                          "src":  "assets/img/lubylab-2/09.webp",
-                                         "w":  2000,
-                                         "h":  1333
+                                         "w":  1536,
+                                         "h":  1024
                                      },
                                      {
                                          "src":  "assets/img/lubylab-2/10.webp",
-                                         "w":  2000,
-                                         "h":  1333
+                                         "w":  1023,
+                                         "h":  1537
                                      },
                                      {
                                          "src":  "assets/img/lubylab-2/11.webp",
-                                         "w":  2000,
-                                         "h":  1333
+                                         "w":  1537,
+                                         "h":  1023
                                      },
                                      {
                                          "src":  "assets/img/lubylab-2/12.webp",
-                                         "w":  2000,
-                                         "h":  1333
+                                         "w":  1536,
+                                         "h":  1024
                                      },
                                      {
                                          "src":  "assets/img/lubylab-2/13.webp",
@@ -945,54 +945,103 @@ window.PROJECT_CONTENT = {
             }
         ]
     },
-    "lubylab-1":  {
-        "images":  [
-            { "src": "assets/img/lubylab-1/01.webp", "w": 1080, "h": 1350 },
-            { "src": "assets/img/lubylab-1/02.webp", "w": 1080, "h": 1350 },
-            { "src": "assets/img/lubylab-1/03.webp", "w": 1080, "h": 1350 },
-            { "src": "assets/img/lubylab-1/04.webp", "w": 1080, "h": 1350 },
-            { "src": "assets/img/lubylab-1/05.webp", "w": 1080, "h": 1350 },
-            { "src": "assets/img/lubylab-1/06.webp", "w": 1080, "h": 1350 },
-            { "src": "assets/img/lubylab-1/07.webp", "w": 1080, "h": 1350 },
-            { "src": "assets/img/lubylab-1/08.webp", "w": 1080, "h": 1350 },
-            { "src": "assets/img/lubylab-1/09.webp", "w": 1287, "h": 890 },
-            { "src": "assets/img/lubylab-1/10.webp", "w": 1080, "h": 1350 },
-            { "src": "assets/img/lubylab-1/11.webp", "w": 1080, "h": 1350 }
+    "lubylab-1": {
+        "images": [
+            { "src": "assets/img/lubylab-1/01.webp", "w": 8001, "h": 3750 },
+            { "src": "assets/img/lubylab-1/02.webp", "w": 3751, "h": 3750 },
+            { "src": "assets/img/lubylab-1/03.webp", "w": 5446, "h": 3750 },
+            { "src": "assets/img/lubylab-1/04.webp", "w": 8001, "h": 3750 },
+            { "src": "assets/img/lubylab-1/05.webp", "w": 3750, "h": 5460 },
+            { "src": "assets/img/lubylab-1/06.webp", "w": 3750, "h": 5460 },
+            { "src": "assets/img/lubylab-1/07.webp", "w": 3750, "h": 5460 },
+            { "src": "assets/img/lubylab-1/08.webp", "w": 3750, "h": 3834 },
+            { "src": "assets/img/lubylab-1/09.webp", "w": 3750, "h": 3834 },
+            { "src": "assets/img/lubylab-1/10.webp", "w": 3750, "h": 3834 },
+            { "src": "assets/img/lubylab-1/11.webp", "w": 4500, "h": 5625 },
+            { "src": "assets/img/lubylab-1/12.webp", "w": 4500, "h": 5625 },
+            { "src": "assets/img/lubylab-1/13.webp", "w": 4500, "h": 5625 },
+            { "src": "assets/img/lubylab-1/14.webp", "w": 4500, "h": 5625 },
+            { "src": "assets/img/lubylab-1/15.webp", "w": 4500, "h": 5625 }
         ],
-        "text":  [
+        "layout": [
             {
-                "variant":  "lead",
-                "tagline":  "One brand, built once, engineered to sell in two rooms at once.",
-                "body":  "Lubylab had strong, science-led formulations \u2014 NAD+ and GF booster creams, vitamin C powder capsules \u2014 and almost no brand to carry them. I built the brand and trade system that opened its retail and export doors: a Guardian Vietnam listing in review, and exclusive distributors signed in Turkey and Germany."
+                "type": "intro",
+                "label": "01 \u2014 Market Context",
+                "heading": "The Credibility of Korean Dermatology Gap: Understanding the Vietnamese Landscape",
+                "paragraphs": [
+                    "Vietnam's skincare market is booming \u2014 but saturated with generic marketing. Success requires shifting from \"Korean prestige\" to local relevance, addressing customer purchase behavior, peer-driven trust and accessible selling platforms.",
+                    "Lubylab had strong, science-led formulations, built from the concept of high-efficacy treatment just like going to the spa. The brand had already gained leverage by selling through Ready Young, a leading pharmacy franchise in Korea."
+                ],
+                "images": [0]
             },
             {
-                "variant":  "section",
-                "heading":  "Challenge",
-                "body":  "Strong formulations, almost no brand \u2014 a problem in two directions at once. Consumers had no reason to trust an unfamiliar name in a crowded K-beauty aisle. And trade partners \u2014 franchise chains, retail buyers, overseas distributors \u2014 won't take on a product whose brand can't survive a shelf, a pitch deck, or a market they've never sold in.\n\nMost teams treat these as separate jobs. They aren't: a buyer's confidence is downstream of consumer desire, and consumer desire is downstream of a brand that looks like it knows what it's doing."
+                "type": "challenge",
+                "label": "02 \u2014 Challenge",
+                "heading": "Challenges",
+                "paragraphs": [
+                    "Strong formulations, many SKUs, but almost no marketing in Vietnam \u2014 a problem in two directions at once. Consumers had no idea what was behind Lubylab, an unfamiliar name in a crowded K-beauty aisle.",
+                    "Both problems were real. But the sharper framing \u2014 the one that makes this a strategy case rather than a content case \u2014 was that the job was never simply to get more attention. It was converting transaction into comprehension."
+                ],
+                "bullets": [
+                    "Nobody understands our concept.",
+                    "Nobody understands why we have so many hero SKUs."
+                ],
+                "images": [3]
             },
             {
-                "variant":  "section",
-                "heading":  "Strategy",
-                "body":  "One brand, built once, engineered to work in both rooms. I positioned Lubylab on clinical credibility \u2014 the single asset that pays off for both audiences. To the consumer it says this is real science, not a trend; to the buyer it says this brand is legible, exportable, and won't embarrass you on your shelf.\n\nBrand marketing and trade marketing then ran in parallel rather than in sequence: every consumer-facing asset doubled as trade evidence, and every trade conversation fed back into how the brand explained itself."
+                "type": "solution",
+                "label": "03 \u2014 Solution",
+                "heading": "Solution",
+                "paragraphs": [
+                    "Elevate the brand voice through striking visuals, then deliver the product through a structured, concept-led brand system. Every asset runs backwards: outcome first, active second, specification last.",
+                    "On the consumer channel, localized social content for the Vietnamese market teaches before it sells \u2014 problem-led hooks, ingredient reasoning, ritual over promise \u2014 giving the brand a real consumer story rather than an imagined one."
+                ],
+                "images": [6, 5, 4]
             },
             {
-                "variant":  "section",
-                "heading":  "Execution",
-                "body":  "The brand system is a restrained visual language \u2014 laboratory glassware, mirror-silver packaging and near-total monochrome, broken only by the single yellow of the vitamin C sphere. Oversized editorial typography (\"Why do your skin ages\", \"Result with pure radiance\") turns product education into design, so ingredient science reads as premium rather than technical.\n\nOn the consumer channel, localized social content for the Vietnamese market teaches before it sells \u2014 problem-led hooks, ingredient reasoning, ritual over promise \u2014 giving the brand a real consumer story rather than an imagined one. For trade and export, I translated the same system into the B2B layer: brand and business proposals for foreign partners, and direct relationship management with international buyers, walking them through the positioning, the product logic and the commercial case until they understood Lubylab as a brand, not a shipment."
+                "type": "trade",
+                "label": "04 \u2014 Brand to Business",
+                "heading": "The same system, translated for trade",
+                "paragraphs": [
+                    "For trade and export, I translated the same system into the B2B layer: brand and business proposals for foreign partners, and direct relationship management with international buyers, walking them through the positioning, product logic and commercial case until they understood Lubylab as a brand, not a shipment."
+                ],
+                "images": [1, 2]
             },
             {
-                "variant":  "section",
-                "heading":  "Results",
-                "body":  "One brand foundation now serves consumer marketing, franchise and retail applications, and B2B export from the same source of truth.",
-                "bullets":  [
-                    "Guardian Vietnam \u2014 supported the retail listing application, currently in review.",
-                    "Turkey & Germany \u2014 sourced and secured exclusive export distribution partners.",
-                    "A single system doing the work of many: consumer story, trade evidence and export pitch, all from one place."
+                "type": "execution",
+                "label": "05 \u2014 Execution",
+                "heading": "Execution",
+                "paragraphs": [
+                    "The insight: the SKU architecture is the concept. Reverse Engineering is not a tagline sitting on top of the products \u2014 the ladder is the proof of it. Stop explaining the concept. Make people climb it.",
+                    "Instagram is the main platform for building meaning: aesthetic-led discovery, editorial stills, ladder carousels and five-to-eight-second texture Reels with no voice-over and mono captions. Saves and shares become signals of comprehension."
+                ],
+                "images": [11, 12, 14, 13, 10],
+                "afterBullets": [
+                    "The Backwards Ad \u2014 result headline, active revealed, mono specification.",
+                    "The Ladder \u2014 \"Which one is you?\" diagnostic carousels that directly attack the problem.",
+                    "The Evidence \u2014 mono specification cards with clinically validated actives, named and quantified.",
+                    "The Room \u2014 pure art direction: laboratory editorial, brand equity, no CTA."
                 ]
             },
             {
-                "variant":  "note",
-                "body":  "Role: Brand & Trade Marketing Lead \u00b7 Timeline: 2025\u2013ongoing \u00b7 Deliverables: brand positioning & visual system, product key visuals, social content (VN), business & brand proposals, partner relations \u00b7 Scope: brand marketing, trade marketing, international B2B development"
+                "type": "results",
+                "label": "06 \u2014 Results",
+                "heading": "Results",
+                "paragraphs": [
+                    "One brand foundation now serves consumer marketing, franchise and retail applications, and B2B export from the same source of truth."
+                ],
+                "bullets": [
+                    "Guardian Vietnam \u2014 supported the retail listing application, currently in review.",
+                    "Trade Marketing \u2014 sourced and secured exclusive export distribution partners.",
+                    "A single system doing the work of many: consumer story, trade evidence and export pitch, all from one place."
+                ],
+                "images": [7, 9, 8]
+            }
+        ],
+        "text": [
+            {
+                "variant": "note",
+                "body": "Role: Brand & Trade Marketing Lead \u00b7 Timeline: 2025\u2013ongoing \u00b7 Deliverables: brand positioning & visual system, product key visuals, social content (VN), business & brand proposals, partner relations \u00b7 Scope: brand marketing, trade marketing, international B2B development"
             }
         ]
     },

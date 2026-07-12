@@ -149,11 +149,12 @@
   var MARKETING_CASE_STUDY_ORDER = {
     "lubylab-1": 1,
     "lubylab-2": 2,
-    "biolotus": 3,
-    "mandala-hotel": 4,
-    "dimsum-corner": 5,
-    "tedxbuv": 6,
-    "fae-beauty": 7
+    "lubylab-3": 3,
+    "biolotus": 4,
+    "mandala-hotel": 5,
+    "dimsum-corner": 6,
+    "tedxbuv": 7,
+    "fae-beauty": 8
   };
   /* the work wheel skips projects flagged archiveOnly — they live only in the
      full archive table; the archive itself still lists every project */
@@ -949,11 +950,42 @@
     return fig;
   }
 
+  function buildLubylab3Content(page, content, p) {
+    var images = content.images.map(function (im) {
+      return { src: im.src, w: im.w, h: im.h, o: pfOrient(im) };
+    });
+    var chapters = (content.text || []).filter(function (t) { return t.variant !== "note"; });
+    var imageGroups = [images.slice(0, 3), images.slice(3, 5), images.slice(5, 9)];
+    var story = makeEl("section", "pf-story lubylab-3__story");
+    var secNum = 0;
+
+    chapters.forEach(function (box, index) {
+      if (box.variant === "section") secNum++;
+      var textRow = makeEl("section", "pf-chapter pf-chapter--solo lubylab-3__text");
+      var textCol = makeEl("div", "pf-chapter__text");
+      textCol.appendChild(pfTextBox(box, secNum));
+      textRow.appendChild(textCol);
+      story.appendChild(textRow);
+
+      var group = imageGroups[index] || [];
+      if (!group.length) return;
+      var gallery = makeEl("section", "pf-gallery lubylab-3__gallery lubylab-3__gallery--" + group.length);
+      group.forEach(function (im) { gallery.appendChild(pfFigure(im, p)); });
+      story.appendChild(gallery);
+    });
+    page.appendChild(story);
+  }
+
   function buildFreestyleContent(page, content, p) {
     var imgs = content.images.map(function (im) {
       return { src: im.src, w: im.w, h: im.h, o: pfOrient(im) };
     });
     var allTexts = (content.text || []).slice();
+
+    if (projectSlug(p) === "lubylab-3") {
+      buildLubylab3Content(page, content, p);
+      return;
+    }
 
     /* notes (role / deliverables) are rendered at the top of the intro by the
        page builder, so here every remaining text box becomes a "chapter". Each
@@ -1026,6 +1058,64 @@
 
   /* the original generic template — used for projects that don't yet have
      real content in window.PROJECT_CONTENT (placeholder copy + one image) */
+  /* Lubylab's new case study follows the supplied document exactly: each
+     written chapter owns an explicit image group instead of sharing an
+     automatically distributed pool with the rest of the portfolio. */
+  function buildLubylabCaseStudy(page, content, p) {
+    var images = content.images.map(function (im) {
+      return { src: im.src, w: im.w, h: im.h, o: pfOrient(im) };
+    });
+    var story = makeEl("section", "lubylab-case");
+
+    (content.layout || []).forEach(function (block) {
+      var section = makeEl("section", "lubylab-case__block lubylab-case__block--" + block.type);
+      section.id = "lubylab-" + block.type;
+      var copy = makeEl("div", "lubylab-case__copy pf-text");
+
+      if (block.label) copy.appendChild(makeEl("span", "lubylab-case__label mono", block.label));
+      if (block.heading) copy.appendChild(makeEl("h2", "lubylab-case__heading", block.heading));
+
+      if (block.paragraphs && block.paragraphs.length) {
+        var body = makeEl("div", "lubylab-case__body");
+        block.paragraphs.forEach(function (paragraph) {
+          body.appendChild(makeEl("p", null, paragraph));
+        });
+        copy.appendChild(body);
+      }
+
+      if (block.bullets && block.bullets.length) {
+        var list = makeEl("ul", "lubylab-case__list");
+        block.bullets.forEach(function (item) {
+          list.appendChild(makeEl("li", null, item));
+        });
+        copy.appendChild(list);
+      }
+      section.appendChild(copy);
+
+      if (block.images && block.images.length) {
+        var media = makeEl("div", "lubylab-case__media lubylab-case__media--" + block.type);
+        block.images.forEach(function (imageIndex) {
+          var im = images[imageIndex];
+          if (im) media.appendChild(pfFigure(im, p));
+        });
+        section.appendChild(media);
+      }
+
+      if (block.afterBullets && block.afterBullets.length) {
+        var after = makeEl("div", "lubylab-case__after pf-text");
+        var afterList = makeEl("ul", "lubylab-case__list");
+        block.afterBullets.forEach(function (item) {
+          afterList.appendChild(makeEl("li", null, item));
+        });
+        after.appendChild(afterList);
+        section.appendChild(after);
+      }
+
+      story.appendChild(section);
+    });
+    page.appendChild(story);
+  }
+
   function buildGenericContent(page, p) {
     var hero = makeEl("figure", "project-hero project-reveal");
     hero.appendChild(makeProjectImage(p, "project-hero__img", p.title + " hero image", "center center"));
@@ -1145,7 +1235,9 @@
 
     /* the middle of the page: a real woven case study, or the generic
        placeholder template for projects without authored content yet */
-    if (hasContent) {
+    if (hasContent && projectSlug(p) === "lubylab-1" && content.layout) {
+      buildLubylabCaseStudy(page, content, p);
+    } else if (hasContent) {
       buildFreestyleContent(page, { images: content.images, text: contentText }, p);
     } else {
       buildGenericContent(page, p);

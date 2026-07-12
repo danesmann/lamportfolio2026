@@ -50,7 +50,14 @@
     "B2B Communicate": "Truyền thông B2B", "Logo": "Logo", "Mockup": "Mockup",
     "Stage Design": "Thiết kế sân khấu", "Art": "Nghệ thuật",
     "Photograph": "Nhiếp ảnh", "Product Design": "Thiết kế sản phẩm",
-    "Website": "Website", "Identity": "Nhận diện"
+    "Website": "Website", "Identity": "Nhận diện",
+    "Marketing Lead": "Trưởng nhóm Marketing",
+    "Booth Design": "Thiết kế gian hàng", "B2B Communication": "Truyền thông B2B",
+    "Product Development": "Phát triển sản phẩm", "Design": "Thiết kế",
+    "Brand Marketing": "Marketing thương hiệu",
+    "Customer Relations Management": "Quản lý quan hệ khách hàng",
+    "Web Builder": "Xây dựng website", "Social Media": "Mạng xã hội",
+    "Brand Designer": "Thiết kế thương hiệu"
   };
   var ORIGINS = {
     "New Year 2025": "Tết 2025", "Poster Design": "Thiết kế Poster",
