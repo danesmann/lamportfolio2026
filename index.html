@@ -51,19 +51,20 @@
     <a class="nav__logo" href="/" aria-label="Thanh Lam — home" data-i18n-aria="nav_home_aria" data-cursor>
       <img class="nav__logo-img" src="assets/logo.svg" alt="" />
     </a>
-    <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="menuPanel" data-cursor>
-      <span class="menu-btn__label">menu</span>
-      <span class="menu-btn__dot" aria-hidden="true"></span>
-    </button>
+    <div class="nav__actions">
+      <div class="nav-lang mono" role="group" aria-label="Language / Ngôn ngữ" data-i18n-aria="lang_group_aria">
+        <button type="button" class="nav-lang__btn" data-lang-set="vi">VIE</button>
+        <button type="button" class="nav-lang__btn" data-lang-set="en">ENG</button>
+      </div>
+      <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="menuPanel" data-cursor>
+        <span class="menu-btn__label">menu</span>
+        <span class="menu-btn__dot" aria-hidden="true"></span>
+      </button>
+    </div>
   </header>
 
   <!-- expanding white menu -->
   <div class="menu-panel" id="menuPanel" aria-hidden="true">
-    <div class="menu-lang mono" role="group" aria-label="Language / Ngôn ngữ" data-i18n-aria="lang_group_aria">
-      <button type="button" class="menu-lang__btn" data-lang-set="vi">VIE</button>
-      <span class="menu-lang__sep" aria-hidden="true">/</span>
-      <button type="button" class="menu-lang__btn" data-lang-set="en">ENG</button>
-    </div>
     <p class="menu-panel__tag mono" data-i18n="nav_navigation">NAVIGATION</p>
     <nav class="menu-panel__links" aria-label="Site" data-i18n-aria="nav_site_aria">
       <a class="menu-panel__link" href="#top"><sup class="mono">01</sup><span data-i18n="nav_work">Selected Work</span></a>

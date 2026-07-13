@@ -198,6 +198,7 @@
     document.querySelectorAll("[data-lang-set]").forEach(function (el) {
       var to = el.getAttribute("data-lang-set");
       if (to === LANG) el.classList.add("is-active");
+      el.setAttribute("aria-pressed", to === LANG ? "true" : "false");
       el.addEventListener("click", function (e) {
         e.preventDefault();
         window.tlSetLang(to);

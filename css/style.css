@@ -128,6 +128,60 @@ sup { font-size: 0.55em; }
 .nav__logo:hover .nav__logo-img { transform: rotate(-8deg) scale(1.06); }
 .nav__logo-img { transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
 
+.nav__actions {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Always-visible two-language switch. */
+.nav-lang {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  width: 106px;
+  padding: 4px;
+  border-radius: 999px;
+  background: #fff;
+  color: #0a0a0a;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+}
+.nav-lang::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  border-radius: 999px;
+  background: #0a0a0a;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+:root[lang="en"] .nav-lang::before { transform: translateX(100%); }
+.nav-lang__btn {
+  min-width: 0;
+  padding: 9px 5px;
+  border: 0;
+  background: transparent;
+  color: rgba(10, 10, 10, 0.48);
+  border-radius: 999px;
+  font: inherit;
+  font-size: 10px;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: color 0.25s;
+}
+.nav-lang__btn:hover { color: #0a0a0a; }
+.nav-lang__btn.is-active { color: #fff; }
+.nav-lang__btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 /* menu pill */
 .menu-btn {
   pointer-events: auto;
@@ -201,37 +255,13 @@ body.menu-open .menu-btn { background: #0a0a0a; color: #fff; }
 .menu-panel__foot a { color: rgba(10, 10, 10, 0.75); }
 .menu-panel__foot a:hover { color: var(--accent); }
 
-/* language switch — sits in the panel's empty top-left band, aligned with
-   the close button opposite it */
-.menu-lang {
-  position: absolute;
-  top: 44px;
-  left: 44px;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  gap: 9px;
-}
-.menu-lang__btn {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(10, 10, 10, 0.4);
-  background: none;
-  border: 0;
-  padding: 0;
-  cursor: pointer;
-  transition: color 0.22s;
-}
-.menu-lang__btn:hover { color: #0a0a0a; }
-.menu-lang__btn.is-active { color: var(--accent); }
-.menu-lang__sep { color: rgba(10, 10, 10, 0.25); font-size: 12px; }
-
 /* on small screens the panel covers the logo — flip it dark for contrast */
 @media (max-width: 560px) {
   body.menu-open .nav__logo-img { filter: invert(1); }
-  .menu-lang { top: 34px; left: 28px; }
+  .nav__actions { gap: 6px; }
+  .nav-lang { width: 92px; }
+  .nav-lang__btn { padding-inline: 3px; }
+  .menu-btn { padding-inline: 16px; }
 }
 
 @media (max-width: 700px) {
@@ -1620,19 +1650,19 @@ body.menu-open .menu-btn { background: #0a0a0a; color: #fff; }
     position: relative;
     top: auto;
     height: auto;
-    min-height: 100svh;
+    min-height: 0;
     margin-bottom: 0;
   }
   .svc-card__wrapper {
     height: auto;
-    min-height: 100svh;
+    min-height: 0;
     overflow: visible;
     perspective: none;
   }
   .svc-card__content {
     position: relative;
     inset: auto;
-    min-height: 100svh;
+    min-height: 0;
     padding: calc(var(--nav-h) + 0.75rem) 1rem 1.25rem;
     justify-content: flex-start;
     gap: clamp(0.65rem, 2.5vw, 0.9rem);
