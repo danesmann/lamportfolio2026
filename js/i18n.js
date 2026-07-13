@@ -92,10 +92,10 @@
     contact_socials_aria: "Liên kết mạng xã hội",
 
     /* document titles (browser tab) */
-    doc_home: "Thanh Lam — Nhà thiết kế sáng tạo — Dự án",
+    doc_home: "Thanh Lam - Create what market needs",
     doc_archive: "Tất cả dự án — Thanh Lam — Nhà thiết kế sáng tạo",
     doc_about: "Giới thiệu — Thanh Lam — Chuyên gia Marketing Thương hiệu & Thương mại",
-    home_og_title: "Thanh Lam — Nhà thiết kế sáng tạo — Dự án",
+    home_og_title: "Thanh Lam - Create what market needs",
     archive_og_title: "Tất cả dự án — Thanh Lam — Nhà thiết kế sáng tạo",
     about_og_title: "Giới thiệu — Thanh Lam — Chuyên gia Marketing Thương hiệu & Thương mại",
     home_meta_desc: "Thanh Lam là nhà thiết kế đa lĩnh vực tại Việt Nam, hoạt động trong thiết kế sản phẩm, trải nghiệm và truyền thông — từ xây dựng thương hiệu, bao bì, minh họa, UI/UX đến nhiếp ảnh.",
