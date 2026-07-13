@@ -1,7 +1,7 @@
 /* ============================================================
    THANH LAM — ABOUT / SERVICES PAGE
    Hero reveals + mouse parallax + scroll-out
-   Wall-fall service cards (pinned desktop + native-sticky touch)
+   Service cards (pinned desktop + document-flow mobile reveals)
    Runs after main.js (gsap / ScrollTrigger / Lenis already set up)
    ============================================================ */
 
@@ -350,10 +350,44 @@
     };
   });
 
-  /* Touch layouts use native position:sticky rather than JS pinning. Only
-     compositor-friendly 2D transforms are scrubbed, preserving the falling
-     feel without the expensive desktop perspective work. */
-  mm.add("(max-width: 1024px) and (min-height: 601px)", function () {
+  /* Phones use a plain document-flow stack. Each service and its project rows
+     reveal once as they enter; there is no pinning or scroll-linked transform. */
+  mm.add("(max-width: 767px)", function () {
+    cards.forEach(function (card) {
+      var parts = card.querySelectorAll(
+        ".svc-card__top, .svc-card__showcase-item, .svc-card__bottom"
+      );
+
+      gsap.set(parts, { opacity: 0, y: 24 });
+      ScrollTrigger.create({
+        trigger: card,
+        start: "top 84%",
+        once: true,
+        onEnter: function () {
+          gsap.to(parts, {
+            opacity: 1,
+            y: 0,
+            duration: 0.58,
+            stagger: 0.07,
+            ease: "power3.out",
+            overwrite: "auto"
+          });
+        }
+      });
+    });
+
+    return function () {
+      cards.forEach(function (card) {
+        gsap.set(
+          card.querySelectorAll(".svc-card__top, .svc-card__showcase-item, .svc-card__bottom"),
+          { clearProps: "opacity,transform" }
+        );
+      });
+    };
+  });
+
+  /* Larger touch layouts retain the lighter sticky presentation. */
+  mm.add("(min-width: 768px) and (max-width: 1024px) and (min-height: 601px)", function () {
     cards.forEach(function (card, index) {
       var content = card.querySelector(".svc-card__content");
       if (!content) return;
@@ -414,7 +448,7 @@
   });
 
   /* Very short landscape screens cannot fit a useful sticky card. */
-  mm.add("(max-height: 600px)", function () {
+  mm.add("(min-width: 768px) and (max-height: 600px)", function () {
     cards.forEach(function (card) {
       var parts = card.querySelectorAll(
         ".svc-card__top, .svc-card__showcase-item, .svc-card__bottom"

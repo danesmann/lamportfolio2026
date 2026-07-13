@@ -354,6 +354,9 @@
     hover: null,
     pointer: { x: 0, y: 0, inStage: false },
     itemH: 48,
+    centerWholeGroup: false,
+    groupCenterIndex: 0,
+    groupOffset: 0,
     filter: DEFAULT_FILTER,
     loop: false,
     transitioning: false
@@ -394,6 +397,25 @@
       if (projectSlug(PROJECTS[i]) === slug || String(PROJECTS[i].num) === slug) return PROJECTS[i];
     }
     return null;
+  }
+
+  function translateServiceShowcases() {
+    var links = document.querySelectorAll(".svc-card__showcase-item");
+    Array.prototype.forEach.call(links, function (link) {
+      var href = link.getAttribute("href") || "";
+      var slug = href.split("?")[0].split("/").filter(Boolean).pop();
+      var p = findProjectBySlug(slug);
+      if (!p) return;
+
+      var title = tlTitle(p);
+      var strong = link.querySelector("strong");
+      var small = link.querySelector("small");
+      var img = link.querySelector("img");
+      if (strong) strong.textContent = title;
+      if (small) small.textContent = tlPick("VIEW PROJECT ↗", "XEM DỰ ÁN ↗");
+      if (img) img.alt = title + tlPick(" thumbnail", " — ảnh thu nhỏ");
+      link.setAttribute("aria-label", tlPick("Open project: ", "Mở dự án: ") + title);
+    });
   }
 
   function currentProjectSlug() {
@@ -492,6 +514,23 @@
     if (!workWrap) return;
     var first = wheel.els[0];
     if (first) wheel.itemH = first.offsetHeight || 48;
+
+    /* When an entire filtered list fits on a phone, centre the list as one
+       visual group instead of pinning its first (active) row to mid-screen.
+       The safe area mirrors the mobile top/bottom stage fades, keeping the
+       group clear of the nav and filter rail. Longer/looping lists retain the
+       original moving-wheel behaviour. */
+    var mobile = window.matchMedia("(max-width: 767px)").matches;
+    var styles = window.getComputedStyle(document.documentElement);
+    var navH = parseFloat(styles.getPropertyValue("--nav-h")) || 72;
+    var safeTop = navH + 64;
+    var safeBottom = 64;
+    var availableH = Math.max(0, window.innerHeight - safeTop - safeBottom);
+    var groupH = wheel.items.length * wheel.itemH;
+
+    wheel.centerWholeGroup = mobile && !wheel.loop && groupH <= availableH;
+    wheel.groupCenterIndex = (wheel.items.length - 1) / 2;
+    wheel.groupOffset = ((safeTop + window.innerHeight - safeBottom) / 2) - (window.innerHeight / 2);
   }
 
   /* move the wheel to an item — shortest way around when looping */
@@ -708,12 +747,15 @@
       var ad = Math.abs(d);
       var el = wheel.els[i];
       if (!el) continue;
-      if (ad > visRange && !force) {
+      if (!wheel.centerWholeGroup && ad > visRange && !force) {
         el.style.visibility = "hidden";
         continue;
       }
       el.style.visibility = "visible";
-      el.style.transform = "translate3d(0," + (d * wheel.itemH).toFixed(2) + "px,0)";
+      var rowY = wheel.centerWholeGroup
+        ? (i - wheel.groupCenterIndex) * wheel.itemH + wheel.groupOffset
+        : d * wheel.itemH;
+      el.style.transform = "translate3d(0," + rowY.toFixed(2) + "px,0)";
     }
 
     var activeIdx = wheel.loop
@@ -826,7 +868,7 @@
   function appendMeta(parent, label, value) {
     var item = makeEl("div", "project-meta__item");
     item.appendChild(makeEl("span", "project-meta__label mono", label));
-    item.appendChild(makeEl("span", "project-meta__value", value || "TBC"));
+    item.appendChild(makeEl("span", "project-meta__value", value || tlPick("TBC", "ĐANG CẬP NHẬT")));
     parent.appendChild(item);
   }
 
@@ -850,8 +892,8 @@
   function projectLead(p) {
     var sub = tlSub(p.subCategory) || tlTags(p.tags).join(", ");
     if (window.TL_LANG === "vi") {
-      return tlTitle(p) + " là một dự án " + tlCategory(p.category).toLowerCase() + " cho " + tlOrigin(p.origin) +
-        ", xoay quanh " + sub.toLowerCase() + ". Bố cục trang trình bày tác phẩm như một case study cô đọng: bối cảnh trước, rồi tới phần hình ảnh làm bằng chứng, và cuối cùng là phân tích tập trung vào các quyết định thiết kế phía sau định hướng cuối cùng.";
+      return tlTitle(p) + " là dự án thuộc nhóm " + tlCategory(p.category).toLowerCase() + " được thực hiện cho " + tlOrigin(p.origin) +
+        ", tập trung vào " + sub.toLowerCase() + ". Nội dung được trình bày như một nghiên cứu tình huống cô đọng: từ bối cảnh, bằng chứng hình ảnh đến những quyết định thiết kế tạo nên định hướng cuối cùng.";
     }
     return p.title + " is a " + p.category.toLowerCase() + " project for " + p.origin +
       ", shaped around " + sub.toLowerCase() + ". The page structure frames the work as a compact case study: context first, then image-led evidence, then a focused breakdown of the design decisions behind the final direction.";
@@ -863,17 +905,17 @@
       return [
         {
           title: "Bối cảnh",
-          body: "Dự án bắt đầu từ thế giới hình ảnh và chiến lược của " + tlOrigin(p.origin) +
-            ". Vai trò của nó là làm cho ý tưởng cốt lõi dễ đọc ngay lập tức, đồng thời giữ đủ chi tiết để người xem hiểu được hệ thống, tinh thần và mục đích sử dụng."
+          body: "Dự án bắt đầu từ định hướng hình ảnh và chiến lược của " + tlOrigin(p.origin) +
+            ". Mục tiêu là giúp ý tưởng cốt lõi được nhận biết ngay lập tức, đồng thời cung cấp đủ chi tiết để người xem hiểu hệ thống, tinh thần và bối cảnh ứng dụng."
         },
         {
           title: "Hướng thiết kế",
           body: "Định hướng lấy " + subVi +
-            " làm ngôn ngữ chính. Tỷ lệ, nhịp điệu và cách sắp xếp hình ảnh được dùng để giữ cho tác phẩm mang tính biên tập, trực diện và dễ nắm bắt xuyên suốt trang."
+            " làm ngôn ngữ chính. Tỷ lệ, nhịp điệu và cách sắp xếp hình ảnh tạo nên một mạch trình bày có tính biên tập, trực diện và dễ theo dõi."
         },
         {
-          title: "Phân tích dự án",
-          body: "Mỗi phần tiếp theo được dựng như một khối case study có thể tái sử dụng: một khoảnh khắc dẫn dắt bằng hình ảnh, một khung giải thích, và một mảng hình ảnh khép lại. Cùng một khung sườn có thể chứa những ghi chú quy trình sâu hơn khi phần viết dự án hoàn thiện."
+          title: "Cấu trúc dự án",
+          body: "Mỗi phần được xây dựng như một khối nội dung có thể tái sử dụng: hình ảnh mở đầu, phần giải thích và một trường hình ảnh khép lại. Cấu trúc này có thể tiếp nhận thêm ghi chú chuyên sâu về quy trình khi nội dung dự án được cập nhật."
         }
       ];
     }
@@ -972,8 +1014,29 @@
   function pfFigure(im, p) {
     var fig = makeEl("figure", "pf-chapter__fig project-reveal");
     fig.setAttribute("data-orient", im.o);
-    fig.appendChild(pfImage(im, p.title + " image"));
+    fig.appendChild(pfImage(im, tlTitle(p) + tlPick(" image", " — hình ảnh dự án")));
     return fig;
+  }
+
+  function appendSquareGallery(parent, images, p, extraClass) {
+    if (!images.length) return;
+    var classes = "pf-gallery pf-square-gallery" + (extraClass ? " " + extraClass : "");
+    var gallery = makeEl("section", classes);
+    images.forEach(function (im) { gallery.appendChild(pfFigure(im, p)); });
+    parent.appendChild(gallery);
+  }
+
+  function appendSupportingMedia(parent, images, p) {
+    if (images.length === 1) {
+      var single = makeEl("section", "pf-single");
+      single.appendChild(pfFigure(images[0], p));
+      parent.appendChild(single);
+    } else if (images.length > 1) {
+      var cols = images.length === 2 || images.length === 4 ? 2 : 3;
+      var gallery = makeEl("section", "pf-gallery pf-gallery--" + cols);
+      images.forEach(function (im) { gallery.appendChild(pfFigure(im, p)); });
+      parent.appendChild(gallery);
+    }
   }
 
   function buildLubylab3Content(page, content, p) {
@@ -995,9 +1058,20 @@
 
       var group = imageGroups[index] || [];
       if (!group.length) return;
-      var gallery = makeEl("section", "pf-gallery lubylab-3__gallery lubylab-3__gallery--" + group.length);
-      group.forEach(function (im) { gallery.appendChild(pfFigure(im, p)); });
-      story.appendChild(gallery);
+      var squares = group.filter(function (im) { return im.o === "S"; });
+      var standard = group.filter(function (im) { return im.o !== "S"; });
+
+      if (standard.length) {
+        var gallery = makeEl("section", "pf-gallery lubylab-3__gallery lubylab-3__gallery--" + standard.length);
+        standard.forEach(function (im) { gallery.appendChild(pfFigure(im, p)); });
+        story.appendChild(gallery);
+      }
+      appendSquareGallery(
+        story,
+        squares,
+        p,
+        "lubylab-3__gallery lubylab-3__gallery--" + squares.length
+      );
     });
     page.appendChild(story);
   }
@@ -1046,8 +1120,13 @@
     chapters.forEach(function (box, ci) {
       if (box.variant === "section") secNum++;
       var chapterImgs = alloc[ci] || [];
-      var primary = chapterImgs[0];
-      var extras = chapterImgs.slice(1);
+      /* Square and near-square assets get their own two-column band. Keeping
+         them out of the hero slot prevents a compact tile from being enlarged
+         to the full media-column width, especially on phones. */
+      var squareImgs = chapterImgs.filter(function (im) { return im.o === "S"; });
+      var standardImgs = chapterImgs.filter(function (im) { return im.o !== "S"; });
+      var primary = standardImgs[0];
+      var extras = standardImgs.slice(1);
       var flip = ci % 2 === 1; /* alternate which side the hero image sits on */
 
       var row = makeEl("section", "pf-chapter" +
@@ -1066,18 +1145,11 @@
       }
       story.appendChild(row);
 
-      /* supporting images: a lone extra sits centred; two or more tile into a
-         full-width gallery whose column count adapts to how many there are */
-      if (extras.length === 1) {
-        var single = makeEl("section", "pf-single");
-        single.appendChild(pfFigure(extras[0], p));
-        story.appendChild(single);
-      } else if (extras.length > 1) {
-        var cols = extras.length === 2 || extras.length === 4 ? 2 : 3;
-        var gallery = makeEl("section", "pf-gallery pf-gallery--" + cols);
-        extras.forEach(function (im) { gallery.appendChild(pfFigure(im, p)); });
-        story.appendChild(gallery);
-      }
+      /* supporting images use a consistent block rhythm; compact square sets
+         always render two-up, while landscape/portrait media keeps its
+         existing proportional treatment. */
+      appendSupportingMedia(story, extras, p);
+      appendSquareGallery(story, squareImgs, p);
     });
     page.appendChild(story);
   }
@@ -1119,12 +1191,25 @@
       section.appendChild(copy);
 
       if (block.images && block.images.length) {
-        var media = makeEl("div", "lubylab-case__media lubylab-case__media--" + block.type);
-        block.images.forEach(function (imageIndex) {
-          var im = images[imageIndex];
-          if (im) media.appendChild(pfFigure(im, p));
-        });
-        section.appendChild(media);
+        var blockImages = block.images.map(function (imageIndex) {
+          return images[imageIndex];
+        }).filter(Boolean);
+        var blockSquares = blockImages.filter(function (im) { return im.o === "S"; });
+        var blockStandard = blockImages.filter(function (im) { return im.o !== "S"; });
+
+        if (blockStandard.length) {
+          var media = makeEl("div", "lubylab-case__media lubylab-case__media--" + block.type);
+          blockStandard.forEach(function (im) { media.appendChild(pfFigure(im, p)); });
+          section.appendChild(media);
+        }
+        if (blockSquares.length) {
+          var squareMedia = makeEl(
+            "div",
+            "lubylab-case__media lubylab-case__media--squares pf-square-gallery"
+          );
+          blockSquares.forEach(function (im) { squareMedia.appendChild(pfFigure(im, p)); });
+          section.appendChild(squareMedia);
+        }
       }
 
       if (block.afterBullets && block.afterBullets.length) {
@@ -1144,19 +1229,19 @@
 
   function buildGenericContent(page, p) {
     var hero = makeEl("figure", "project-hero project-reveal");
-    hero.appendChild(makeProjectImage(p, "project-hero__img", p.title + " hero image", "center center", true));
+    hero.appendChild(makeProjectImage(p, "project-hero__img", tlTitle(p) + tlPick(" hero image", " — ảnh chính"), "center center", true));
     page.appendChild(hero);
 
     page.appendChild(buildTextBlock(tlPick("Overview", "Tổng quan"), projectLead(p), "project-copy project-copy--center project-reveal"));
 
     var fullOne = makeEl("figure", "project-media project-reveal");
-    fullOne.appendChild(makeProjectImage(p, "project-media__img", p.title + " project image", "center center"));
+    fullOne.appendChild(makeProjectImage(p, "project-media__img", tlTitle(p) + tlPick(" project image", " — hình ảnh dự án"), "center center"));
     page.appendChild(fullOne);
 
     var notes = projectNotes(p);
     var splitOne = makeEl("section", "project-split project-reveal");
     var splitImg = makeEl("figure", "project-split__media");
-    splitImg.appendChild(makeProjectImage(p, "project-split__img", p.title + " detail image", "30% center"));
+    splitImg.appendChild(makeProjectImage(p, "project-split__img", tlTitle(p) + tlPick(" detail image", " — ảnh chi tiết"), "30% center"));
     splitOne.appendChild(splitImg);
     splitOne.appendChild(buildTextBlock(notes[0].title, notes[0].body, "project-panel"));
     page.appendChild(splitOne);
@@ -1164,15 +1249,15 @@
     var splitTwo = makeEl("section", "project-split project-split--reverse project-reveal");
     splitTwo.appendChild(buildTextBlock(notes[1].title, notes[1].body, "project-panel"));
     var splitImgTwo = makeEl("figure", "project-split__media");
-    splitImgTwo.appendChild(makeProjectImage(p, "project-split__img", p.title + " process image", "70% center"));
+    splitImgTwo.appendChild(makeProjectImage(p, "project-split__img", tlTitle(p) + tlPick(" process image", " — ảnh quy trình"), "70% center"));
     splitTwo.appendChild(splitImgTwo);
     page.appendChild(splitTwo);
 
     var duo = makeEl("section", "project-duo project-reveal");
     var d1 = makeEl("figure", "project-duo__item");
-    d1.appendChild(makeProjectImage(p, "project-duo__img", p.title + " image variation one", "left center"));
+    d1.appendChild(makeProjectImage(p, "project-duo__img", tlTitle(p) + tlPick(" image variation one", " — phiên bản hình ảnh một"), "left center"));
     var d2 = makeEl("figure", "project-duo__item");
-    d2.appendChild(makeProjectImage(p, "project-duo__img", p.title + " image variation two", "right center"));
+    d2.appendChild(makeProjectImage(p, "project-duo__img", tlTitle(p) + tlPick(" image variation two", " — phiên bản hình ảnh hai"), "right center"));
     duo.appendChild(d1);
     duo.appendChild(d2);
     page.appendChild(duo);
@@ -1216,6 +1301,8 @@
     if (metaDescription) metaDescription.setAttribute("content", projectLead(p));
     var ogTitle = document.querySelector('meta[property="og:title"]');
     if (ogTitle) ogTitle.setAttribute("content", tlTitle(p) + " - " + tlOrigin(p.origin));
+    var ogDescription = document.querySelector('meta[property="og:description"]');
+    if (ogDescription) ogDescription.setAttribute("content", projectLead(p));
     var ogImage = document.querySelector('meta[property="og:image"]');
     if (ogImage) ogImage.setAttribute("content", (hasContent && content.images[0].src) || p.img);
 
@@ -1225,7 +1312,7 @@
 
     var intro = makeEl("section", "project-intro");
     var eyebrow = makeEl("div", "project-eyebrow mono");
-    var back = makeEl("a", "project-back", tlPick("BACK TO PORTFOLIO", "QUAY LẠI PORTFOLIO"));
+    var back = makeEl("a", "project-back", tlPick("BACK TO PORTFOLIO", "VỀ TRANG DỰ ÁN"));
     back.href = "/";
     back.setAttribute("data-cursor", "");
     eyebrow.appendChild(back);
@@ -1245,8 +1332,9 @@
 
     /* pick the Vietnamese case-study text when VI is active (falls back to
        the English text array if this project has no VI content) */
-    var contentText = (window.TL_LANG === "vi" && window.PROJECT_CONTENT_VI &&
-      PROJECT_CONTENT_VI[projectSlug(p)] && PROJECT_CONTENT_VI[projectSlug(p)].text) ||
+    var viContent = window.TL_LANG === "vi" && window.PROJECT_CONTENT_VI &&
+      PROJECT_CONTENT_VI[projectSlug(p)];
+    var contentText = (viContent && viContent.text) ||
       (hasContent ? content.text : null);
 
     /* role / deliverables note now sits at the top of the intro, right under
@@ -1263,7 +1351,10 @@
     /* the middle of the page: a real woven case study, or the generic
        placeholder template for projects without authored content yet */
     if (hasContent && projectSlug(p) === "lubylab-1" && content.layout) {
-      buildLubylabCaseStudy(page, content, p);
+      buildLubylabCaseStudy(page, {
+        images: content.images,
+        layout: (viContent && viContent.layout) || content.layout
+      }, p);
     } else if (hasContent) {
       buildFreestyleContent(page, { images: content.images, text: contentText }, p);
     } else {
@@ -1271,7 +1362,7 @@
     }
 
     var outro = makeEl("nav", "project-next project-reveal");
-    outro.setAttribute("aria-label", "More projects");
+    outro.setAttribute("aria-label", tlPick("More projects", "Dự án khác"));
     outro.appendChild(makeEl("span", "project-next__eyebrow mono", tlPick("MORE PROJECTS", "DỰ ÁN KHÁC")));
     var nextGrid = makeEl("div", "project-next__grid");
     nextTwo.forEach(function (np) {
@@ -1390,6 +1481,8 @@
     var menuOpen = false;
     var closeMenu = null;
 
+    if (label) label.textContent = tlPick("menu", "trình đơn");
+
     if (btn && panel) {
       var links = panel.querySelectorAll(".menu-panel__link");
       var foot = panel.querySelector(".menu-panel__foot");
@@ -1426,7 +1519,7 @@
         document.body.classList.remove("menu-open");
         btn.setAttribute("aria-expanded", "false");
         panel.setAttribute("aria-hidden", "true");
-        if (label) label.textContent = tlPick("menu", "menu");
+        if (label) label.textContent = tlPick("menu", "trình đơn");
         gsap.killTweensOf([panel, links, foot]);
         gsap.to(panel, {
           scale: 0.5,
@@ -2143,6 +2236,7 @@
       buildFilters();
       initWheelInput();
     }
+    translateServiceShowcases();
     buildProjectDetail();
     if (document.getElementById("archiveTable")) buildArchive();
     buildMarquees();

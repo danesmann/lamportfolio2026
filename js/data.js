@@ -1,6 +1,6 @@
 /* ============================================================
    THANH LAM — PORTFOLIO DATA
-   18 projects · MARKETING CASE STUDY / CREATIVE WORK
+   19 projects · MARKETING CASE STUDY / CREATIVE WORK
    `title_vi` holds the Vietnamese title; other translated fields
    (category, subCategory, tags, origin) are resolved via shared
    maps in js/i18n.js so they stay consistent across projects.
@@ -10,7 +10,7 @@ window.PROJECTS = [
   {
     num: 1,
     title: "Korean Skincare Brand",
-    title_vi: "Thương hiệu dưỡng da Hàn Quốc",
+    title_vi: "Thương hiệu mỹ phẩm Hàn Quốc",
     origin: "Lubylab",
     category: "MARKETING CASE STUDY",
     subCategory: "Marketing Lead",
@@ -23,7 +23,7 @@ window.PROJECTS = [
   {
     num: 2,
     title: "Born In Red Shortfilm",
-    title_vi: "Phim ngắn Born In Red",
+    title_vi: "Phim ngắn Born in Red",
     origin: "Campari Competition",
     category: "CREATIVE WORK",
     subCategory: "Story-telling, Photography",
@@ -36,7 +36,7 @@ window.PROJECTS = [
   {
     num: 3,
     title: "Wellness Spa",
-    title_vi: "Spa chăm sóc sức khỏe",
+    title_vi: "Thương hiệu spa chăm sóc sức khỏe",
     origin: "Fae Beauty",
     category: "MARKETING CASE STUDY",
     subCategory: "Brand Designer",
@@ -49,7 +49,7 @@ window.PROJECTS = [
   {
     num: 4,
     title: "Year Of Snake - Lucky Money",
-    title_vi: "Năm Rắn - Lì Xì",
+    title_vi: "Tết Ất Tỵ — Bao lì xì",
     origin: "New Year 2025",
     category: "CREATIVE WORK",
     subCategory: "Packaging, Merchandise",
@@ -62,7 +62,7 @@ window.PROJECTS = [
   {
     num: 5,
     title: "Formulation For Family Care",
-    title_vi: "Công thức cho cả gia đình",
+    title_vi: "Dòng sản phẩm chăm sóc gia đình",
     origin: "Celavie",
     category: "MARKETING CASE STUDY",
     archiveOnly: true,
@@ -76,7 +76,7 @@ window.PROJECTS = [
   {
     num: 6,
     title: "Xmas Merchandise",
-    title_vi: "Merch Giáng Sinh",
+    title_vi: "Bộ vật phẩm Giáng sinh",
     origin: "Merit Christmas",
     category: "CREATIVE WORK",
     subCategory: "Illustration, Merch",
@@ -89,7 +89,7 @@ window.PROJECTS = [
   {
     num: 7,
     title: "Hotel Of Serenity",
-    title_vi: "Khách sạn của sự an yên",
+    title_vi: "Khách sạn an yên",
     origin: "Mandala Hotel",
     category: "MARKETING CASE STUDY",
     subCategory: "Customer Relations Management",
@@ -102,7 +102,7 @@ window.PROJECTS = [
   {
     num: 8,
     title: "Thailand Skincare Exhibition",
-    title_vi: "Triển lãm dưỡng da Thái Lan",
+    title_vi: "Triển lãm mỹ phẩm tại Thái Lan",
     origin: "Lubylab",
     category: "MARKETING CASE STUDY",
     subCategory: "Booth Design, B2B Communication",
@@ -115,7 +115,7 @@ window.PROJECTS = [
   {
     num: 9,
     title: "Color Changing Clothing",
-    title_vi: "Trang phục đổi màu",
+    title_vi: "Thời trang biến đổi màu sắc",
     origin: "Chromatic",
     category: "CREATIVE WORK",
     archiveOnly: true,
@@ -129,7 +129,7 @@ window.PROJECTS = [
   {
     num: 10,
     title: "Eco-Friendly Wear",
-    title_vi: "Thời trang thân thiện môi trường",
+    title_vi: "Thời trang thân thiện với môi trường",
     origin: "Leger-Boo",
     category: "CREATIVE WORK",
     subCategory: "Social, Logo",
@@ -209,7 +209,7 @@ window.PROJECTS = [
   {
     num: 16,
     title: "Concept Photobook",
-    title_vi: "Photobook concept",
+    title_vi: "Sách ảnh nghệ thuật ý niệm",
     origin: "Photograph",
     category: "CREATIVE WORK",
     subCategory: "Photography",
@@ -236,7 +236,7 @@ window.PROJECTS = [
   {
     num: 18,
     title: "Couple Photobook",
-    title_vi: "Photobook cặp đôi",
+    title_vi: "Sách ảnh cặp đôi",
     origin: "Photograph",
     category: "CREATIVE WORK",
     subCategory: "Photography",
