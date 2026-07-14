@@ -77,7 +77,12 @@
 
   function buildDescLines() {
     if (!desc) return;
-    var lines = measureLines(desc, descText);
+    /* Mobile font metrics vary slightly between browsers. A line measured to
+       fit can wrap again on the real device and leave one- or two-word orphan
+       lines. Keep one animated block on mobile and let the browser perform
+       the final wrapping; desktop retains the staggered line reveal. */
+    var isMobile = window.matchMedia("(max-width: 767px)").matches;
+    var lines = isMobile ? [descText] : measureLines(desc, descText);
     desc.textContent = "";
     lines.forEach(function (lineText) {
       var mask = document.createElement("span");

@@ -1081,38 +1081,94 @@ body.menu-open .menu-btn { background: #0a0a0a; color: #fff; }
   .project-detail[data-project-slug="lubylab-3"] .lubylab-3__gallery--4 { grid-template-columns: 1fr; }
 }
 
-/* ---------- Dimsum Corner (festive brand-illustration kit) ----------
-   These are small, transparent illustrations drawn for light menu/table
-   surfaces, so this project's figures sit on warm cream cards — and never
-   upscale past their native size — keeping the linework crisp instead of
-   blurring the way big-photo case studies are laid out. */
+/* ---------- Dimsum Corner ----------
+   The replacement artboards already contain their intended composition.
+   Render them directly on one dark project field without card padding. */
+body.project-page:has(.project-detail[data-project-slug="dimsum-corner"]),
+.project-detail[data-project-slug="dimsum-corner"] {
+  --bg: #110e11;
+  --bg-2: #110e11;
+  background: #110e11;
+}
 .project-detail[data-project-slug="dimsum-corner"] .pf-chapter__fig {
-  background: #f2efe9;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: clamp(18px, 2.6vw, 40px);
-  max-width: 560px;
-  margin-inline: auto;
+  background: transparent;
+  padding: 0;
+  max-width: none;
+  margin-inline: 0;
 }
 .project-detail[data-project-slug="dimsum-corner"] .pf-chapter__fig img {
-  width: auto;
+  width: 100%;
   max-width: 100%;
-  max-height: 440px;
+  max-height: none;
   margin: 0;
 }
 .project-detail[data-project-slug="dimsum-corner"] .pf-gallery .pf-chapter__fig,
 .project-detail[data-project-slug="dimsum-corner"] .pf-single .pf-chapter__fig {
-  max-width: 420px;
+  max-width: none;
 }
-/* these are uniform small marks, so a lone 3rd tile reads better as a clean
-   row of three than blown full-width the way a stray big photo would be */
+/* Keep an unpaired supporting tile centred within the project rhythm. */
 .project-detail[data-project-slug="dimsum-corner"] .pf-gallery .pf-chapter__fig:last-child:nth-child(odd) {
   grid-column: auto;
   justify-self: center;
 }
 .project-detail[data-project-slug="dimsum-corner"] .pf-gallery .pf-chapter__fig:last-child:nth-child(odd) img {
   margin: 0;
+}
+
+/* Year of the Snake and Dimsum Corner use complete campaign artboards rather
+   than mixed editorial photography. A consistent two-column field prevents
+   landscape, portrait and unpaired assets from jumping between sizes. */
+.pf-story--uniform-artboards .pf-uniform-text {
+  text-align: left;
+}
+.pf-story--uniform-artboards .pf-uniform-text .pf-tagline {
+  margin-left: 0;
+  margin-right: 0;
+}
+.pf-uniform-gallery {
+  --pf-uniform-gap: clamp(12px, 1.6vw, 24px);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--pf-uniform-gap);
+  width: 100%;
+  max-width: 1120px;
+}
+.pf-uniform-gallery .pf-chapter__fig,
+.project-detail[data-project-slug="dimsum-corner"] .pf-uniform-gallery .pf-chapter__fig {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: none;
+  aspect-ratio: 4 / 5;
+  padding: 0;
+  background: transparent;
+}
+.pf-uniform-gallery .pf-chapter__fig img,
+.project-detail[data-project-slug="dimsum-corner"] .pf-uniform-gallery .pf-chapter__fig img {
+  width: 100%;
+  height: 100%;
+  max-width: 100% !important;
+  max-height: none;
+  margin: 0 !important;
+  object-fit: contain;
+}
+.pf-uniform-gallery .pf-chapter__fig:last-child:nth-child(odd) {
+  grid-column: auto;
+  justify-self: stretch;
+  width: 100%;
+}
+.pf-uniform-gallery .pf-chapter__fig:only-child {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: calc(50% - var(--pf-uniform-gap) / 2);
+}
+
+@media (max-width: 767px) {
+  .pf-uniform-gallery { grid-template-columns: 1fr; }
+  .pf-uniform-gallery .pf-chapter__fig:only-child {
+    grid-column: auto;
+    width: 100%;
+  }
 }
 
 /* ---------- Leger-Boo (3-post ribbon mechanic) ----------
@@ -1640,15 +1696,16 @@ body.menu-open .menu-btn { background: #0a0a0a; color: #fff; }
     gap: clamp(1rem, 4vw, 1.5rem);
   }
 
-  /* reposition floats for small screens */
-  .svc-float:nth-child(1) { top: 1%  !important; left: -6%  !important; width: 22vw !important; }
-  .svc-float:nth-child(2) { top: 22% !important; left: 22%  !important; width: 15vw !important; }
-  .svc-float:nth-child(3) { top: 6%  !important; left: 52%  !important; width: 16vw !important; }
-  .svc-float:nth-child(4) { top: 26% !important; left: 70%  !important; width: 18vw !important; }
-  .svc-float:nth-child(5) { top: 3%  !important; left: 82%  !important; width: 20vw !important; }
-  .svc-float:nth-child(6) { top: 28% !important; left: -4%  !important; width: 17vw !important; }
-  .svc-float:nth-child(7) { top: 64% !important; left: -10% !important; width: 22vw !important; }
-  .svc-float:nth-child(8) { top: 66% !important; left: 86%  !important; width: 20vw !important; }
+  /* Keep the floating artwork evenly distributed around the copy. The
+     three-two-three rhythm avoids clipped edge pieces and large empty bands. */
+  .svc-float:nth-child(1) { top: clamp(5rem, 11%, 7rem) !important; left: 4%  !important; width: 17vw !important; }
+  .svc-float:nth-child(2) { top: clamp(5rem, 12%, 7rem) !important; left: 41% !important; width: 18vw !important; }
+  .svc-float:nth-child(3) { top: clamp(5rem, 11%, 7rem) !important; left: 79% !important; width: 17vw !important; }
+  .svc-float:nth-child(4) { top: 29% !important; left: 4%  !important; width: 16vw !important; }
+  .svc-float:nth-child(5) { top: 29% !important; left: 80% !important; width: 16vw !important; }
+  .svc-float:nth-child(6) { top: 77% !important; left: 4%  !important; width: 18vw !important; }
+  .svc-float:nth-child(7) { top: 77% !important; left: 41% !important; width: 17vw !important; }
+  .svc-float:nth-child(8) { top: 75% !important; left: 79% !important; width: 17vw !important; }
 
   .svc-hero__center {
     position: relative;
@@ -1658,11 +1715,14 @@ body.menu-open .menu-btn { background: #0a0a0a; color: #fff; }
   }
   .svc-title { font-size: 11vw; }
   .svc-desc {
-    width: calc(100vw - 2rem);
+    width: min(calc(100vw - 2rem), 40rem);
     position: relative;
     inset: auto;
     transform: none;
     margin-inline: auto;
+    line-height: 1.5;
+    letter-spacing: 0.055em;
+    text-wrap: pretty;
   }
 
   /* Normal stacked cards — no pin, overlap, or fall on mobile. */

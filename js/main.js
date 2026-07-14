@@ -1080,11 +1080,58 @@
     page.appendChild(story);
   }
 
+  function buildUniformArtboardContent(page, content, p) {
+    var images = content.images.map(function (im) {
+      return { src: im.src, w: im.w, h: im.h, o: im.o || pfOrient(im) };
+    });
+    var chapters = (content.text || []).filter(function (t) { return t.variant !== "note"; });
+    var story = makeEl("section", "pf-story pf-story--uniform-artboards");
+    var chapterCount = chapters.length;
+    var imageCount = images.length;
+    var base = chapterCount ? Math.floor(imageCount / chapterCount) : imageCount;
+    var extra = chapterCount ? imageCount % chapterCount : 0;
+    var imageIndex = 0;
+    var secNum = 0;
+
+    if (!chapterCount) {
+      var allImages = makeEl("section", "pf-gallery pf-uniform-gallery");
+      images.forEach(function (im) { allImages.appendChild(pfFigure(im, p)); });
+      story.appendChild(allImages);
+      page.appendChild(story);
+      return;
+    }
+
+    chapters.forEach(function (box, chapterIndex) {
+      if (box.variant === "section") secNum++;
+      var textRow = makeEl("section", "pf-chapter pf-chapter--solo pf-uniform-text");
+      var textCol = makeEl("div", "pf-chapter__text");
+      textCol.appendChild(pfTextBox(box, secNum));
+      textRow.appendChild(textCol);
+      story.appendChild(textRow);
+
+      var groupSize = base + (chapterIndex < extra ? 1 : 0);
+      var group = images.slice(imageIndex, imageIndex + groupSize);
+      imageIndex += groupSize;
+      if (!group.length) return;
+
+      var gallery = makeEl("section", "pf-gallery pf-uniform-gallery");
+      group.forEach(function (im) { gallery.appendChild(pfFigure(im, p)); });
+      story.appendChild(gallery);
+    });
+
+    page.appendChild(story);
+  }
+
   function buildFreestyleContent(page, content, p) {
     var imgs = content.images.map(function (im) {
       return { src: im.src, w: im.w, h: im.h, o: im.o || pfOrient(im) };
     });
     var allTexts = (content.text || []).slice();
+
+    if (projectSlug(p) === "new-year-2025" || projectSlug(p) === "dimsum-corner") {
+      buildUniformArtboardContent(page, content, p);
+      return;
+    }
 
     if (projectSlug(p) === "lubylab-3") {
       buildLubylab3Content(page, content, p);
