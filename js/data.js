@@ -18,7 +18,8 @@ window.PROJECTS = [
     slug: "lubylab-1",
     tags: ["Marketing Lead"],
     year: 2026,
-    img: "assets/img/thumb/lubylab-1.webp"
+    img: "assets/img/thumb/lubylab-1.webp",
+    mobileImg: "assets/img/thumb/mobile/lubylab-1.jpg"
   },
   {
     num: 2,
@@ -44,7 +45,8 @@ window.PROJECTS = [
     slug: "fae-beauty",
     tags: ["Brand Designer"],
     year: 2025,
-    img: "assets/img/thumb/fae-beauty.webp"
+    img: "assets/img/thumb/fae-beauty.webp",
+    mobileImg: "assets/img/thumb/mobile/fae-beauty.jpg"
   },
   {
     num: 4,
@@ -97,7 +99,8 @@ window.PROJECTS = [
     slug: "mandala-hotel",
     tags: ["Customer Relations Management"],
     year: 2023,
-    img: "assets/img/thumb/mandala-hotel.webp"
+    img: "assets/img/thumb/mandala-hotel.webp",
+    mobileImg: "assets/img/thumb/mobile/mandala-hotel.jpg"
   },
   {
     num: 8,
@@ -110,7 +113,8 @@ window.PROJECTS = [
     slug: "lubylab-2",
     tags: ["Booth Design", "B2B Communication"],
     year: 2026,
-    img: "assets/img/thumb/lubylab-2.webp"
+    img: "assets/img/thumb/lubylab-2.webp",
+    mobileImg: "assets/img/thumb/mobile/lubylab-2.jpg"
   },
   {
     num: 9,
@@ -150,7 +154,8 @@ window.PROJECTS = [
     slug: "biolotus",
     tags: ["Brand Marketing"],
     year: 2025,
-    img: "assets/img/thumb/biolotus.webp"
+    img: "assets/img/thumb/biolotus.webp",
+    mobileImg: "assets/img/thumb/mobile/biolotus.jpg"
   },
   {
     num: 12,
@@ -191,7 +196,8 @@ window.PROJECTS = [
     slug: "lubylab-3",
     tags: ["Product Development", "Design"],
     year: 2026,
-    img: "assets/img/thumb/lubylab-3.webp"
+    img: "assets/img/thumb/lubylab-3.webp",
+    mobileImg: "assets/img/thumb/mobile/lubylab-3.jpg"
   },
   {
     num: 15,
@@ -204,7 +210,8 @@ window.PROJECTS = [
     slug: "tedxbuv",
     tags: ["Web Builder", "Social Media"],
     year: 2023,
-    img: "assets/img/thumb/tedxbuv.webp"
+    img: "assets/img/thumb/tedxbuv.webp",
+    mobileImg: "assets/img/thumb/mobile/tedxbuv.jpg"
   },
   {
     num: 16,
@@ -257,7 +264,8 @@ window.PROJECTS = [
     slug: "dimsum-corner",
     tags: ["Brand Marketing", "Illustration"],
     year: 2023,
-    img: "assets/img/thumb/dimsum-corner.webp"
+    img: "assets/img/thumb/dimsum-corner.webp",
+    mobileImg: "assets/img/thumb/mobile/dimsum-corner.jpg"
   }
 ];
 

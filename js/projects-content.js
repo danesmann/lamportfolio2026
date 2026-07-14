@@ -168,76 +168,14 @@ window.PROJECT_CONTENT = {
                    },
     "new-year-2025":  {
                           "images":  [
-                                         {
-                                             "src":  "assets/img/new-year-2025/01.webp",
-                                             "w":  532,
-                                             "h":  533
-                                         },
-                                         {
-                                             "src":  "assets/img/new-year-2025/02.webp",
-                                             "w":  532,
-                                             "h":  532
-                                         },
-                                         {
-                                             "src":  "assets/img/new-year-2025/03.webp",
-                                             "w":  2000,
-                                             "h":  1333
-                                         },
-                                         {
-                                             "src":  "assets/img/new-year-2025/04.webp",
-                                             "w":  2000,
-                                             "h":  1333
-                                         },
-                                         {
-                                             "src":  "assets/img/new-year-2025/05.webp",
-                                             "w":  533,
-                                             "h":  533
-                                         },
-                                         {
-                                             "src":  "assets/img/new-year-2025/06.webp",
-                                             "w":  900,
-                                             "h":  673
-                                         },
-                                         {
-                                             "src":  "assets/img/new-year-2025/07.webp",
-                                             "w":  1466,
-                                             "h":  2200
-                                         },
-                                         {
-                                             "src":  "assets/img/new-year-2025/08.webp",
-                                             "w":  2000,
-                                             "h":  1333
-                                         },
-                                         {
-                                             "src":  "assets/img/new-year-2025/09.webp",
-                                             "w":  1829,
-                                             "h":  2200
-                                         },
-                                         {
-                                             "src":  "assets/img/new-year-2025/10.webp",
-                                             "w":  1829,
-                                             "h":  2200
-                                         },
-                                         {
-                                             "src":  "assets/img/new-year-2025/11.webp",
-                                             "w":  1077,
-                                             "h":  898
-                                         },
-                                         {
-                                             "src":  "assets/img/new-year-2025/12.webp",
-                                             "w":  1076,
-                                             "h":  899
-                                         },
-                                         {
-                                             "src":  "assets/img/new-year-2025/13.webp",
-                                             "w":  1078,
-                                             "h":  899
-                                         },
-                                         {
-                                             "src":  "assets/img/new-year-2025/14.webp",
-                                             "w":  1077,
-                                             "h":  899
-                                         }
+                                         { "src": "assets/img/new-year-2025/artboard-01.webp", "w": 1200, "h": 1600 },
+                                         { "src": "assets/img/new-year-2025/artboard-02.webp", "w": 2000, "h": 1021 },
+                                         { "src": "assets/img/new-year-2025/artboard-03.webp", "w": 1200, "h": 1600 },
+                                         { "src": "assets/img/new-year-2025/artboard-04.webp", "w": 1200, "h": 1600 },
+                                         { "src": "assets/img/new-year-2025/artboard-05.webp", "w": 1530, "h": 1087 },
+                                         { "src": "assets/img/new-year-2025/artboard-06.webp", "w": 1531, "h": 1087 },
+                                         { "src": "assets/img/new-year-2025/artboard-07.webp", "w": 1200, "h": 1600 },
+                                         { "src": "assets/img/new-year-2025/artboard-08.webp", "w": 1271, "h": 1600 }
                                      ],
                           "text":  [
                                        {
@@ -548,14 +486,10 @@ window.PROJECT_CONTENT = {
                                         "h":  985
                                     },
                                     {
-                                        "src":  "assets/img/biolotus/06.webp",
-                                        "w":  395,
-                                        "h":  375
-                                    },
-                                    {
-                                        "src":  "assets/img/biolotus/07.webp",
-                                        "w":  495,
-                                        "h":  366
+                                        "src":  "assets/img/biolotus/10.webp",
+                                        "w":  2000,
+                                        "h":  2000,
+                                        "o":  "L"
                                     },
                                     {
                                         "src":  "assets/img/biolotus/08.webp",
@@ -568,6 +502,7 @@ window.PROJECT_CONTENT = {
                                         "h":  2200
                                     }
                                 ],
+                     "imageGroupSizes":  [2, 2, 1, 1, 2],
                      "text":  [
                                   {
                                       "variant":  "lead",
@@ -763,49 +698,50 @@ window.PROJECT_CONTENT = {
                      },
     "dimsum-corner":  {
         "images":  [
-            { "src": "assets/img/dimsum-corner/01.webp", "w": 748, "h": 499 },
-            { "src": "assets/img/dimsum-corner/03.webp", "w": 137, "h": 100 },
-            { "src": "assets/img/dimsum-corner/02.webp", "w": 130, "h": 100 },
-            { "src": "assets/img/dimsum-corner/12.webp", "w": 206, "h": 554 },
-            { "src": "assets/img/dimsum-corner/07.webp", "w": 130, "h": 131 },
-            { "src": "assets/img/dimsum-corner/08.webp", "w": 131, "h": 131 },
-            { "src": "assets/img/dimsum-corner/06.webp", "w": 241, "h": 438 },
-            { "src": "assets/img/dimsum-corner/04.webp", "w": 129, "h": 100 },
-            { "src": "assets/img/dimsum-corner/09.webp", "w": 131, "h": 131 },
-            { "src": "assets/img/dimsum-corner/10.webp", "w": 272, "h": 382 },
-            { "src": "assets/img/dimsum-corner/05.webp", "w": 100, "h": 100 },
-            { "src": "assets/img/dimsum-corner/11.webp", "w": 264, "h": 384 },
-            { "src": "assets/img/dimsum-corner/13.webp", "w": 131, "h": 131 }
+            { "src": "assets/img/dimsum-corner/artboard-01.webp", "w": 2000, "h": 1021 },
+            { "src": "assets/img/dimsum-corner/artboard-02.webp", "w": 1200, "h": 1600 },
+            { "src": "assets/img/dimsum-corner/artboard-03.webp", "w": 1200, "h": 1600 },
+            { "src": "assets/img/dimsum-corner/artboard-04.webp", "w": 1200, "h": 1600 },
+            { "src": "assets/img/dimsum-corner/artboard-05.webp", "w": 1530, "h": 1087 },
+            { "src": "assets/img/dimsum-corner/artboard-06.webp", "w": 1271, "h": 1600 },
+            { "src": "assets/img/dimsum-corner/artboard-07.webp", "w": 1200, "h": 1600 }
         ],
         "text":  [
             {
                 "variant":  "lead",
-                "tagline":  "Don't be a hotel restaurant. Be a teahouse that happens to be in a hotel.",
-                "body":  "Dimsum Corner is the Cantonese dim sum restaurant on the ground floor of Mandala Hotel & Suites B\u1eafc Giang, serving since 2023. It needed a personality loud enough to pull a local family through a hotel lobby \u2014 a genuinely intimidating threshold for a non-guest to cross."
-            },
-            {
-                "variant":  "section",
-                "heading":  "Context",
-                "body":  "Hotel restaurants have a structural problem: guests treat them as a fallback, and locals don't treat them as restaurants at all. The room above the lobby is, by default, the least interesting place in town to eat.\n\nAnd B\u1eafc Giang is not a tourist city. The winning audience was never the hotel guest \u2014 it was the family two streets over, deciding where to have lunch on Sunday."
+                "tagline":  "Traditional Chinese character, designed for a younger table.",
+                "body":  "A restaurant identity and seasonal campaign system for Dimsum Corner in Bắc Ninh — balancing the atmosphere of a traditional Chinese dining house with a contemporary visual language for middle-to-upper-income diners aged 20–35."
             },
             {
                 "variant":  "section",
                 "heading":  "Challenge",
-                "body":  "Three things had to be true at once. The brand had to walk out of the hotel \u2014 a hotel-branded outlet inherits the parent's politeness, beige and discreet and forgettable, and this one needed attitude. It had to earn the category without faking heritage: dim sum carries an enormous Cantonese-teahouse visual canon, and any attempt to fake a lineage would read as costume. And it had to work with zero paid media \u2014 the budget for pulling in locals was the room itself, so the brand had to land on a table, on a placemat, and in a photo taken by a customer."
+                "body":  "Dimsum Corner needed to feel culturally distinctive without becoming old-fashioned. Traditional Chinese restaurant branding can quickly fall into familiar symbols and decorative clichés, while the target audience expected something more polished, contemporary, and easy to engage with.\n\nThe identity also had to work beyond the restaurant itself. It needed enough flexibility to support menus, promotional materials, media content, and seasonal campaigns throughout the year."
             },
             {
                 "variant":  "section",
-                "heading":  "Strategy",
-                "body":  "The move was to stop looking premium and start looking fun and busy \u2014 because that is what makes a dim sum place feel authentic. Nobody wants a quiet dim sum lunch; the signal of quality here is noise: steam, chatter, stacked bamboo baskets, a room that is clearly working. So the identity was built to perform loudness even when the room is half-empty.\n\nThe reference was mid-century Hong Kong teahouse and matchbox printing \u2014 navy, vermilion and gold; heavy condensed slab lettering; double-line borders; a tiger seal (the outlet's founding-year mark, SINCE 2023) framed in an oval crest with \u597d\u5403!!! \u2014 delicious!!! \u2014 stamped beside it. Retro Cantonese, not red-lantern clich\u00e9. And with no media budget, the highest-leverage surface is the one the customer is already staring at: make the table do the marketing."
+                "heading":  "Solution",
+                "body":  "Working as part of the design team, I helped develop a visual identity that combined classic Chinese references with a more contemporary rhythm. Cultural character created recognition; modern composition, typography, and campaign applications kept the restaurant relevant to a younger audience.\n\nSeasonal communication was treated as part of the identity rather than a separate promotional layer. Each campaign adapted the same visual foundation around a timely menu, occasion, or reason to visit."
             },
             {
                 "variant":  "section",
                 "heading":  "Execution",
-                "body":  "A full identity kit, not a logo \u2014 a primary lockup, circular badge variants, a D \u9ede\u5fc3 C monogram seal and a stacked DIM SUM / COR NER mark, enough variety to dress an entire room without repeating an asset. The table talkers are the campaign: small double-sided signs doing the work paid media would otherwise do \u2014 It's a \"BAO\" time!, I \u2665 U SIU MAI-CH, STEAMING HOT!, I \u2665 DIMSUM CORNER \u2014 puns in English, deliberately, because they are photographable and give a table of friends a reason to point a phone at the food.\n\nThe placemat is the brand's front page: deep navy, a gold key-fret border, \u6b61\u8fce\u5149\u81e8 (welcome) across the top, the tiger crest centred, hotline and address running up both edges \u2014 functionally the best-read piece of media the restaurant owns. Under it sits a spot-illustration library \u2014 bamboo steamers, bao, siu mai, teapots, Peking duck \u5317\u4eac\u70e4\u9e2d, noodle bowls, fans, chrysanthemums \u2014 hand-drawn in the two-colour system so menus, signage and social posts assemble endlessly without new artwork. Copy runs in three languages on purpose: Chinese for authority, English for play, Vietnamese for the practical stuff.\n\nWhat held: the illustration library and badge system mean every later menu, seasonal promo and post is built from stock parts \u2014 the restaurant has never had to re-commission a brand asset since launch."
+                "body":  "The work moved between identity development, campaign concepts, design production, and media applications.",
+                "bullets":  [
+                    "Brand identity — collaborated with the design team to develop a visual direction that expressed traditional Chinese dining culture through a more contemporary and approachable presentation.",
+                    "Brand applications — adapted the identity across menus, in-restaurant materials, promotional artwork, and media assets to maintain consistency at every customer touchpoint.",
+                    "Qixi Festival — developed a seasonal red bean menu and its supporting visual materials, turning the cultural meaning of red beans into a timely reason to visit.",
+                    "Đón Bé Cưng campaign — contributed to the campaign concept and produced its accompanying design materials for seasonal promotion.",
+                    "Production — prepared and adapted creative assets across the required formats, helping each campaign move consistently from concept to publication."
+                ]
+            },
+            {
+                "variant":  "section",
+                "heading":  "Results",
+                "body":  "The project gave Dimsum Corner a more distinctive and consistent presence for its target audience. The identity could move from the restaurant space into menus, campaign visuals, and seasonal communication without losing recognition.\n\nThe Qixi red bean menu and Đón Bé Cưng campaign also gave the restaurant timely promotional reasons to attract customers, supporting revenue growth during peak travel periods."
             },
             {
                 "variant":  "note",
-                "body":  "Role: Content creator & designer \u2014 identity, illustration, copy and in-store collateral \u00b7 Client: Mandala Hotel & Suites B\u1eafc Giang \u2014 Dimsum Corner \u00b7 Deliverables: logo suite & badges, tiger crest, placemat, double-sided table talkers, spot-illustration library, menu & social assets \u00b7 Tools: Illustrator, Photoshop"
+                "body":  "Role: Marketing Intern — Design & Media Production · Period: May–October 2023 · Client: Dimsum Corner, Mandala Hotel Bắc Ninh · Scope: collaborative identity development, seasonal campaign concepts, menu and promotional design, media production · Selected campaigns: Qixi Red Bean Menu & Đón Bé Cưng · Tools: Illustrator, Photoshop"
             }
         ]
     },
@@ -828,54 +764,49 @@ window.PROJECT_CONTENT = {
         "text":  [
             {
                 "variant":  "lead",
-                "tagline":  "Serenity in every stay.",
-                "body":  "A brand and F&B content system for Mandala Hotel & Spa \u2014 one identity elastic enough to cover a sunset over Ph\u00fa Y\u00ean, a children's waterslide, a hot-stone massage and a 99,000\u0111 breakfast, without ever fracturing."
-            },
-            {
-                "variant":  "section",
-                "heading":  "Context",
-                "body":  "Mandala Hotel & Spa operates across several Vietnamese properties with very different jobs to do. Ph\u00fa Y\u00ean is a beachfront resort \u2014 sunset arcs, an infinity pool over the water, a waterslide, a kids' playground the size of a tennis court. B\u1eafc Ninh and B\u1eafc Giang are city hotels serving business travellers, residents of the attached Apec developments, and local diners who may never book a room at all.\n\nOne brand. One visual identity. Wildly different guests, seasons and revenue lines \u2014 rooms, spa, breakfast, \u00e0 la carte, cake shop, banqueting."
+                "tagline":  "A booking is only the beginning; the real brand is built in every response that follows.",
+                "body":  "A four-month marketing traineeship connecting customer acquisition, guest feedback, and on-property sales across Mandala Hotel's Phú Yên and Mũi Né properties. The work moved between Meta campaign support, complaint-handling systems, and printed collateral — three touchpoints within one guest journey."
             },
             {
                 "variant":  "section",
                 "heading":  "Challenge",
-                "body":  "Three problems sat on top of each other.",
+                "body":  "Mandala needed to increase domestic bookings while maintaining a consistent guest experience before, during, and after each stay. The challenge was not limited to attracting more customers; it was also about responding properly once they arrived.",
                 "bullets":  [
-                    "A brand promise that had to survive a waterslide. \"Serenity\" is easy to shoot in a spa and almost impossible to hold onto in a photo of children screaming down a slide \u2014 the identity had to stretch to a rooftop cocktail, a treadmill and a 99,000\u0111 breakfast combo without breaking.",
-                    "Content demand vastly outrunning supply. Multiple properties, multiple outlets, constant promotional cycles \u2014 soft openings, seasonal spa offers, daily F&B deals \u2014 each needing its own asset, on time, on brand.",
-                    "Price-led promotion erodes a premium position. A hotel that keeps shouting \"10% OFF\" teaches the market to wait for the discount. Every promo had to sell value while still looking like it belongs to a hotel that charges what it charges."
+                    "Meta campaigns for Phú Yên and Mũi Né required careful audience targeting and budget control to reach domestic travellers efficiently.",
+                    "Guest feedback arrived through OTA platforms and Google Reviews, but complaints needed a clearer process for receiving, responding, escalating, and resolving each case.",
+                    "On-property brochures, booklets, and information sheets needed to be useful, visually consistent, and ready to support direct sales — not simply act as decoration."
                 ]
             },
             {
                 "variant":  "section",
-                "heading":  "Strategy",
-                "body":  "Serenity is not a mood \u2014 it's a guarantee. I reframed the promise from a feeling (quiet, still, spa-like) to a service standard: everything is taken care of, so nothing is your problem. That is what lets a family water park and a hot-stone massage live under the same promise \u2014 serenity as the absence of friction, not the absence of noise. One governing rule for every asset: show the guest what's handled, never what they have to figure out.\n\nRather than force one look across everything, I built three registers under a single identity.",
-                "bullets":  [
-                    "Brand & rooms, for aspiration \u2014 cinematic, wide, golden-hour. The sunset aerial of Ph\u00fa Y\u00ean isn't selling a room; it's selling the decision to come at all.",
-                    "Facility & lifestyle, for proof \u2014 spa, gym, pool bar, playground; real spaces, real people, natural light, answering \"will this actually be nice?\"",
-                    "F&B & promotion, for conversion \u2014 the deep-green-and-gold arch system, tight crops, hero food photography, price and hotline set large and unambiguous.",
-                    "Green and gold do the value work the discount would otherwise do: deep emerald and warm gold read hotel, not voucher, so a 99,000\u0111 breakfast feels like an unlock, not a markdown."
-                ]
+                "heading":  "Solution",
+                "body":  "Instead of treating advertising, customer care, and printed materials as separate assignments, I approached them as one connected journey. Meta campaigns created the first point of contact; a standardised response process protected the relationship when problems occurred; and printed collateral helped guests navigate services while giving the hotel team practical tools for direct selling.\n\nWorking under training and team guidance, I supported a system that linked acquisition with service recovery: attract the right guest, receive feedback clearly, respond consistently, and provide an appropriate loyalty or gift-card solution when compensation was required."
             },
             {
                 "variant":  "section",
                 "heading":  "Execution",
-                "body":  "The arch \u2014 a recurring doorway motif \u2014 is the connective tissue across every promo, so a guest recognises the brand before reading a word of it.",
+                "body":  "The work was delivered across three connected areas.",
                 "bullets":  [
-                    "Always-on F&B calendar \u2014 a 99,000\u0111 breakfast combo, a Mandala Cake Shop buy-one-get-one, and The Bay Restaurant soft-opening with a scan-to-view menu; each carries the same arch, the same gold-on-green hierarchy, and the hotline as a closing device on every asset.",
-                    "Seasonal spa campaign \u2014 a four-tier promotion (Body Treatment, Early Bird, Spoil Yourself, Tropical Retreat) built as a menu rather than a discount, so the price ladder does the selling and the brand never has to.",
-                    "Property photography direction \u2014 sunset aerials, the infinity pool level with the horizon, the lobby's lacquered dragon, the spa's open-sky terrace: a stock of evergreen hero imagery the brand doesn't have to re-commission every season.",
-                    "Localised deployment \u2014 the same system retuned per property: waterslide and playground for family-facing Ph\u00fa Y\u00ean; The Bay Restaurant, cake shop and resident offers for the city hotels."
+                    "Meta campaign support — trained in campaign planning, audience targeting, and budget management for the Phú Yên and Mũi Né properties, with a focus on domestic travellers.",
+                    "Customer feedback management — monitored feedback from OTA platforms and Google Reviews, then developed reusable response templates and a structured intake process for complaints.",
+                    "Service recovery — helped route customer issues to the appropriate team and supported loyalty or gift-card compensation when a service recovery solution was needed.",
+                    "Printed collateral — produced brochures, booklets, and information sheets, managing the process from design development and proof review through printing and on-property delivery."
                 ]
             },
             {
                 "variant":  "section",
                 "heading":  "Results",
-                "body":  "The arch system is still doing its job: any new outlet or offer drops into it in an afternoon and still looks like Mandala. That's the real deliverable \u2014 not a campaign, but a machine that keeps producing on-brand assets long after the campaign ends."
+                "body":  "The result was a more connected customer journey — from the first Meta impression to the final response after a stay.",
+                "bullets":  [
+                    "Meta campaign activity contributed to a 20% increase in bookings from domestic travellers.",
+                    "A reusable response pipeline created a more consistent way to receive, classify, and address customer complaints across OTA platforms and Google Reviews.",
+                    "Loyalty and gift-card options gave the hotel a practical service-recovery mechanism instead of handling each case without a defined solution.",
+                    "The printed collateral improved access to on-property information and gave hotel staff a clearer set of materials for supporting direct sales."
+                ]
             },
             {
                 "variant":  "note",
-                "body":  "Role: Content creator & designer \u2014 concept, copy and design across brand, F&B and spa assets \u00b7 Client: Mandala Hotel & Spa \u2014 Ph\u00fa Y\u00ean, B\u1eafc Ninh, B\u1eafc Giang \u00b7 Deliverables: F&B promo key visuals, seasonal spa campaign, property photography direction, brand & lifestyle content library \u00b7 Tools: Photoshop, Illustrator"
+                "body":  "Role: Marketing Trainee — Customer Relations · Period: January–April 2023 · Properties: Mandala Hotel Phú Yên & Mũi Né · Scope: Meta campaign support, customer feedback management, complaint-response process, loyalty and gift-card compensation, brochure and booklet production · Channels: Meta Ads, OTA platforms & Google Reviews"
             }
         ]
     },
@@ -928,20 +859,20 @@ window.PROJECT_CONTENT = {
         "text":  [
             {
                 "variant":  "lead",
-                "tagline":  "Korean skincare, engineered like lab equipment.",
-                "body":  "A full brand system for a Korean-made Artemisia skincare line \u2014 one that looks like science, not like a spa. Everything is anchored to a single tension: forest botanical meets clinical lab."
+                "tagline":  "From the first factory sample to the finished product at the warehouse.",
+                "body":  "Product development here was not a single handoff, but a continuous loop between testing, costing, design, and production. I worked directly with the manufacturer to assess prototypes, consolidate feedback, coordinate revisions, and clarify quotations before aligning on the right direction."
             },
             {
                 "variant":  "body",
-                "body":  "Deep petrol-teal carries the \"forest at night\" story; acid green does the work of a highlighter, pulling the eye straight to the actives \u2014 U-Oliosome\u00aeTECA 0.5, HA-Zn, Aqua Cera5 C8 \u2014 badged like a spec sheet, not a beauty claim. Condensed grotesk lettering, hairline rules and a data-callout hierarchy borrowed from lab packaging. The mask sachet's linear wave-field graphic gives the range a signature no competitor owns on shelf."
+                "body":  "Once the sample was approved, I developed the product and packaging design and managed its full path into production: preparing print-ready artwork, reviewing proofs, monitoring print quality and timelines, coordinating packing, and arranging logistics back to the company."
             },
             {
                 "variant":  "body",
-                "body":  "Photography reinforced the same argument: beakers, artemisia sprigs, foam, water \u2014 evidence, not lifestyle. In a category that defaults to pastel and softness, a near-black box with a neon marker reads as proof. It earns its price without saying a word."
+                "body":  "The work connected creative decisions with manufacturing reality. A design was only complete when it could be reproduced accurately, remain consistent across the production run, and arrive at the company according to plan."
             },
             {
                 "variant":  "note",
-                "body":  "Role: Brand system, full stack \u2014 identity, packaging, key visuals & photography art direction \u00b7 Deliverables: logo & mark, dielines (tube carton, mask carton, sachet), copy hierarchy, key visuals, product photography direction \u00b7 Tools: Illustrator, Photoshop"
+                "body":  "Role: Product development coordination & packaging design \u00b7 Scope: manufacturer collaboration, prototype testing, quotation review, product and packaging design, print production management & inbound logistics \u00b7 Deliverables: prototype feedback, design directions, print-ready artwork, proof approvals, production follow-up & delivery coordination \u00b7 Tools: Illustrator, Photoshop"
             }
         ]
     },

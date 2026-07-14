@@ -670,6 +670,8 @@ body.menu-open .menu-btn { background: #0a0a0a; color: #fff; }
   grid-template-columns: 1fr 1fr;
   gap: clamp(10px, 1.4vw, 20px);
 }
+.project-next__item { min-width: 0; }
+.project-next__item:last-child .project-next__eyebrow { text-align: right; }
 /* each card is a fixed-ratio image box with corner labels + hover zoom */
 .project-next__card {
   position: relative;
@@ -754,6 +756,7 @@ body.menu-open .menu-btn { background: #0a0a0a; color: #fff; }
   .project-next__grid {
     grid-template-columns: 1fr;
   }
+  .project-next__item:last-child .project-next__eyebrow { text-align: left; }
   .project-panel { min-height: auto; }
 }
 
@@ -1352,6 +1355,10 @@ body.menu-open .menu-btn { background: #0a0a0a; color: #fff; }
 .svc-hero__floats {
   position: absolute;
   inset: 0;
+  /* Several decorative images intentionally straddle the viewport edge.
+     Contain that artwork so it cannot create a horizontally scrollable page
+     and shift the full-width service cards sideways on mobile. */
+  overflow: clip;
   pointer-events: none;
   z-index: 0;
 }
@@ -1625,7 +1632,13 @@ body.menu-open .menu-btn { background: #0a0a0a; color: #fff; }
 
 /* ---------- mobile ---------- */
 @media (max-width: 767px) {
-  .svc-hero { min-height: 30rem; }
+  .svc-hero {
+    min-height: 30rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: clamp(1rem, 4vw, 1.5rem);
+  }
 
   /* reposition floats for small screens */
   .svc-float:nth-child(1) { top: 1%  !important; left: -6%  !important; width: 22vw !important; }
@@ -1637,10 +1650,19 @@ body.menu-open .menu-btn { background: #0a0a0a; color: #fff; }
   .svc-float:nth-child(7) { top: 64% !important; left: -10% !important; width: 22vw !important; }
   .svc-float:nth-child(8) { top: 66% !important; left: 86%  !important; width: 20vw !important; }
 
+  .svc-hero__center {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+  }
   .svc-title { font-size: 11vw; }
   .svc-desc {
     width: calc(100vw - 2rem);
-    bottom: 2rem;
+    position: relative;
+    inset: auto;
+    transform: none;
+    margin-inline: auto;
   }
 
   /* Normal stacked cards — no pin, overlap, or fall on mobile. */

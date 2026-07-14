@@ -392,6 +392,10 @@
     return "/" + projectSlug(p);
   }
 
+  function projectThumbnail(p) {
+    return (MOBILE_PROJECT && p.mobileImg) || p.img;
+  }
+
   function findProjectBySlug(slug) {
     for (var i = 0; i < PROJECTS.length; i++) {
       if (projectSlug(PROJECTS[i]) === slug || String(PROJECTS[i].num) === slug) return PROJECTS[i];
@@ -433,7 +437,7 @@
     PROJECTS.forEach(function (p) {
       var img = document.createElement("img");
       /* load on demand (active project + neighbors) instead of all 18 at once */
-      img.setAttribute("data-src", p.img);
+      img.setAttribute("data-src", projectThumbnail(p));
       img.alt = "";
       img.decoding = "async";
       workBg.appendChild(img);
@@ -875,7 +879,7 @@
   function makeProjectImage(p, className, alt, position, priority) {
     var img = document.createElement("img");
     img.className = className || "";
-    img.src = p.img;
+    img.src = projectThumbnail(p);
     img.alt = alt || "";
     img.loading = "lazy";
     img.decoding = "async";
@@ -1078,7 +1082,7 @@
 
   function buildFreestyleContent(page, content, p) {
     var imgs = content.images.map(function (im) {
-      return { src: im.src, w: im.w, h: im.h, o: pfOrient(im) };
+      return { src: im.src, w: im.w, h: im.h, o: im.o || pfOrient(im) };
     });
     var allTexts = (content.text || []).slice();
 
@@ -1109,8 +1113,11 @@
        first (hero) image naturally lands beside the opening lead text */
     var alloc = [];
     var N = imgs.length, base = Math.floor(N / C), extra = N % C, idx = 0;
+    var groupSizes = content.imageGroupSizes;
+    var hasCustomGroups = Array.isArray(groupSizes) && groupSizes.length === C &&
+      groupSizes.reduce(function (sum, size) { return sum + size; }, 0) === N;
     for (var ci = 0; ci < C; ci++) {
-      var cnt = base + (ci < extra ? 1 : 0);
+      var cnt = hasCustomGroups ? groupSizes[ci] : base + (ci < extra ? 1 : 0);
       alloc.push(imgs.slice(idx, idx + cnt));
       idx += cnt;
     }
@@ -1277,15 +1284,31 @@
     var content = window.PROJECT_CONTENT && window.PROJECT_CONTENT[projectSlug(p)];
     var hasContent = !!(content && content.images && content.images.length);
 
-    /* the outro shows the next two projects, drawn from the selected-work
-       pool so archiveOnly projects are never surfaced as "next" */
-    var nextPool = PROJECTS.filter(function (q) { return !q.archiveOnly; });
-    if (nextPool.length < 2) nextPool = PROJECTS.slice();
-    var pn = nextPool.length;
-    var poolIdx = nextPool.indexOf(p);
-    var nextTwo = [
-      nextPool[(poolIdx + 1 + pn) % pn],
-      nextPool[(poolIdx + 2 + pn) % pn]
+    /* Match the ordering visitors see in the main-page category wheel and
+       expose one project on either side of the current one. The ends wrap so
+       the first and last projects still have both navigation choices. */
+    var navigationPool = projectsForFilter(p.category);
+    var poolIdx = navigationPool.indexOf(p);
+    if (poolIdx < 0 || navigationPool.length < 2) {
+      navigationPool = PROJECTS.filter(function (q) {
+        return q.category === p.category;
+      });
+      poolIdx = navigationPool.indexOf(p);
+    }
+    if (poolIdx < 0 || navigationPool.length < 2) {
+      navigationPool = PROJECTS.slice();
+      poolIdx = navigationPool.indexOf(p);
+    }
+    var pn = navigationPool.length;
+    var projectNeighbors = [
+      {
+        project: navigationPool[(poolIdx - 1 + pn) % pn],
+        label: tlPick("PREVIOUS PROJECT", "DỰ ÁN TRƯỚC")
+      },
+      {
+        project: navigationPool[(poolIdx + 1) % pn],
+        label: tlPick("NEXT PROJECT", "DỰ ÁN TIẾP THEO")
+      }
     ];
 
     document.body.classList.add("project-page");
@@ -1356,20 +1379,27 @@
         layout: (viContent && viContent.layout) || content.layout
       }, p);
     } else if (hasContent) {
-      buildFreestyleContent(page, { images: content.images, text: contentText }, p);
+      buildFreestyleContent(page, {
+        images: content.images,
+        text: contentText,
+        imageGroupSizes: content.imageGroupSizes
+      }, p);
     } else {
       buildGenericContent(page, p);
     }
 
     var outro = makeEl("nav", "project-next project-reveal");
-    outro.setAttribute("aria-label", tlPick("More projects", "Dự án khác"));
-    outro.appendChild(makeEl("span", "project-next__eyebrow mono", tlPick("MORE PROJECTS", "DỰ ÁN KHÁC")));
+    outro.setAttribute("aria-label", tlPick("Previous and next projects", "Dự án trước và tiếp theo"));
     var nextGrid = makeEl("div", "project-next__grid");
-    nextTwo.forEach(function (np) {
+    projectNeighbors.forEach(function (neighbor) {
+      var np = neighbor.project;
+      var item = makeEl("div", "project-next__item");
+      item.appendChild(makeEl("span", "project-next__eyebrow mono", neighbor.label));
+
       var card = makeEl("a", "project-next__card");
       card.href = projectUrl(np);
       card.setAttribute("data-cursor", "");
-      card.setAttribute("aria-label", tlTitle(np) + ", " + tlOrigin(np.origin) + ", " + (np.date || np.year));
+      card.setAttribute("aria-label", neighbor.label + ": " + tlTitle(np) + ", " + tlOrigin(np.origin) + ", " + (np.date || np.year));
 
       var media = makeEl("div", "project-next__media");
       media.appendChild(makeProjectImage(np, "", "", "center center"));
@@ -1380,7 +1410,8 @@
       card.appendChild(makeEl("span", "project-next__year mono", String(np.date || np.year)));
       card.appendChild(makeEl("span", "project-next__code mono", "BN " + pad2(np.num)));
       card.appendChild(makeEl("span", "project-next__cat mono", tlCategory(np.category)));
-      nextGrid.appendChild(card);
+      item.appendChild(card);
+      nextGrid.appendChild(item);
     });
     outro.appendChild(nextGrid);
     page.appendChild(outro);
